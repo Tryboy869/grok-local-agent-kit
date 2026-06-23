@@ -1,23 +1,27 @@
 # grok-local-agent-kit
 
-[![Stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers) [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org)
+[![GitHub stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social)](https://github.com/Tryboy869/grok-local-agent-kit) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Local AI Agent Kit powered by Grok-inspired tools - Run autonomous agents locally with Ollama, MCP, and more.**
+## 🚀 Grok Local Agent Kit
 
-## Features
-- Local LLM support via Ollama
-- Multi-agent orchestration
-- MCP (Multi-Context Protocol?) integration
-- Tool calling and skills
-- Easy deployment
+Build and run powerful **local autonomous AI agents** using Ollama, LangChain, MCP support, and Grok-inspired tooling.
 
-## Quickstart
-```bash
-pip install grok-local-agent-kit
-```
+### Features
+- ✅ Local-first with Ollama
+- ✅ Multi-Agent systems
+- ✅ Tool use & custom skills
+- ✅ MCP protocol support
+- ✅ Easy Python API
 
-## Roadmap
-- v0.1: Basic agents
-- ... 
+### Quickstart
+1. `pip install git+https://github.com/Tryboy869/grok-local-agent-kit.git`
+2. `grok-agent "Hello world"`
 
-MIT License.
+### Roadmap
+- Q3 2026: Advanced orchestration, web UI
+- Star goal: 10k in 3 months!
+
+See full [docs](docs/). MIT License.
+
+## Contributing
+PRs welcome!
