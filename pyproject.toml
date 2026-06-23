@@ -1,1 +1,9 @@
-pyproject content
+[project]
+name = "grok-local-agent-kit"
+version = "0.1.0"
+description = "Local AI Agent Kit"
+requires-python = ">=3.10"
+dependencies = ["ollama", "langchain"]
+
+[project.scripts]
+grok-agent = "grok_local_agent_kit.cli:main"
