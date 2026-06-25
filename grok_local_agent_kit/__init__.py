@@ -1,2 +1,1 @@
-"""Grok Local Agent Kit"""
-__version__ = "0.1.0"
+"""Grok Local Agent Kit - Local AI Agents Toolkit"""
