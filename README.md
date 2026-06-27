@@ -1,32 +1,42 @@
 # grok-local-agent-kit
 
-[![Stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit.svg)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers) [![Forks](https://img.shields.io/github/forks/Tryboy869/grok-local-agent-kit.svg)](https://github.com/Tryboy869/grok-local-agent-kit/network/members) [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit.svg?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers) [![Forks](https://img.shields.io/github/forks/Tryboy869/grok-local-agent-kit.svg?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/network/members) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org)
 
-**Kit complet pour agents IA locaux autonomes.** Support Ollama, MCP, outils locaux, autonomie complète.
+# Grok Local Agent Kit 🦾
 
-## 🚀 Quick Start
+**Agents IA locaux autonomes puissants. Ollama + MCP + Autonomie complète. Zéro cloud, full privacy.**
+
+Conçu pour atteindre l'autonomie des agents avec des modèles locaux.
+
+## ✨ Features
+- 🚀 Support Ollama, LM Studio, etc.
+- 🔌 MCP (Model Context Protocol) ready
+- 🛠️ Outils locaux (browser, code exec, file ops)
+- 🤝 Multi-agents collaboration
+- 📦 Package Python installable
+- 🔄 CI/CD GitHub Actions
+
+## 🚀 Quickstart (30 secondes)
 
 ```bash
+# Clone & install
 git clone https://github.com/Tryboy869/grok-local-agent-kit.git
 cd grok-local-agent-kit
 pip install -e .
 
-# Démarrer Ollama
+# Run Ollama (install if needed)
 ollama run llama3.2
 
-python -m grok_local_agent_kit.run
+# Run agent
+python -m grok_local_agent_kit.agent
 ```
 
-## Features
-- Agents locaux avec Ollama/LM Studio
-- Support MCP (Model Context Protocol)
-- Outils autonomes (recherche web, exécution code, etc.)
-- Multi-agents collaboration
-- CI/CD avec GitHub Actions
-
 ## Roadmap
-- v0.1: Core agents
-- v1.0: Full autonomy
+- [x] v0.1 Core
+- [ ] v0.2 MCP full + tools
+- [ ] v1.0 Autonomy & swarm
+
+**Contribuez !** Star, Fork, PRs bienvenus.
 
 ## License
-MIT
+MIT - Voir [LICENSE](LICENSE)
