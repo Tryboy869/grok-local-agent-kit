@@ -1,41 +1,32 @@
-# 🚀 Grok Local Agent Kit
+# grok-local-agent-kit
 
-**Build, run, and orchestrate autonomous AI agents entirely locally.** Inspired by Grok, powered by Ollama + MCP.
+[![Stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit.svg)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers) [![Forks](https://img.shields.io/github/forks/Tryboy869/grok-local-agent-kit.svg)](https://github.com/Tryboy869/grok-local-agent-kit/network/members) [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-[![GitHub stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit.svg?style=social)](https://github.com/Tryboy869/grok-local-agent-kit)
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
+**Kit complet pour agents IA locaux autonomes.** Support Ollama, MCP, outils locaux, autonomie complète.
 
-## ✨ Features
-- **Local-first**: No cloud, full privacy with Ollama
-- **MCP Support**: Integrate tools seamlessly with Model Context Protocol
-- **Multi-Agent**: Orchestrate teams of specialized agents
-- **Grok-inspired reasoning**: Advanced prompting and tool use
-- **Python SDK + CLI**
-- **Extensible**: Add custom tools easily
+## 🚀 Quick Start
 
-## 📦 Quickstart
+```bash
+git clone https://github.com/Tryboy869/grok-local-agent-kit.git
+cd grok-local-agent-kit
+pip install -e .
 
-1. Install Ollama: https://ollama.com
-2. Pull a model: `ollama pull llama3.2`
-3. Install kit:
-   ```bash
-   pip install git+https://github.com/Tryboy869/grok-local-agent-kit.git
-   ```
-4. Run:
-   ```python
-   from grok_local_agent_kit.agent import LocalAgent
-   agent = LocalAgent()
-   print(agent.run("Explain quantum computing simply."))
-   ```
+# Démarrer Ollama
+ollama run llama3.2
 
-## 📖 Roadmap
-- v0.2: Full MCP integration
-- v0.3: Web UI & multi-agent framework
-- v1.0: Production-ready with LangGraph
+python -m grok_local_agent_kit.run
+```
 
-## 🤝 Contributing
-See [CONTRIBUTING.md](CONTRIBUTING.md)
+## Features
+- Agents locaux avec Ollama/LM Studio
+- Support MCP (Model Context Protocol)
+- Outils autonomes (recherche web, exécution code, etc.)
+- Multi-agents collaboration
+- CI/CD avec GitHub Actions
 
-MIT License - Free to use, modify, and star! ⭐
+## Roadmap
+- v0.1: Core agents
+- v1.0: Full autonomy
+
+## License
+MIT
