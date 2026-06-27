@@ -1,5 +1,2 @@
-# Grok Local Agent Kit
-
-from .agent import LocalAgent
-
+"""Grok Local Agent Kit"""
 __version__ = '0.1.0'

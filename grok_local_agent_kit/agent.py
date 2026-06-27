@@ -1,11 +1,7 @@
 import ollama
 
-class LocalAgent:
-    def __init__(self, model='llama3.2'):
-        self.model = model
-    
-    def run(self, prompt):
-        response = ollama.chat(model=self.model, messages=[{'role': 'user', 'content': prompt}])
-        return response['message']['content']
+def run_local_agent(prompt: str):
+    response = ollama.chat(model='llama3.2', messages=[{'role': 'user', 'content': prompt}])
+    return response['message']['content']
 
-print('LocalAgent ready!')
+print('Agent ready!')
