@@ -1,42 +1,53 @@
-# grok-local-agent-kit
+# Grok Local Agent Kit
 
-[![Stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit.svg?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers) [![Forks](https://img.shields.io/github/forks/Tryboy869/grok-local-agent-kit.svg?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/network/members) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org)
+[![Stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit.svg)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org)
+[![Ollama](https://img.shields.io/badge/Ollama-Compatible-green.svg)](https://ollama.com)
 
-# Grok Local Agent Kit 🦾
+**Local AI Agent Kit** - Build and run powerful autonomous agents locally with Ollama, MCP support, and Grok-inspired capabilities. No cloud dependency, full privacy.
 
-**Agents IA locaux autonomes puissants. Ollama + MCP + Autonomie complète. Zéro cloud, full privacy.**
+## Features
 
-Conçu pour atteindre l'autonomie des agents avec des modèles locaux.
+- 🦙 **Ollama Integration**: Run local LLMs like Llama3, Mistral, etc.
+- 🔄 **MCP Support**: Multi-Context Protocol for advanced agent workflows.
+- 🤖 **Autonomous Agents**: Task planning, tool use, memory.
+- 📦 **Easy Setup**: pip install and quickstart.
+- 🚀 **Extensible**: Add custom tools, models, and agents.
+- 🔒 **100% Local**: Privacy-first, offline capable.
 
-## ✨ Features
-- 🚀 Support Ollama, LM Studio, etc.
-- 🔌 MCP (Model Context Protocol) ready
-- 🛠️ Outils locaux (browser, code exec, file ops)
-- 🤝 Multi-agents collaboration
-- 📦 Package Python installable
-- 🔄 CI/CD GitHub Actions
-
-## 🚀 Quickstart (30 secondes)
+## Quickstart
 
 ```bash
-# Clone & install
-git clone https://github.com/Tryboy869/grok-local-agent-kit.git
-cd grok-local-agent-kit
-pip install -e .
+# 1. Install Ollama
+curl -fsSL https://ollama.com/install.sh | sh
+ollama pull llama3
 
-# Run Ollama (install if needed)
-ollama run llama3.2
+# 2. Install the kit
+pip install git+https://github.com/Tryboy869/grok-local-agent-kit.git
 
-# Run agent
-python -m grok_local_agent_kit.agent
+# 3. Run example
+python -c "
+from grok_local_agent_kit.agent import LocalAgent
+agent = LocalAgent()
+print(agent.run('Explain quantum computing simply.'))
+"
 ```
 
 ## Roadmap
-- [x] v0.1 Core
-- [ ] v0.2 MCP full + tools
-- [ ] v1.0 Autonomy & swarm
 
-**Contribuez !** Star, Fork, PRs bienvenus.
+- [ ] Advanced multi-agent orchestration
+- [ ] Tool calling framework
+- [ ] Web UI with Gradio/Streamlit
+- [ ] RAG integration
+- [ ] Benchmark suite
+
+## Contributing
+Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
-MIT - Voir [LICENSE](LICENSE)
+MIT - see [LICENSE](LICENSE)
+
+---
+
+*Grok Local Agent Kit - Empowering local AI autonomy.*
