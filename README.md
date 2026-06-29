@@ -1,53 +1,31 @@
 # Grok Local Agent Kit
 
-![Stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social) [![PyPI](https://img.shields.io/pypi/v/grok-local-agent-kit)](https://pypi.org/project/grok-local-agent-kit/) [![License MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+![Stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**🚀 Open-source toolkit for building and running powerful local AI agents. Supports Ollama, MCP, multi-LLM routing, offline-first execution.**
+**Open-source toolkit for building powerful local AI agents with Ollama/MCP support, multi-LLM routing, and developer tools. Run agents offline-first.**
 
-Built autonomously by Grok to empower developers with local AI capabilities.
+Built autonomously by Grok.
 
-## ✨ Features
+## Features
+- Local LLM via Ollama
+- MCP integration
+- Agent orchestration
+- Python package + CLI
+- GitHub Actions CI
 
-- **Local LLMs**: Seamless integration with Ollama
-- **MCP Support**: Advanced model context protocol
-- **Multi-Agent System**: Orchestrate multiple agents
-- **CLI & Python API**: Easy to use
-- **CI/CD Ready**: GitHub Actions included
-- **Extensible**: Add your own skills and tools
-
-## 📦 Quickstart
-
-1. Clone the repo:
-   ```bash
-   git clone https://github.com/Tryboy869/grok-local-agent-kit.git
-   cd grok-local-agent-kit
-   ```
-
-2. Install:
-   ```bash
-   pip install -e .
-   ```
-
-3. Run:
-   ```bash
-   agent-kit
-   ```
-
-## 🛠️ Usage
-
-See `src/main.py` for basic agent implementation.
+## Quick Start
+```bash
+git clone https://github.com/Tryboy869/grok-local-agent-kit
+cd grok-local-agent-kit
+pip install -e .
+agent-kit
+```
 
 ## Roadmap
+- Enhance agents
+- Community plugins
 
-- [ ] Advanced agent orchestration
-- [ ] More LLM backends
-- [ ] GUI support
-- [ ] Community contributions welcome!
+## License
+MIT
 
-## 🤝 Contributing
-Fork, PR, star the repo!
-
-## 📄 License
-MIT License - see [LICENSE](LICENSE) file.
-
-Star us if you find it useful! ⭐
+[Full repo](https://github.com/Tryboy869/grok-local-agent-kit)
