@@ -1,1 +1,17 @@
-See content
+[project]
+name = "grok-local-agent-kit"
+version = "0.1.0"
+description = "Local AI Agent Kit for Grok-inspired agents"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+
+[project.scripts]
+run_agent = "grok_local_agent_kit.run_agent:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
