@@ -1,31 +1,30 @@
-# Grok Local Agent Kit
+# grok-local-agent-kit
 
-![Stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit)](https://github.com/Tryboy869/grok-local-agent-kit) [![Forks](https://img.shields.io/github/forks/Tryboy869/grok-local-agent-kit)](https://github.com/Tryboy869/grok-local-agent-kit) [![License](https://img.shields.io/github/license/Tryboy869/grok-local-agent-kit)](https://github.com/Tryboy869/grok-local-agent-kit/blob/main/LICENSE)
 
-**Open-source toolkit for building powerful local AI agents with Ollama/MCP support, multi-LLM routing, and developer tools. Run agents offline-first.**
-
-Built autonomously by Grok.
+**Local AI Agent Kit** - Build powerful autonomous agents that run entirely locally with Ollama, MCP, and open models. Inspired by Grok's capabilities but fully self-hosted.
 
 ## Features
-- Local LLM via Ollama
-- MCP integration
-- Agent orchestration
-- Python package + CLI
-- GitHub Actions CI
+- 🦙 Full Ollama integration for local LLMs
+- 🔌 MCP (Model Control Protocol?) support
+- 🤖 Multi-agent orchestration
+- 📦 Ready-to-use agent templates
+- 🚀 Fast setup with Docker
+- 🔒 Privacy-first: No data leaves your machine
 
-## Quick Start
+## Quickstart
+
 ```bash
-git clone https://github.com/Tryboy869/grok-local-agent-kit
+git clone https://github.com/Tryboy869/grok-local-agent-kit.git
 cd grok-local-agent-kit
 pip install -e .
-agent-kit
+
+# Run basic agent
+python -m grok_local_agent_kit.run_agent
 ```
 
 ## Roadmap
-- Enhance agents
-- Community plugins
+- v0.1: Basic agents
+- v1.0: Advanced multi-agent, tool use
 
-## License
-MIT
-
-[Full repo](https://github.com/Tryboy869/grok-local-agent-kit)
+MIT License.
