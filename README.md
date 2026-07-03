@@ -1,36 +1,28 @@
-# Grok Local Agent Kit
+# 🦾 Grok Local Agent Kit
 
-[![Stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org)
+![Stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social) [![PyPI](https://img.shields.io/pypi/v/grok-local-agent-kit)](https://pypi.org/project/grok-local-agent-kit/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Kit complet pour agents IA locaux autonomes avec support Ollama, MCP, et intégration Grok/xAI.**
+**Autonomous Local AI Agents powered by Ollama, MCP, and Grok integration. Privacy-first, fully offline-capable multi-agent system.**
 
-Run powerful local AI agents on your machine — fully autonomous, privacy-first, with MCP protocol support.
+## Features
+- Local LLMs via Ollama / llama.cpp
+- MCP (Multi-Agent Coordination Protocol) support
+- Tool use: web, code exec, file system
+- Agent memory & planning
+- CLI, Python SDK, examples
+- GitHub Actions CI/CD
 
-## ✨ Features
-
-- **Local-first**: Run with Ollama, LM Studio, or any local LLM
-- **MCP Support**: Advanced multi-agent coordination protocol
-- **Grok Integration**: Seamless with xAI models when API available
-- **Autonomous Agents**: Planning, tool use, memory, multi-step reasoning
-- **CLI & Python API**: Easy to use and extend
-- **Extensible Tools**: Web search, file ops, code execution, etc.
-
-## 🚀 Quickstart
-
-```bash
-pip install grok-local-agent-kit
-
-grok-local-agent --model ollama/llama3.2 --task "Analyze my project and suggest improvements"
-```
-
-## 📖 Documentation
-
-See [ROADMAP.md](ROADMAP.md) and examples/.
+## Quickstart
+1. `pip install grok-local-agent-kit`
+2. Install Ollama and pull a model: `ollama pull llama3.2`
+3. `grok-local-agent run --task "Your task here"`
 
 ## Roadmap
+- [x] Initial structure
+- [ ] Advanced MCP
+- [ ] Web UI
+- Target: 10k stars in 3 months!
 
-- v0.1: Basic agents
-- v1.0: Full MCP, UI
-- Future: Distributed agents, vision, etc.
+See full docs in repo. Star if useful! MIT Licensed.
 
-MIT License. Contribute!
+https://github.com/Tryboy869/grok-local-agent-kit
