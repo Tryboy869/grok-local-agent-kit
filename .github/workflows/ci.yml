@@ -1,5 +1,7 @@
 name: CI
+
 on: [push, pull_request]
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -10,4 +12,4 @@ jobs:
       with:
         python-version: '3.12'
     - run: pip install -e .
-    - run: python -c "from grok_local_agent_kit.agent import LocalAgent; print('CI passed')"
+    - run: python -c "from grok_local_agent_kit import LocalAgent; print('OK')"

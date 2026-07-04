@@ -1,13 +1,12 @@
 import ollama
-from typing import List, Dict
+
+def run_simple_agent(prompt: str) -> str:
+    response = ollama.chat(model='llama3', messages=[{'role': 'user', 'content': prompt}])
+    return response['message']['content']
 
 class LocalAgent:
-    def __init__(self, model: str = 'llama3.2'):
-        self.model = model
+    def __init__(self):
+        pass
 
-    def run(self, task: str, tools: List = None) -> str:
-        # Basic agent loop simulation
-        response = ollama.chat(model=self.model, messages=[{'role': 'user', 'content': task}])
-        return response['message']['content']
-
-print('LocalAgent ready for Ollama/MCP!')
+    def run(self, task):
+        return run_simple_agent(task)
