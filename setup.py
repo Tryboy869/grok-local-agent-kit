@@ -5,5 +5,5 @@ setup(
     version='0.1.0',
     packages=find_packages(),
     install_requires=['ollama', 'requests'],
-    entry_points={'console_scripts': ['agent-kit=src.main:main']},
+    entry_points={'console_scripts': ['grok-agent=grok_local_agent_kit.cli:main']},
 )

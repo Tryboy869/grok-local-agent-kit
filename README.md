@@ -1,28 +1,43 @@
-# 🦾 Grok Local Agent Kit
+# Grok Local Agent Kit
 
-![Stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social) [![PyPI](https://img.shields.io/pypi/v/grok-local-agent-kit)](https://pypi.org/project/grok-local-agent-kit/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit.svg)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 
-**Autonomous Local AI Agents powered by Ollama, MCP, and Grok integration. Privacy-first, fully offline-capable multi-agent system.**
+**Build and run powerful local AI agents offline with Ollama, MCP tooling, and Grok-inspired autonomy.**
 
 ## Features
-- Local LLMs via Ollama / llama.cpp
-- MCP (Multi-Agent Coordination Protocol) support
-- Tool use: web, code exec, file system
-- Agent memory & planning
-- CLI, Python SDK, examples
-- GitHub Actions CI/CD
+
+- 🦙 **Ollama Integration**: Full support for local LLMs
+- 🔧 **MCP Protocol**: Rich tooling and function calling
+- 🤖 **Multi-Agent Systems**: Orchestrate teams of agents
+- 📦 **Python Package**: Easy to install and extend
+- 🚀 **Quickstart**: Run in minutes
+- 🔄 **GitHub Actions CI**: Automated testing
 
 ## Quickstart
-1. `pip install grok-local-agent-kit`
-2. Install Ollama and pull a model: `ollama pull llama3.2`
-3. `grok-local-agent run --task "Your task here"`
+
+```bash
+pip install grok-local-agent-kit
+
+# Run a simple agent
+python -m grok_local_agent_kit.run
+```
+
+## Installation
+
+```bash
+git clone https://github.com/Tryboy869/grok-local-agent-kit.git
+cd grok-local-agent-kit
+pip install -e .
+```
+
+See full docs in [docs/](docs/).
 
 ## Roadmap
-- [x] Initial structure
-- [ ] Advanced MCP
+
+- [ ] Advanced agent memory
+- [ ] Vision support
+- [ ] More MCP servers
 - [ ] Web UI
-- Target: 10k stars in 3 months!
 
-See full docs in repo. Star if useful! MIT Licensed.
-
-https://github.com/Tryboy869/grok-local-agent-kit
+## License
+MIT
