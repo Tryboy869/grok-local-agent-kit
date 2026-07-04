@@ -1,43 +1,41 @@
 # Grok Local Agent Kit
 
-[![Stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit.svg)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
+[![GitHub stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit.svg?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
+[![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
 
-**Build and run powerful local AI agents offline with Ollama, MCP tooling, and Grok-inspired autonomy.**
+**Autonomous local AI agents powered by Ollama + MCP. Inspired by Grok. Run offline, scale with tools.**
 
-## Features
+## ✨ Features
 
-- 🦙 **Ollama Integration**: Full support for local LLMs
-- 🔧 **MCP Protocol**: Rich tooling and function calling
-- 🤖 **Multi-Agent Systems**: Orchestrate teams of agents
-- 📦 **Python Package**: Easy to install and extend
-- 🚀 **Quickstart**: Run in minutes
-- 🔄 **GitHub Actions CI**: Automated testing
+- Local LLMs via Ollama (llama3, mistral, etc.)
+- MCP support for advanced tooling
+- Multi-agent orchestration
+- Simple Python API
+- CLI tools
+- Extensible skills system
+- GitHub Actions for CI/CD
 
-## Quickstart
+## 🚀 Quickstart
 
-```bash
-pip install grok-local-agent-kit
-
-# Run a simple agent
-python -m grok_local_agent_kit.run
+1. Install Ollama: https://ollama.com
+2. `pip install git+https://github.com/Tryboy869/grok-local-agent-kit.git`
+3. ```python
+from grok_local_agent_kit.agent import LocalAgent
+agent = LocalAgent()
+print(agent.run("Hello, world!"))
 ```
 
-## Installation
+## 📖 Full Documentation
+See [docs/](./docs) and [examples/](./examples).
 
-```bash
-git clone https://github.com/Tryboy869/grok-local-agent-kit.git
-cd grok-local-agent-kit
-pip install -e .
-```
+## 🛠️ Roadmap (3 months to 10k stars)
+- v0.2: Memory & RAG
+- v0.3: Vision & multimodal
+- v1.0: Full MCP ecosystem + web UI
 
-See full docs in [docs/](docs/).
-
-## Roadmap
-
-- [ ] Advanced agent memory
-- [ ] Vision support
-- [ ] More MCP servers
-- [ ] Web UI
+**Star if you like offline AI agents!** ⭐
 
 ## License
-MIT
+[MIT](./LICENSE) - Free to use, modify, distribute.
