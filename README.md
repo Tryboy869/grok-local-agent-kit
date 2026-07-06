@@ -1,41 +1,30 @@
-# Grok Local Agent Kit
+# grok-local-agent-kit
 
-[![GitHub stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit.svg?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
-[![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
+[![Stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit.svg)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers) [![Forks](https://img.shields.io/github/forks/Tryboy869/grok-local-agent-kit.svg)](https://github.com/Tryboy869/grok-local-agent-kit/network/members) [![License](https://img.shields.io/github/license/Tryboy869/grok-local-agent-kit.svg)](https://github.com/Tryboy869/grok-local-agent-kit/blob/main/LICENSE)
 
-**Autonomous local AI agents powered by Ollama + MCP. Inspired by Grok. Run offline, scale with tools.**
+**Local AI Agent Kit inspired by Grok - Build autonomous agents that run entirely on your machine with Ollama, MCP, and more.**
 
-## ✨ Features
+## Features
+- 🚀 Full local execution with Ollama support
+- 🤖 Multi-agent orchestration
+- 🛠️ Tool integration (web search, file ops, code execution)
+- 📡 MCP protocol support
+- 🔄 GitHub Actions CI/CD
+- 📚 Comprehensive docs and examples
 
-- Local LLMs via Ollama (llama3, mistral, etc.)
-- MCP support for advanced tooling
-- Multi-agent orchestration
-- Simple Python API
-- CLI tools
-- Extensible skills system
-- GitHub Actions for CI/CD
+## Quickstart
+```bash
+pip install grok-local-agent-kit
 
-## 🚀 Quickstart
-
-1. Install Ollama: https://ollama.com
-2. `pip install git+https://github.com/Tryboy869/grok-local-agent-kit.git`
-3. ```python
-from grok_local_agent_kit.agent import LocalAgent
-agent = LocalAgent()
-print(agent.run("Hello, world!"))
+grok-local-agent-kit run --model ollama/llama3.2
 ```
 
-## 📖 Full Documentation
-See [docs/](./docs) and [examples/](./examples).
+## Roadmap
+- v0.1: Basic agents
+- v0.2: Advanced tools
+- v1.0: Full autonomy
 
-## 🛠️ Roadmap (3 months to 10k stars)
-- v0.2: Memory & RAG
-- v0.3: Vision & multimodal
-- v1.0: Full MCP ecosystem + web UI
-
-**Star if you like offline AI agents!** ⭐
+See [ROADMAP.md](ROADMAP.md) for details.
 
 ## License
-[MIT](./LICENSE) - Free to use, modify, distribute.
+MIT - see [LICENSE](LICENSE)
