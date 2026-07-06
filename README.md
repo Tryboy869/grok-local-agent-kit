@@ -1,30 +1,38 @@
-# grok-local-agent-kit
+# 🧠 grok-local-agent-kit
 
-[![Stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit.svg)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers) [![Forks](https://img.shields.io/github/forks/Tryboy869/grok-local-agent-kit.svg)](https://github.com/Tryboy869/grok-local-agent-kit/network/members) [![License](https://img.shields.io/github/license/Tryboy869/grok-local-agent-kit.svg)](https://github.com/Tryboy869/grok-local-agent-kit/blob/main/LICENSE)
+**Build powerful local AI agents with Grok-inspired autonomy. Run everything offline with Ollama, support for MCP, tools, and multi-agent systems.**
 
-**Local AI Agent Kit inspired by Grok - Build autonomous agents that run entirely on your machine with Ollama, MCP, and more.**
+[![GitHub stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit.svg?style=social)](https://github.com/Tryboy869/grok-local-agent-kit)
+[![PyPI version](https://img.shields.io/pypi/v/grok-local-agent-kit.svg)](https://pypi.org/project/grok-local-agent-kit/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Features
-- 🚀 Full local execution with Ollama support
-- 🤖 Multi-agent orchestration
-- 🛠️ Tool integration (web search, file ops, code execution)
-- 📡 MCP protocol support
-- 🔄 GitHub Actions CI/CD
-- 📚 Comprehensive docs and examples
+## ✨ Features
+- Local-first: No cloud dependency
+- Ollama integration for LLMs
+- Multi-Agent Collaboration
+- Tool use (search, code exec, files)
+- MCP (Multi-Context Protocol?) support
+- Easy CLI and Python API
+- CI/CD with GitHub Actions
 
-## Quickstart
-```bash
-pip install grok-local-agent-kit
+## 🚀 Quick Start
 
-grok-local-agent-kit run --model ollama/llama3.2
-```
+1. Install Ollama and pull a model: `ollama pull llama3.2`
+2. `pip install grok-local-agent-kit`
+3. Run:
+   ```bash
+   grok-local-agent-kit chat "Hello, world!"
+   ```
 
-## Roadmap
-- v0.1: Basic agents
-- v0.2: Advanced tools
-- v1.0: Full autonomy
+## 📖 Documentation
+See [examples/](examples/) and full docs coming soon.
 
-See [ROADMAP.md](ROADMAP.md) for details.
+## 🛣️ Roadmap
+- [ ] Advanced tool calling
+- [ ] Vision support
+- [ ] Deployment scripts
+
+**Contribute and help reach 10k stars!** Star ⭐ and share!
 
 ## License
-MIT - see [LICENSE](LICENSE)
+MIT © Tryboy869
