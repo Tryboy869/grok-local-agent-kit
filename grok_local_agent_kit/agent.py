@@ -1,15 +1,15 @@
-import ollama
+from typing import List, Dict
 
-class LocalAgent:
-    def __init__(self, model='llama3.2'):
+class Agent:
+    def __init__(self, model: str = "llama3.2"):
         self.model = model
+        self.history = []
+    
+    def chat(self, prompt: str) -> str:
+        # Placeholder for Ollama integration
+        self.history.append({"role": "user", "content": prompt})
+        response = f"[Agent response with {self.model}]: {prompt[:100]}..."
+        self.history.append({"role": "assistant", "content": response})
+        return response
 
-    def run(self, prompt):
-        response = ollama.chat(model=self.model, messages=[{'role': 'user', 'content': prompt}])
-        return response['message']['content']
-
-# Basic MCP support stub
-class MCPConnector:
-    pass
-
-print('LocalAgent ready for Ollama!')
+# More advanced agent logic coming soon

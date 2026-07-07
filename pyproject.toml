@@ -1,9 +1,14 @@
 [project]
 name = "grok-local-agent-kit"
 version = "0.1.0"
-description = "Local AI agents kit"
+description = "Local Grok-inspired AI Agent Kit"
+readme = "README.md"
 requires-python = ">=3.10"
-dependencies = ["ollama"]
+license = {text = "MIT"}
+keywords = ["ai", "agent", "ollama", "local-llm"]
 
 [project.scripts]
 grok-local-agent-kit = "grok_local_agent_kit.cli:main"
+
+[tool.setuptools]
+packages = ["grok_local_agent_kit"]
