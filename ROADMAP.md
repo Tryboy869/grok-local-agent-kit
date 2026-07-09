@@ -1,20 +1,18 @@
 # Roadmap
 
-## v0.1 MVP (Done)
-- Core Agent with Ollama tool calling
-- Basic tools (file, web placeholder)
-- Examples
-- Docs
+## v0.1 (Current)
+- Basic Agent with Ollama tool calling
+- File and web tools
+- CLI
 
-## v0.2
-- Full MCP integration
-- Real web search (duckduckgo)
-- Multi-agent
-- LM Studio support
+## v1.0
+- Full MCP protocol support
+- Multi-agent orchestration
+- Better error handling and memory
+- Packaging improvements
 
-## v0.3
-- Sandboxed code execution
-- Vision models
-- UI / Streamlit
-
-Community driven!
+## v2.0
+- GUI interface
+- Vision support
+- Advanced planning
+- Community tools hub
