@@ -1,12 +1,12 @@
-import argparse
+import sys
 from .agent import create_agent
 
 def main():
-    parser = argparse.ArgumentParser(description="Grok Local Agent CLI")
-    parser.add_argument("prompt", nargs="+", help="Prompt for the agent")
-    args = parser.parse_args()
+    if len(sys.argv) < 3 or sys.argv[1] != 'chat':
+        print('Usage: grok-agent chat <prompt>')
+        sys.exit(1)
     agent = create_agent()
-    response = agent.chat(" ".join(args.prompt))
+    response = agent.chat(' '.join(sys.argv[2:]))
     print(response)
 
 if __name__ == "__main__":

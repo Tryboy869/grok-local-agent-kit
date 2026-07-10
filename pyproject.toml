@@ -1,15 +1,14 @@
 [project]
 name = "grok-local-agent-kit"
-version = "0.1.1"
-description = "MVP toolkit for local autonomous AI agents with Ollama"
+version = "0.1.0"
+description = "Local AI Agent Kit with Ollama and MCP support"
 readme = "README.md"
-requires-python = ">=3.10"
 license = {text = "MIT"}
-keywords = ["ai", "agent", "ollama", "local-llm", "tool-calling"]
-dependencies = ["ollama"]
+requires-python = ">=3.10"
+dependencies = ["ollama", "requests"]
 
 [project.scripts]
-grok-local-agent = "grok_local_agent_kit.cli:main"
+grok-agent = "grok_local_agent_kit.cli:main"
 
-[tool.setuptools]
-packages = ["grok_local_agent_kit"]
+[project.optional-dependencies]
+dev = ["pytest", "ruff"]
