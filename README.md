@@ -1,77 +1,79 @@
 # 🧠 grok-local-agent-kit
 
-[![Stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers)
-[![Forks](https://img.shields.io/github/forks/Tryboy869/grok-local-agent-kit)](https://github.com/Tryboy869/grok-local-agent-kit/network/members)
-[![License](https://img.shields.io/github/license/Tryboy869/grok-local-agent-kit)](https://github.com/Tryboy869/grok-local-agent-kit/blob/main/LICENSE)
-[![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://www.python.org)
-[![Ollama](https://img.shields.io/badge/Ollama-Compatible-green)](https://ollama.com)
+[![Stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers)
+[![Forks](https://img.shields.io/github/forks/Tryboy869/grok-local-agent-kit?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/network/members)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org)
+[![Ollama](https://img.shields.io/badge/Ollama-0.3+-green)](https://ollama.com)
+[![MCP](https://img.shields.io/badge/MCP-Supported-blue)](https://modelcontextprotocol.io)
 
-**Build powerful local AI agents with Ollama, MCP support, tool calling, multi-LLM routing, and full autonomy. Offline-first, no cloud dependency. Built with ❤️ by Grok.**
+**The ultimate open-source toolkit for building autonomous local AI agents. Powered by Ollama, full MCP support, tool calling, multi-LLM, and Grok-inspired autonomy. Run everything offline. No API keys. Built autonomously by Grok.**
 
-## ✨ Features
+## ✨ Key Features
 
-- **Local LLM Integration**: Full support for Ollama (llama3.2, mistral, etc.)
-- **Tool Calling & MCP**: Native function calling with file, web, and custom tools
-- **Autonomous Agents**: Self-improving loops, planning, and execution
-- **Multi-Provider Routing**: Ollama, local Grok-like, future LM Studio, etc.
-- **CLI & Python SDK**: Easy integration and command-line usage
-- **Examples**: Chat, automation, research agents ready to run
-- **GitHub Actions CI**: Automated testing and packaging
+- **Full Local LLM Support**: Ollama + any local model (llama3.2, phi3, mistral, gemma2)
+- **MCP Protocol**: Native support for Model Context Protocol for advanced agent capabilities
+- **Advanced Tool Calling**: File ops, web search (local proxies), code execution, custom tools
+- **Autonomous Loops**: Planning, reasoning, self-correction, multi-agent orchestration
+- **CLI + SDK**: `grok-agent` command line and Python library
+- **Examples Gallery**: Chat, research, automation, coding agents
+- **CI/CD**: GitHub Actions for tests, lint, build, release
+- **Extensible**: Plugin system for new tools and providers
 
-## 🚀 Quick Start
+## 🚀 Quickstart
 
-1. **Install Ollama**: [ollama.com](https://ollama.com)
+1. Install Ollama: https://ollama.com/download
    ```bash
    ollama pull llama3.2
    ```
 
-2. **Install the Kit**:
+2. Install kit:
    ```bash
    pip install git+https://github.com/Tryboy869/grok-local-agent-kit.git
    ```
 
-3. **Run an Example**:
+3. Run your first agent:
    ```bash
-   python -m grok_local_agent_kit.cli chat "What can you do?"
-   # or
-   python examples/chat_agent.py
+   grok-agent chat "Explain quantum computing simply"
    ```
 
-## 📖 Documentation
+   Or with Python:
+   ```python
+   from grok_local_agent_kit import create_agent
+   agent = create_agent()
+   print(agent.chat("Hello, local Grok!"))
+   ```
 
-- [Agent API](./grok_local_agent_kit/agent.py)
-- [CLI](./grok_local_agent_kit/cli.py)
-- [Examples](./examples/)
-- [Roadmap](./ROADMAP.md)
+## 📁 Project Structure
 
-## 🛠️ Installation from Source
-
-```bash
-git clone https://github.com/Tryboy869/grok-local-agent-kit.git
-cd grok-local-agent-kit
-pip install -e .
+```
+grok-local-agent-kit/
+├── grok_local_agent_kit/   # Core package
+├── examples/               # Ready-to-run agents
+├── .github/workflows/      # CI
+├── pyproject.toml          # Modern packaging
+├── LICENSE
+├── README.md
+└── ROADMAP.md
 ```
 
-## 🎯 Use Cases
+## 🛠️ Installation
 
-- Personal automation assistants
-- Code generation & debugging agents
-- Research & knowledge agents
-- Local RAG pipelines
-- Multi-agent collaboration systems
+**From PyPI (soon)** or source as above.
 
-## 📊 Roadmap
+## 🤖 Examples
 
-See [ROADMAP.md](ROADMAP.md) for v1.0, v2.0 plans including GUI, more integrations, MCP full spec.
+See [examples/](examples/) directory.
 
-## 🤝 Contributing
+## 📈 Roadmap
 
-See [CONTRIBUTING.md](CONTRIBUTING.md)
+- v0.2: Full MCP, GUI (Streamlit)
+- v1.0: Multi-agent framework, RAG, vector DB
+- v2.0: Voice, vision, advanced autonomy
+
+See full [ROADMAP.md](ROADMAP.md)
 
 ## 📄 License
+MIT - Free to use, modify, distribute.
 
-MIT License - see [LICENSE](LICENSE)
-
----
-
-**Star this repo if you find it useful!** Let's build the future of local AI agents together. Feedback and PRs welcome!
+**⭐ Star if this helps your local AI journey!** Contributions welcome via PRs.
