@@ -1,13 +1,21 @@
 from grok_local_agent_kit.agent import create_agent
-import os
+from grok_local_agent_kit.tools import add_custom_tools
+import time
 
-agent = create_agent()
+agent = create_agent(model="llama3.2")
+add_custom_tools(agent)
 
-# Example automation
-print("Automation Agent Demo")
-response = agent.chat("Read the README.md file and summarize the key features.")
-print(response)
+print("🤖 Automation Agent - File ops and planning example")
 
-# Or use file tool directly if exposed
-if os.path.exists('README.md'):
-    print("File exists, agent can read it.")
+# Example automation loop
+task = "Create a report.txt with summary of local AI agents benefits."
+response = agent.chat(task)
+print("Task response:", response)
+
+# Verify
+print("\nFile created check:")
+try:
+    with open("report.txt", "r") as f:
+        print(f.read()[:300])
+except:
+    print("File not found or error.")
