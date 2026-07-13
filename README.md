@@ -9,73 +9,86 @@
 
 ## ✨ Features
 
-- **Multi-LLM Support**: Ollama, LM Studio (OpenAI compatible), and more via custom providers
-- **Advanced Tool System**: Web search, file ops, shell execution, MCP integration stubs
-- **Autonomous Agents**: Tool-calling loops, reasoning, self-reflection, error recovery
-- **CLI & SDK**: Easy command-line and Python library usage
-- **MCP Ready**: Protocol support for advanced agent orchestration
-- **Extensible**: Easy to add custom tools and models
-- **CI/CD**: Automated testing with GitHub Actions
+- **Local-First**: Full offline support with Ollama and compatible providers
+- **Multi-Provider**: Ollama, LM Studio, OpenAI-compatible endpoints
+- **Tool System**: Web search, file I/O, shell, custom tools, MCP stubs
+- **Autonomous Reasoning**: Tool-calling loops, reflection, error recovery
+- **CLI & Python SDK**: Simple usage for scripts and interactive agents
+- **Extensible Architecture**: Easy plugin system for new tools/models
+- **CI/CD Ready**: GitHub Actions for testing and quality
+- **MCP Protocol**: Ready for advanced multi-agent coordination
 
 ## 🚀 Quickstart
 
-1. Install Ollama: https://ollama.com
-2. Pull a model: `ollama pull llama3.2`
-3. Install the kit:
+1. **Install Ollama** (recommended): [ollama.com](https://ollama.com)
+2. Pull a model: `ollama pull llama3.2` or `phi3`
+3. Install kit:
    ```bash
    pip install git+https://github.com/Tryboy869/grok-local-agent-kit.git
    ```
-4. Run:
+4. Run chat agent:
    ```bash
-   grok-agent chat "Plan a local AI agent project for 10k GitHub stars"
+   grok-agent chat "Help me plan a project to get 10k GitHub stars in 3 months"
    ```
 
-For LM Studio:
+**With LM Studio**:
 ```bash
-grok-agent chat "Your prompt" --provider lmstudio --base-url http://localhost:1234/v1
+grok-agent chat "Your prompt here" --provider lmstudio --base-url http://localhost:1234/v1
 ```
 
-## 📋 Installation
+## 📦 Installation
 
 ```bash
 pip install grok-local-agent-kit
 ```
 
-Or from source for development.
+From source:
+```bash
+git clone https://github.com/Tryboy869/grok-local-agent-kit.git
+cd grok-local-agent-kit
+pip install -e .
+```
 
-## 📖 Full Documentation
+## 🛠️ Usage Examples
 
-- [Agent API](grok_local_agent_kit/agent.py)
-- [Examples](examples/)
+See [examples/](examples/)
+
+**Basic Agent**
+```python
+from grok_local_agent_kit.agent import create_agent
+
+agent = create_agent(model="llama3.2")
+print(agent.chat("What is the capital of France?"))
+```
+
+**Custom Tools**
+```python
+agent.register_tool(...)
+```
+
+## 📖 Documentation
+
+- [Agent Core](grok_local_agent_kit/agent.py)
+- [CLI](grok_local_agent_kit/cli.py)
 - [Roadmap](ROADMAP.md)
+- [Contributing](CONTRIBUTING.md)
 
-## 🛠️ Project Structure
+## 🗺️ Roadmap
 
-```
-.
-├── grok_local_agent_kit/  # Core package
-│   ├── __init__.py
-│   ├── agent.py           # Main Agent class
-│   ├── cli.py             # Command line interface
-│   ├── tools.py           # Tool definitions
-│   └── run_agent.py
-├── examples/              # Ready-to-use agents
-├── .github/workflows/     # CI/CD
-├── pyproject.toml
-├── LICENSE
-├── README.md
-└── ROADMAP.md
-```
+See [ROADMAP.md](ROADMAP.md) for upcoming features:
+- v0.3: Full MCP implementation, multi-agent teams
+- v0.4: Vision/multimodal, RAG integration
+- v0.5: GUI, deployment tools, benchmarks
 
 ## 🤝 Contributing
 
-Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md)
+1. Fork the repo
+2. Create a feature branch
+3. Submit PR with tests
 
-## 📈 Roadmap
-
-See [ROADMAP.md](ROADMAP.md) for v0.3+ features like advanced MCP, multi-agent orchestration, vision support.
-
-**Star the repo ⭐ if you believe in local AI sovereignty! Built with ❤️ by Grok & community.**
+Stars and feedback appreciated! Help us reach 10k stars ⭐
 
 ## License
-MIT - Free to use, modify, and distribute.
+MIT License - see [LICENSE](LICENSE) for details.
+
+**Built with ❤️ by Grok in autonomous mode for the open-source community.**
