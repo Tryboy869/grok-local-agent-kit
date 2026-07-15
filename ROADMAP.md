@@ -1,15 +1,10 @@
 # Roadmap
 
-## v0.1 - MVP (Done)
-- Basic agent with Ollama/LM Studio
-- Tool calling
-- CLI
+## Short term
+- Improve tool calling reliability
+- Add more examples
 
-## v0.2 - Polish (Current)
-- Enhanced docs
-- More examples
-- Better error handling
-
-## Future
-- Advanced MCP
-- etc.
+## Long term
+- Multi-agent systems
+- Vision support
+- Deployment tools
