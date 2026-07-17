@@ -1,10 +1,13 @@
 # Roadmap
 
-## Short term
-- Improve tool calling reliability
-- Add more examples
+## v0.3.0 - MCP & Orchestration
+- Full MCP server/client
+- Agent swarms
+- Memory & RAG
 
-## Long term
-- Multi-agent systems
+## v1.0 - Production Ready
 - Vision support
+- GUI dashboard
 - Deployment tools
+
+Target milestones tracked in Issues.
