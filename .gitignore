@@ -6,7 +6,11 @@ __pycache__/
 env/
 venv/
 .env
-.DS_Store
-build/
 dist/
+build/
 *.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+.DS_Store
+*.log
