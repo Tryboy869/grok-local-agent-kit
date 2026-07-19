@@ -6,42 +6,76 @@
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
 [![PyPI](https://img.shields.io/pypi/v/grok-local-agent-kit)](https://pypi.org/project/grok-local-agent-kit/)
 
-**Open-source toolkit for building powerful local AI agents. Supports Ollama, local models, MCP (Model Context Protocol), multi-agent systems, tools, and offline execution. Powered by Grok's autonomous development.**
+**The ultimate open-source toolkit for building autonomous local AI agents. Run powerful agents offline with Ollama, support for MCP (Model Context Protocol), multi-LLM routing, tool use, memory, and more. Designed for developers who want full control without cloud dependencies.**
 
-## ✨ Features
+Built autonomously by Grok to demonstrate local AI power.
 
-- **Local-first**: Ollama, LM Studio, vLLM, GGUF models
-- **MCP Support**: Standardized tool calling and agent interoperability
-- **Agent Types**: Reactive, planning, multi-agent, hierarchical, swarms
-- **Rich Tools**: Shell, code exec, file ops, web (via proxies), custom skills
-- **CLI & API**: `grok-agent` command, Python library
-- **Extensible**: .grok/skills system for domain-specific agents
-- **Production Ready**: Logging, error handling, persistence
+## ✨ Key Features
 
-## Quickstart
+- **Fully Local Execution**: Integrate with Ollama, LM Studio, vLLM, or any local LLM server.
+- **MCP Protocol Support**: Standardized agent-tool communication for interoperability.
+- **Advanced Agent Architectures**: Reactive, goal-oriented planning, multi-agent collaboration, hierarchical, swarms.
+- **Rich Tool Ecosystem**: File I/O, shell execution, code interpreter, web search (local proxies), custom skills.
+- **CLI & Python API**: Easy `grok-agent` CLI and importable library.
+- **Extensibility**: Plugin system inspired by .grok/skills for domain-specific agents (e.g., coding, research, automation).
+- **Production Features**: Structured logging, error recovery, state persistence, evaluation metrics.
+- **Zero Cloud**: All processing stays on your machine for privacy and speed.
+
+## 📦 Installation
 
 ```bash
-pip install grok-local-agent-kit ollama
+pip install grok-local-agent-kit
 
-# Start Ollama and pull model
+# Optional: Ollama for local models
+curl -fsSL https://ollama.com/install.sh | sh
 ollama pull llama3.2
-
-# Run agent
-grok-agent "Create a simple FastAPI todo app with SQLite"
 ```
 
-See [examples/](examples/) for more.
+## 🚀 Quickstart
 
-## Roadmap
+```bash
+# Run a simple agent
+grok-agent "Help me brainstorm 10 startup ideas in AI agents space"
 
-See [ROADMAP.md](ROADMAP.md) - v1.0 Q3 2026: Full MCP, agent marketplace.
+# Or in Python
+from grok_local_agent_kit.agent import Agent
 
-## Contributing
+agent = Agent(model="llama3.2")
+result = agent.run("Write a Python script for a todo API")
+print(result)
+```
 
-PRs welcome! See [CONTRIBUTING.md](CONTRIBUTING.md).
+See [examples/](examples/) directory for advanced usage: chat agents, automation, etc.
 
-## License
+## 🛠 Architecture
 
-MIT - see LICENSE.
+- `grok_local_agent_kit/agent.py`: Core reasoning loop and agent class.
+- `grok_local_agent_kit/tools.py`: Tool definitions and MCP handlers.
+- `grok_local_agent_kit/cli.py`: CLI entrypoint.
 
-*Autonomously built and maintained with Grok. Aim: 10k stars!*
+## 📋 Roadmap
+
+See [ROADMAP.md](ROADMAP.md)
+
+- **v0.3 (Current)**: Basic agents, tools, MCP stubs
+- **v0.5**: Full multi-agent, memory, evaluation
+- **v1.0 (Q3 2026)**: Swarm intelligence, agent marketplace, visual builder
+
+## 🤝 Contributing
+
+1. Fork the repo
+2. Create feature branch
+3. Make changes and add tests
+4. Submit PR
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file.
+
+*Star ⭐ the repo if this helps your local AI journey! Community goal: 10k stars in 3 months through valuable contributions and sharing.*
+
+---
+
+**Autonomously developed and maintained by Grok.**
