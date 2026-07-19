@@ -5,6 +5,10 @@ from typing import List, Dict, Any, Callable, Optional, Union
 import os
 import time
 from pathlib import Path
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class Tool:
     def __init__(self, name: str, func: Callable, description: str, parameters: Dict):
@@ -14,7 +18,7 @@ class Tool:
         self.parameters = parameters
 
 class AgentRouter:
-    '''Simple routing for tools and multi-agent coordination'''
+    '''Advanced routing for tools and multi-agent'''
     def __init__(self):
         self.routes = {}
     
@@ -22,34 +26,31 @@ class AgentRouter:
         self.routes[name] = handler
     
     def route(self, task: str) -> str:
-        '''Basic keyword-based routing; extend with LLM for better classification'''
-        for keyword, handler in self.routes.items():
-            if keyword.lower() in task.lower():
-                return handler(task)
-        return "No specific route matched. Using default agent."
+        '''LLM-enhanced routing simulation; extend with classification'''
+        task_lower = task.lower()
+        if any(k in task_lower for k in ['file', 'read', 'write', 'list']):
+            return 'file_ops'
+        if any(k in task_lower for k in ['search', 'web', 'news', 'info']):
+            return 'web_search'
+        return 'default'
 
 class Agent:
     def __init__(self, model: str = "llama3.2", provider: str = "ollama", base_url: Optional[str] = None):
         self.model = model
         self.provider = provider
-        self.base_url = base_url or ("http://localhost:1234/v1" if provider == "lmstudio" else None)
+        self.base_url = base_url or ("http://localhost:1234/v1" if provider == "lmstudio" else "http://localhost:11434")
         self.history = []
         self.tools = []
         self.router = AgentRouter()
         self._register_default_tools()
-        self._setup_router()
-    
-    def _setup_router(self):
-        self.router.add_route("file", self._handle_file_task)
-        self.router.add_route("web", self._handle_web_task)
-        self.router.add_route("search", self._handle_web_task)
+        logger.info(f"Agent initialized with {provider}/{model}")
     
     def _register_default_tools(self):
-        """Register core tools"""
+        """Register core tools: web, file ops, MCP"""
         self.register_tool(
             name="web_search",
             func=self._web_search,
-            description="Search the web using DuckDuckGo or similar",
+            description="Perform web search using DuckDuckGo",
             parameters={
                 "type": "object",
                 "properties": {
@@ -61,11 +62,11 @@ class Agent:
         self.register_tool(
             name="file_read",
             func=self._file_read,
-            description="Read content from a local file",
+            description="Read local file content",
             parameters={
                 "type": "object",
                 "properties": {
-                    "file_path": {"type": "string", "description": "Path to the file"}
+                    "file_path": {"type": "string"}
                 },
                 "required": ["file_path"]
             }
@@ -73,7 +74,7 @@ class Agent:
         self.register_tool(
             name="file_write",
             func=self._file_write,
-            description="Write content to a local file",
+            description="Write content to local file",
             parameters={
                 "type": "object",
                 "properties": {
@@ -86,24 +87,23 @@ class Agent:
         self.register_tool(
             name="list_files",
             func=self._list_files,
-            description="List files in a directory",
+            description="List files in directory",
             parameters={
                 "type": "object",
                 "properties": {
-                    "dir_path": {"type": "string", "description": "Directory path", "default": "."}
+                    "dir_path": {"type": "string", "default": "."}
                 },
                 "required": []
             }
         )
-        # MCP placeholder
         self.register_tool(
-            name="mcp_context",
+            name="mcp_get_context",
             func=self._mcp_context,
-            description="Get MCP context or memory",
+            description="Retrieve MCP shared context/memory",
             parameters={
                 "type": "object",
                 "properties": {
-                    "key": {"type": "string", "description": "Context key"}
+                    "key": {"type": "string"}
                 },
                 "required": ["key"]
             }
@@ -112,149 +112,131 @@ class Agent:
     def register_tool(self, name: str, func: Callable, description: str, parameters: Dict):
         tool = Tool(name, func, description, parameters)
         self.tools.append(tool)
+        logger.info(f"Tool registered: {name}")
     
     def _list_files(self, dir_path: str = ".") -> str:
         try:
-            return "\n".join(os.listdir(dir_path))
+            return "\n".join([f for f in os.listdir(dir_path) if not f.startswith('.')])
         except Exception as e:
-            return f"Error listing files: {str(e)}"
+            return f"Error: {str(e)}"
     
     def _web_search(self, query: str) -> str:
-        """Real web search"""
         try:
             from duckduckgo_search import DDGS
             with DDGS() as ddgs:
-                results = [r for r in ddgs.text(query, max_results=5)]
-                return "\n".join([f"{r.get('title', '')}: {r.get('body', '')[:300]}" for r in results])
-        except ImportError:
-            return f"[Simulated search for '{query}'] (pip install duckduckgo-search for real)",
+                results = list(ddgs.text(query, max_results=3))
+                return "\n\n".join([f"**{r.get('title')}:** {r.get('body', '')[:200]}" for r in results])
         except Exception as e:
-            return f"Search error: {str(e)}"
+            return f"[Demo search for '{query}']: Local agent - install duckduckgo-search for full functionality."
     
     def _file_read(self, file_path: str) -> str:
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
-                return f.read()[:10000]
+                return f.read()[:5000]
         except Exception as e:
-            return f"Error reading file: {str(e)}"
+            return f"Error reading {file_path}: {str(e)}"
     
     def _file_write(self, file_path: str, content: str) -> str:
         try:
-            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+            Path(file_path).parent.mkdir(parents=True, exist_ok=True)
             with open(file_path, 'w', encoding='utf-8') as f:
                 f.write(content)
-            return f"Successfully wrote to {file_path}"
+            return f"✅ Written to {file_path}"
         except Exception as e:
-            return f"Error writing file: {str(e)}"
+            return f"❌ Error: {str(e)}"
     
     def _mcp_context(self, key: str) -> str:
-        return f"MCP context for {key}: Local memory simulation. Extend with vector DB for RAG."
+        # Simulate MCP
+        return f"MCP Context [{key}]: Shared memory simulation. Ready for vector stores like Chroma."
     
-    def _handle_file_task(self, task: str) -> str:
-        return f"File task routed: {task[:100]}..."
-    
-    def _handle_web_task(self, task: str) -> str:
-        return self._web_search(task)
-    
-    def _get_tools_for_provider(self):
-        if self.provider == "ollama":
-            return [
-                {
-                    'type': 'function',
-                    'function': {
-                        'name': tool.name,
-                        'description': tool.description,
-                        'parameters': tool.parameters
-                    }
-                } for tool in self.tools
-            ]
-        else:
-            return [
-                {
-                    "type": "function",
-                    "function": {
-                        "name": tool.name,
-                        "description": tool.description,
-                        "parameters": tool.parameters
-                    }
-                } for tool in self.tools
-            ]
+    def _get_tools_for_llm(self):
+        return [
+            {
+                'type': 'function',
+                'function': {
+                    'name': t.name,
+                    'description': t.description,
+                    'parameters': t.parameters
+                }
+            } for t in self.tools
+        ]
     
     def _call_llm(self, messages: List[Dict], tools=None):
         if self.provider == "ollama":
             try:
-                response = ollama.chat(model=self.model, messages=messages, tools=tools or [])
-                return response
+                resp = ollama.chat(model=self.model, messages=messages, tools=tools or [])
+                return resp
             except Exception as e:
-                raise Exception(f"Ollama error: {e}")
-        elif self.provider == "lmstudio" or self.base_url:
+                logger.error(f"Ollama error: {e}")
+                raise
+        elif self.provider in ["lmstudio", "openai-compatible"]:
+            # OpenAI compatible
             payload = {
                 "model": self.model,
                 "messages": messages,
                 "tools": tools,
-                "tool_choice": "auto" if tools else None
+                "tool_choice": "auto"
             }
             try:
-                resp = requests.post(f"{self.base_url}/chat/completions", json=payload, timeout=90)
+                resp = requests.post(f"{self.base_url}/chat/completions", json=payload, timeout=120)
                 resp.raise_for_status()
                 data = resp.json()
-                class MockResponse: pass
-                mock = MockResponse()
-                choice = data.get('choices', [{}])[0].get('message', {})
-                mock.message = type('obj', (object,), {'content': choice.get('content'), 'tool_calls': choice.get('tool_calls', [])})()
-                return mock
+                # Mock for compatibility
+                class Mock:
+                    pass
+                m = Mock()
+                choice = data['choices'][0]['message']
+                m.message = type('Msg', (), {'content': choice.get('content'), 'tool_calls': choice.get('tool_calls', [])})()
+                return m
             except Exception as e:
-                raise Exception(f"LM Studio/OpenAI compatible error: {e}")
-        else:
-            raise ValueError(f"Unsupported provider: {self.provider}")
+                logger.error(f"LM Studio error: {e}")
+                raise
+        raise ValueError(f"Unsupported: {self.provider}")
     
-    def chat(self, prompt: str, max_iterations: int = 5) -> str:
-        """Core chat with tool calling and routing"""
-        # Routing
-        routed_response = self.router.route(prompt)
-        if "No specific route" not in routed_response:
-            prompt += f"\n\nRouted insight: {routed_response}"
+    def chat(self, prompt: str, max_iterations: int = 8) -> str:
+        routed = self.router.route(prompt)
+        if routed != 'default':
+            prompt += f"\n(Routed to {routed} handler)"
         
         self.history.append({'role': 'user', 'content': prompt})
-        messages = self.history.copy()
+        messages = list(self.history)
         
-        for iteration in range(max_iterations):
+        for _ in range(max_iterations):
+            tools_spec = self._get_tools_for_llm()
             try:
-                tools = self._get_tools_for_provider()
-                response = self._call_llm(messages, tools)
+                response = self._call_llm(messages, tools_spec)
+                msg = response.message if hasattr(response, 'message') else response.get('message', {})
                 
-                msg = getattr(response, 'message', None) or (response.get('message') if isinstance(response, dict) else response)
-                
-                tool_calls = getattr(msg, 'tool_calls', None) or msg.get('tool_calls', []) if isinstance(msg, dict) else []
+                tool_calls = getattr(msg, 'tool_calls', None) or (msg.get('tool_calls') if isinstance(msg, dict) else [])
                 if tool_calls:
                     for tc in tool_calls:
                         if hasattr(tc, 'function'):
-                            tool_name = tc.function.name
-                            args_str = tc.function.arguments
+                            name = tc.function.name
+                            args = json.loads(tc.function.arguments) if isinstance(getattr(tc.function, 'arguments', ''), str) else getattr(tc.function, 'arguments', {})
                         else:
-                            tool_name = tc.get('function', {}).get('name')
+                            name = tc.get('function', {}).get('name')
                             args_str = tc.get('function', {}).get('arguments', '{}')
-                        try:
-                            args = json.loads(args_str) if isinstance(args_str, str) else args_str or {}
-                        except:
-                            args = {}
+                            args = json.loads(args_str) if isinstance(args_str, str) else args_str
+                        
                         for tool in self.tools:
-                            if tool.name == tool_name:
-                                result = tool.func(**{k: v for k, v in args.items() if k in [p for p in tool.parameters.get('properties', {})]}) if args else tool.func()
-                                tool_id = getattr(tc, 'id', '1') if hasattr(tc, 'id') else tc.get('id', '1')
-                                messages.append({'role': 'tool', 'content': str(result), 'tool_call_id': tool_id})
+                            if tool.name == name:
+                                try:
+                                    result = tool.func(**args) if args else tool.func()
+                                    messages.append({'role': 'tool', 'content': str(result), 'tool_call_id': getattr(tc, 'id', '1')})
+                                except Exception as tool_err:
+                                    messages.append({'role': 'tool', 'content': f"Tool error: {tool_err}"})
                                 break
-                    continue
+                    continue  # Continue loop for next LLM call
                 else:
-                    content = getattr(msg, 'content', '') or (msg.get('content', '') if isinstance(msg, dict) else str(msg))
+                    content = getattr(msg, 'content', '') or msg.get('content', '') if isinstance(msg, dict) else str(msg)
                     self.history.append({'role': 'assistant', 'content': content})
                     return content
             except Exception as e:
-                err = f'Error: {str(e)}. Ensure server running (ollama serve or LM Studio).'
-                self.history.append({'role': 'assistant', 'content': err})
-                return err
-        return "Max iterations reached."
+                err_msg = f"LLM error: {str(e)}. Check if Ollama/LM Studio is running."
+                logger.error(err_msg)
+                self.history.append({'role': 'assistant', 'content': err_msg})
+                return err_msg
+        return "Max iterations reached. Consider refining prompt."
 
-def create_agent(model: str = "llama3.2", provider: str = "ollama", base_url: Optional[str] = None):
-    """Factory"""
+def create_agent(model: str = "llama3.2", provider: str = "ollama", base_url: Optional[str] = None) -> Agent:
     return Agent(model, provider, base_url)
