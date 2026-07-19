@@ -1,21 +1,15 @@
 from grok_local_agent_kit.agent import create_agent
 from grok_local_agent_kit.tools import add_custom_tools
-import time
 
 agent = create_agent(model="llama3.2")
 add_custom_tools(agent)
 
-print("🤖 Automation Agent - File ops and planning example")
+print("🤖 Automation Agent Example")
 
-# Example automation loop
-task = "Create a report.txt with summary of local AI agents benefits."
-response = agent.chat(task)
-print("Task response:", response)
+# Example automation: create files, search, etc.
+response = agent.chat("Create a new Python script hello_world.py that prints 'Hello from local agent!'")
+print(response)
 
 # Verify
-print("\nFile created check:")
-try:
-    with open("report.txt", "r") as f:
-        print(f.read()[:300])
-except:
-    print("File not found or error.")
+response2 = agent.chat("List files in current dir")
+print(response2)
