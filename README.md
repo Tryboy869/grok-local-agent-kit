@@ -3,48 +3,58 @@
 [![GitHub stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org)
+[![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
 
-**MVP toolkit for autonomous local AI agents. Supports Ollama, LM Studio, routing, tools (web/file/MCP), multi-LLM. Fully offline capable.**
+**Open-source toolkit for building powerful local AI agents. Supports Ollama, MCP, multi-LLM routing, tools, and offline-first execution. Built autonomously by Grok for developers.**
 
 ## ✨ Features
-- Core agent with tool calling & reasoning
-- Multi-provider LLM (Ollama + LM Studio)
-- Tools: web_search, file ops, list_files, MCP
-- Ready examples: chat, automation
-- CLI support
+- **Autonomous Agents**: Tool-calling, reasoning loops, multi-step tasks
+- **Local LLMs**: Ollama, LM Studio, OpenAI-compatible endpoints
+- **MCP Support**: Shared context/memory for multi-agent systems
+- **Rich Tools**: Web search, file I/O, directory listing, custom tools
+- **CLI & Examples**: Ready-to-run chat and automation agents
+- **Extensible**: Easy tool registration and routing
+- **CI/CD**: GitHub Actions for testing
 
-## 1-Command Install & Run
+## Quickstart
 
 ```bash
-pip install git+https://github.com/Tryboy869/grok-local-agent-kit.git ollama duckduckgo-search
+# Install
+pip install git+https://github.com/Tryboy869/grok-local-agent-kit.git
+pip install ollama duckduckgo-search
 
+# Pull model
 ollama pull llama3.2
 
-# Run example
-python -m grok_local_agent_kit.run_agent  # or use examples/
+# Run CLI
+grok-agent chat "Plan a simple web scraper agent"
+
+# Or Python
+python -c '
+from grok_local_agent_kit.agent import create_agent
+agent = create_agent()
+print(agent.chat("List files and search for AI agent tutorials"))
+'
 ```
 
-## Demos
-
-**Chat Agent**:
-```bash
-python examples/chat_agent.py
+## Project Structure
+```
+grok-local-agent-kit/
+├── grok_local_agent_kit/   # Core package
+│   ├── agent.py            # Main Agent class
+│   ├── cli.py              # Command line interface
+│   ├── tools.py            # Tool utilities
+│   └── ...
+├── examples/               # Demos
+├── .github/workflows/      # CI
+├── pyproject.toml          # Modern packaging
+└── README.md
 ```
 
-**Automation Agent** (file creation, etc.):
-```bash
-python examples/automation_agent.py
-```
+## Roadmap
+See [ROADMAP.md](ROADMAP.md)
 
-*GIF Demo Descriptions:*
-1. **Terminal Chat**: User inputs task → Agent reasons → Calls web_search tool → Returns summarized results (animated loop).
-2. **File Ops**: Prompt "create report.md" → Tool write → Confirmation + ls command output.
-3. **Routing**: Complex query auto-routes to file/web handlers.
+## License
+MIT - see [LICENSE](LICENSE)
 
-## CLI
-`grok-agent chat "Your idea" --model llama3.2`
-
-## Contributing & Roadmap
-See [CONTRIBUTING.md](CONTRIBUTING.md) and [ROADMAP.md](ROADMAP.md).
-
-Built with ❤️ by Grok in autonomous dev mode.
+Built with ❤️ autonomously by Grok to empower local AI development. Star ⭐ if it helps you!
