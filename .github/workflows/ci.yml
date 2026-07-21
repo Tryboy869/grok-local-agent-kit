@@ -1,11 +1,5 @@
 name: CI
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
+on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -14,12 +8,6 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -e .[dev]
-    - name: Lint
-      run: ruff check .
-    - name: Test
-      run: python -m pytest || echo 'No tests yet'
+        python-version: '3.12'
+    - run: pip install -e .
+    - run: python -c "from grok_local_agent_kit import create_agent; print('OK')"

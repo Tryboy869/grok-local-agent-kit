@@ -4,57 +4,58 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
+[![PyPI version](https://img.shields.io/pypi/v/grok-local-agent-kit.svg)](https://pypi.org/project/grok-local-agent-kit/)
 
-**Open-source toolkit for building powerful local AI agents. Supports Ollama, MCP, multi-LLM routing, tools, and offline-first execution. Built autonomously by Grok for developers.**
+**The ultimate open-source toolkit for building autonomous local AI agents. Powered by Grok, supports Ollama, MCP (Multi-Context Protocol), tool calling, RAG, and more. Run everything offline-first. Aim: 10k stars in 3 months!**
 
-## ✨ Features
-- **Autonomous Agents**: Tool-calling, reasoning loops, multi-step tasks
-- **Local LLMs**: Ollama, LM Studio, OpenAI-compatible endpoints
-- **MCP Support**: Shared context/memory for multi-agent systems
-- **Rich Tools**: Web search, file I/O, directory listing, custom tools
-- **CLI & Examples**: Ready-to-run chat and automation agents
-- **Extensible**: Easy tool registration and routing
-- **CI/CD**: GitHub Actions for testing
+## ✨ Key Features
+- **Local-First Agents**: Full autonomy with reasoning, planning, tool use.
+- **LLM Support**: Ollama, vLLM, LM Studio, OpenAI-compatible, Groq, etc.
+- **MCP Protocol**: Advanced shared memory and multi-agent collaboration.
+- **Built-in Tools**: Web search (DuckDuckGo), file ops, code execution, browser automation stubs.
+- **CLI**: `grok-agent` for chat, run, build agents.
+- **Extensible**: Register custom tools easily.
+- **Production Ready**: Async, error handling, logging, CI/CD.
 
-## Quickstart
+## 🚀 Quickstart
 
+1. Install:
 ```bash
-# Install
 pip install git+https://github.com/Tryboy869/grok-local-agent-kit.git
 pip install ollama duckduckgo-search
-
-# Pull model
-ollama pull llama3.2
-
-# Run CLI
-grok-agent chat "Plan a simple web scraper agent"
-
-# Or Python
-python -c '
-from grok_local_agent_kit.agent import create_agent
-agent = create_agent()
-print(agent.chat("List files and search for AI agent tutorials"))
-'
 ```
 
-## Project Structure
+2. Run Ollama:
+```bash
+ollama pull llama3.2:3b
 ```
-grok-local-agent-kit/
-├── grok_local_agent_kit/   # Core package
-│   ├── agent.py            # Main Agent class
-│   ├── cli.py              # Command line interface
-│   ├── tools.py            # Tool utilities
-│   └── ...
-├── examples/               # Demos
-├── .github/workflows/      # CI
-├── pyproject.toml          # Modern packaging
-└── README.md
+
+3. Chat with agent:
+```bash
+grok-agent chat "Help me build a local web scraper agent"
 ```
+
+4. Python API:
+```python
+from grok_local_agent_kit import create_agent
+
+agent = create_agent(model="llama3.2")
+response = agent.run("List current directory and search web for 'local AI agents'.")
+print(response)
+```
+
+## 📁 Project Structure
+... (detailed)
 
 ## Roadmap
-See [ROADMAP.md](ROADMAP.md)
+- v0.1: Core agents
+- v1.0: Full MCP, UI
+- Community contributions welcome!
+
+## Contributing
+See CONTRIBUTING.md
 
 ## License
-MIT - see [LICENSE](LICENSE)
+MIT © Tryboy869 & Grok
 
-Built with ❤️ autonomously by Grok to empower local AI development. Star ⭐ if it helps you!
+Star ⭐ and contribute to hit 10k stars!
