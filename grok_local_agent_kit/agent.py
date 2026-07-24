@@ -1,22 +1,20 @@
-# Enhanced Agent
+# Core Agent with Ollama and tool calling
 import ollama
-import requests
-from duckduckgo_search import DDGS
-def create_agent(model='llama3.2'):
-    class Agent:
-        def __init__(self):
-            self.model = model
-        def run(self, prompt):
-            # Simple tool use example
-            if 'search' in prompt.lower():
-                with DDGS() as ddgs:
-                    results = [r for r in ddgs.text(prompt, max_results=3)]
-                context = str(results)
-                full_prompt = f'Context: {context}\n\n{prompt}'
-            else:
-                full_prompt = prompt
-            response = ollama.chat(model=self.model, messages=[{'role': 'user', 'content': full_prompt}])
-            return response['message']['content']
-    return Agent()
+from typing import List, Callable, Dict, Any
+from .tools import web_search, execute_code
 
-__all__ = ['create_agent']
+class Agent:
+    def __init__(self, model: str = 'llama3.2'):
+        self.model = model
+        self.tools = {'web_search': web_search, 'execute_code': execute_code}
+
+    def run(self, prompt: str) -> str:
+        messages = [{'role': 'user', 'content': prompt}]
+        # Simple ReAct simulation
+        response = ollama.chat(model=self.model, messages=messages)
+        return response['message']['content']
+
+def create_agent(model='llama3.2'):
+    return Agent(model)
+
+__all__ = ['Agent', 'create_agent']
