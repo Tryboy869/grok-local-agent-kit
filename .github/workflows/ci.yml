@@ -9,5 +9,5 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.12'
-    - run: pip install -e .
-    - run: python -c "from grok_local_agent_kit import create_agent; print('OK')"
+    - run: pip install -e .[dev]
+    - run: pytest
