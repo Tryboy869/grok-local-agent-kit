@@ -1,35 +1,42 @@
-# Roadmap — Grok Local Agent Kit
+# Public Roadmap — grok-local-agent-kit
 
-## ✅ v0.4.0 (Current — July 2026)
-- Proper ReAct-style agent loop
-- Real tool calling (web_search, execute_python, list_directory, read_file)
-- Clean CLI (`grok-agent chat` / `repl`)
-- Rich terminal output
-- Unit tests
-- Polished README + badges
-- MIT license
+## ✅ v0.4.0 (current) — MVP
+- Real Agent with ReAct-style tool loop
+- Multi-LLM: Ollama + OpenAI-compatible (LM Studio, vLLM…)
+- Tools: web search, file read/write/list, safe shell
+- MCP stub
+- CLI (`grok-agent`)
+- Ready-to-run examples (chat + automation)
+- Polished README, CONTRIBUTING, one-command install
 
-## 🔜 v0.5.0
-- Native Ollama function/tool calling (when model supports it)
-- Streaming responses
-- Conversation persistence (save/load history)
-- Better error recovery and retry logic
+## 🚧 v0.5 — MCP real
+- Full MCP client (stdio + HTTP/SSE)
+- Discover & call tools from external MCP servers
+- Resource & prompt support
 
-## 📅 v0.6.0
-- Multi-agent orchestration (planner + workers)
-- Shared memory / blackboard
-- Simple skill/plugin system
+## 📋 v0.6 — Multi-agent
+- Agent-to-agent messaging
+- Simple orchestrator / swarm patterns
+- Shared tool registry
 
-## 🎯 v1.0.0
-- Full MCP (Model Context Protocol) server + client
-- Vision support (LLaVA etc.)
-- Structured output / Pydantic models
-- PyPI polish + documentation site
+## 📋 v0.7 — Memory & persistence
+- Conversation history to disk
+- Vector memory (local embeddings)
+- Session management
 
-## 🚀 v2.0.0+
-- Distributed agents
-- Agent marketplace / skill registry
-- Web UI (optional)
-- Enterprise features (audit logs, sandboxed execution)
+## 📋 v1.0 — Production ready
+- Vision / multimodal models
+- Skill marketplace format
+- Sandboxed code execution
+- Official docs site
+- PyPI release with stable API
 
-Contributions that move us along this roadmap are highly appreciated!
+## Ideas / later
+- Browser automation tool (Playwright)
+- GUI (optional)
+- Distributed agents over local network
+- Evaluation harness
+
+---
+
+Want something prioritized? Open an issue or PR.

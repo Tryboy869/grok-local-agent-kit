@@ -1,20 +1,65 @@
+#!/usr/bin/env python3
 """
-Simple interactive chat agent example.
-Requires Ollama running + a model pulled (e.g. ollama pull llama3.2)
+Interactive chat agent example.
+
+Requires a running local LLM:
+  - Ollama:  ollama serve && ollama pull llama3.2
+  - LM Studio: start the local server (default port 1234)
+
+Usage:
+  python examples/chat_agent.py
+  python examples/chat_agent.py --provider lmstudio --model local-model
 """
+
+from __future__ import annotations
+
+import argparse
 
 from grok_local_agent_kit import create_agent
 
-agent = create_agent(model="llama3.2", verbose=True)
 
-print("🚀 Local Chat Agent ready! Type 'exit' to quit.\n")
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Local chat agent")
+    parser.add_argument("--model", default="llama3.2")
+    parser.add_argument(
+        "--provider",
+        default="ollama",
+        choices=["ollama", "lmstudio", "openai"],
+    )
+    parser.add_argument("--base-url", default=None)
+    parser.add_argument("--verbose", action="store_true")
+    args = parser.parse_args()
+
+    provider = args.provider
+    base_url = args.base_url
+    if provider == "lmstudio":
+        provider = "openai"
+        base_url = base_url or "http://localhost:1234/v1"
+
+    agent = create_agent(
+        model=args.model,
+        provider=provider,
+        base_url=base_url,
+        verbose=args.verbose,
+    )
+
+    print("🚀 Local Chat Agent ready (tools: web, files, shell, MCP stub)")
+    print("   Type 'exit' to quit.\n")
+
+    try:
+        while True:
+            user = input("You: ").strip()
+            if user.lower() in {"exit", "quit", "q"}:
+                break
+            if not user:
+                continue
+            reply = agent.chat(user)
+            print(f"\nAgent: {reply}\n")
+    except (KeyboardInterrupt, EOFError):
+        print("\nBye!")
+    finally:
+        agent.close()
+
 
 if __name__ == "__main__":
-    while True:
-        prompt = input("You: ").strip()
-        if prompt.lower() in {"exit", "quit", "q"}:
-            break
-        if not prompt:
-            continue
-        response = agent.chat(prompt)
-        print(f"\nAgent: {response}\n")
+    main()

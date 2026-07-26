@@ -5,14 +5,12 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "grok-local-agent-kit"
 version = "0.4.0"
-description = "Open-source toolkit for building powerful local AI agents with Ollama, tool calling, MCP support and autonomous loops. Offline-first."
+description = "Open-source toolkit for building powerful local AI agents with MCP support, multi-LLM routing (Ollama, LM Studio), and real tools. Offline-first."
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.10"
-authors = [
-    {name = "Tryboy869 & Grok"},
-]
-keywords = ["ai", "agents", "ollama", "local-llm", "mcp", "tool-calling", "autonomous"]
+authors = [{name = "Nexus Studio / Tryboy869"}]
+keywords = ["ai", "agents", "ollama", "lm-studio", "mcp", "local-llm", "tool-calling"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -26,13 +24,14 @@ classifiers = [
 dependencies = [
     "ollama>=0.3.0",
     "duckduckgo-search>=6.0",
-    "click>=8.0",
+    "httpx>=0.27",
+    "click>=8.1",
     "rich>=13.0",
     "pydantic>=2.0",
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0", "ruff>=0.4", "black>=24.0", "mypy>=1.0"]
+dev = ["pytest>=8.0", "ruff>=0.5", "black>=24.0"]
 
 [project.scripts]
 grok-agent = "grok_local_agent_kit.cli:cli"
@@ -48,6 +47,4 @@ include = ["grok_local_agent_kit*"]
 
 [tool.ruff]
 line-length = 100
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
+target-version = "py310"

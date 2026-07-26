@@ -1,26 +1,54 @@
-# Contributing to Grok Local Agent Kit
+# Contributing to grok-local-agent-kit
 
-Thank you for your interest!
+Thanks for helping make local AI agents better.
 
-## Quick start
+## Quick start for contributors
 
-1. Fork the repo
-2. Clone your fork
-3. Create a branch: `git checkout -b feature/my-idea`
-4. Install dev deps: `pip install -e ".[dev]"`
-5. Make your changes + add tests
-6. Run `pytest` and `ruff check .`
-7. Commit and open a Pull Request
+```bash
+git clone https://github.com/Tryboy869/grok-local-agent-kit.git
+cd grok-local-agent-kit
+pip install -e ".[dev]"
+```
 
-## Guidelines
+## Development workflow
 
-- Keep the spirit: local-first, simple, no heavy cloud dependencies
-- Prefer small, focused PRs
-- Add tests for new tools or agent behaviour
-- Update the README / ROADMAP when relevant
+1. Fork & create a branch: `git checkout -b feature/your-idea`
+2. Make changes + add tests if possible
+3. Lint & format:
+   ```bash
+   ruff check --fix .
+   black .
+   ```
+4. Run tests (when present): `pytest`
+5. Commit with a clear message (conventional commits preferred):
+   - `feat: ...`
+   - `fix: ...`
+   - `docs: ...`
+6. Open a Pull Request against `main`
 
-## Code of Conduct
+## What we need most
 
-Be respectful. We're all here to make local agents better.
+- Real MCP client implementation (stdio / SSE)
+- More robust tool sandboxing
+- Memory / conversation persistence
+- Vision support (local multimodal models)
+- Better error messages & logging
+- Demo GIFs / recordings for the README
+- Windows & macOS packaging notes
 
-Questions? Open an issue!
+## Code style
+
+- Python 3.10+
+- Type hints encouraged
+- Keep the core dependency surface small
+- Prefer clarity over cleverness
+
+## Reporting issues
+
+Open an issue with:
+- OS + Python version
+- LLM provider & model
+- Minimal reproduction steps
+- Expected vs actual behavior
+
+Thank you! 🧠

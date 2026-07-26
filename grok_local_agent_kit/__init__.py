@@ -1,19 +1,8 @@
-"""
-Grok Local Agent Kit
---------------------
-Open-source toolkit for local AI agents powered by Ollama + tools + MCP.
-"""
-
-__version__ = "0.4.0"
+"""Grok Local Agent Kit — local-first AI agents with tools & multi-LLM support."""
 
 from .agent import Agent, create_agent
-from .tools import web_search, execute_python, list_directory
+from .llm import LLMClient
+from .tools import get_default_tools
 
-__all__ = [
-    "Agent",
-    "create_agent",
-    "web_search",
-    "execute_python",
-    "list_directory",
-    "__version__",
-]
+__version__ = "0.4.0"
+__all__ = ["Agent", "create_agent", "LLMClient", "get_default_tools", "__version__"]

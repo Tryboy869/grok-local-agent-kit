@@ -1,57 +1,81 @@
-"""
-Command-line interface for grok-local-agent-kit.
-"""
+"""CLI entrypoint: grok-agent"""
+
+from __future__ import annotations
 
 import click
 from rich.console import Console
 from rich.markdown import Markdown
 
 from .agent import create_agent
-from . import __version__
 
 console = Console()
 
 
 @click.group()
-@click.version_option(__version__, prog_name="grok-agent")
+@click.version_option(package_name="grok-local-agent-kit")
 def cli() -> None:
-    """Grok Local Agent Kit — run powerful AI agents completely offline."""
+    """Grok Local Agent Kit — local AI agents with tools."""
     pass
 
 
 @cli.command()
-@click.argument("prompt")
-@click.option("--model", "-m", default="llama3.2", help="Ollama model to use")
-@click.option("--verbose/--quiet", default=True)
-def chat(prompt: str, model: str, verbose: bool) -> None:
-    """Ask the agent a single question."""
-    agent = create_agent(model=model, verbose=verbose)
-    answer = agent.run(prompt)
-    console.print()
-    console.print(Markdown(answer))
+@click.argument("prompt", required=False)
+@click.option("--model", "-m", default="llama3.2", help="Model name")
+@click.option(
+    "--provider",
+    "-p",
+    default="ollama",
+    type=click.Choice(["ollama", "lmstudio", "openai"]),
+    help="LLM provider",
+)
+@click.option("--base-url", default=None, help="Custom base URL")
+@click.option("--verbose", "-v", is_flag=True, help="Show tool calls")
+def chat(prompt: str | None, model: str, provider: str, base_url: str | None, verbose: bool) -> None:
+    """Interactive chat or one-shot prompt."""
+    # Normalize provider
+    if provider == "lmstudio":
+        provider = "openai"  # same protocol
+        base_url = base_url or "http://localhost:1234/v1"
+
+    agent = create_agent(model=model, provider=provider, base_url=base_url, verbose=verbose)
+
+    if prompt:
+        result = agent.run(prompt)
+        console.print(Markdown(result))
+        return
+
+    console.print("[bold green]Local Agent ready.[/] Type 'exit' or Ctrl-C to quit.\n")
+    try:
+        while True:
+            user = console.input("[bold cyan]You › [/]")
+            if user.strip().lower() in {"exit", "quit", "q"}:
+                break
+            if not user.strip():
+                continue
+            result = agent.chat(user)
+            console.print()
+            console.print(Markdown(result))
+            console.print()
+    except (KeyboardInterrupt, EOFError):
+        console.print("\nBye!")
+    finally:
+        agent.close()
 
 
 @cli.command()
-@click.option("--model", "-m", default="llama3.2", help="Ollama model to use")
-def repl(model: str) -> None:
-    """Interactive chat loop."""
-    agent = create_agent(model=model, verbose=False)
-    console.print(f"[bold green]Grok Local Agent[/] (model: {model}) — type 'exit' to quit\n")
-    while True:
-        try:
-            prompt = console.input("[bold cyan]You > [/]")
-        except (EOFError, KeyboardInterrupt):
-            console.print("\nBye!")
-            break
-        if prompt.strip().lower() in {"exit", "quit", "q"}:
-            console.print("Bye!")
-            break
-        if not prompt.strip():
-            continue
-        answer = agent.run(prompt)
-        console.print()
-        console.print(Markdown(answer))
-        console.print()
+@click.option("--model", "-m", default="llama3.2")
+@click.option("--provider", "-p", default="ollama")
+def doctor(model: str, provider: str) -> None:
+    """Check connectivity to local LLM."""
+    console.print(f"Checking {provider} / {model} ...")
+    agent = create_agent(model=model, provider=provider)
+    try:
+        reply = agent.run("Reply with exactly: OK")
+        console.print(f"[green]✓ LLM responded:[/] {reply[:80]}")
+    except Exception as e:
+        console.print(f"[red]✗ Failed:[/] {e}")
+    finally:
+        agent.close()
 
 
 if __name__ == "__main__":

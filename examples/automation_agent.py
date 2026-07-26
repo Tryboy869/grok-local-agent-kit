@@ -1,18 +1,39 @@
+#!/usr/bin/env python3
 """
-Example: give the agent a goal and let it use tools autonomously.
+Automation agent example — one-shot goal with tools.
+
+Creates a small Python script, lists files, and searches the web.
+
+Requires Ollama (or LM Studio) running.
+
+Usage:
+  python examples/automation_agent.py
 """
+
+from __future__ import annotations
 
 from grok_local_agent_kit import create_agent
 
-agent = create_agent(model="llama3.2", verbose=True)
 
-goal = """
-List the files in the current directory, then summarize what kind of project this is.
-If you find a README, read the first 500 characters and use that in your summary.
-"""
+def main() -> None:
+    agent = create_agent(model="llama3.2", provider="ollama", verbose=True)
+
+    print("🤖 Automation Agent\n")
+
+    goal = (
+        "Create a file named hello_from_agent.py that prints "
+        "'Hello from local agent!'. Then list the files in the current directory "
+        "and confirm the new file exists. Finally do a quick web search for "
+        "'local AI agents 2026' and give me the top titles."
+    )
+
+    print(f"Goal: {goal}\n")
+    result = agent.run(goal)
+    print("\n=== Final answer ===")
+    print(result)
+
+    agent.close()
+
 
 if __name__ == "__main__":
-    print("Running autonomous goal...\n")
-    result = agent.run(goal)
-    print("\n=== FINAL RESULT ===")
-    print(result)
+    main()

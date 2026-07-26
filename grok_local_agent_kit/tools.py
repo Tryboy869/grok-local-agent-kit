@@ -1,130 +1,247 @@
-"""
-Built-in tools for the agent.
-"""
+"""Built-in tools: web search, file ops, shell, MCP stub."""
 
 from __future__ import annotations
 
+import json
 import os
 import subprocess
-import tempfile
-from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
-
-@dataclass
-class Tool:
-    name: str
-    description: str
-    func: Callable[..., str]
-    parameters: Optional[Dict[str, Any]] = None
+try:
+    from duckduckgo_search import DDGS
+except ImportError:
+    DDGS = None  # type: ignore
 
 
 def web_search(query: str, max_results: int = 5) -> str:
-    """Search the web using DuckDuckGo."""
+    """Search the web (DuckDuckGo). Returns a concise summary of results."""
+    if DDGS is None:
+        return "Error: duckduckgo-search package not installed. Run: pip install duckduckgo-search"
     try:
-        from duckduckgo_search import DDGS
-
-        results = []
         with DDGS() as ddgs:
-            for r in ddgs.text(query, max_results=max_results):
-                results.append(f"- {r.get('title', '')}: {r.get('href', '')}\n  {r.get('body', '')[:200]}")
-        return "\n".join(results) if results else "No results found."
+            results = list(ddgs.text(query, max_results=max_results))
+        if not results:
+            return "No results found."
+        lines = []
+        for i, r in enumerate(results, 1):
+            lines.append(f"{i}. {r.get('title', 'No title')}\n   {r.get('href', '')}\n   {r.get('body', '')[:200]}")
+        return "\n\n".join(lines)
     except Exception as e:
-        return f"Search failed: {e}"
+        return f"Search error: {e}"
 
 
-def execute_python(code: str) -> str:
-    """Execute a short Python snippet safely in a subprocess (timeout 10s)."""
+def list_files(path: str = ".", pattern: str = "*") -> str:
+    """List files and directories in the given path."""
     try:
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
-            f.write(code)
-            path = f.name
+        p = Path(path).expanduser().resolve()
+        if not p.exists():
+            return f"Path does not exist: {p}"
+        items = sorted(p.glob(pattern))
+        if not items:
+            return f"No items matching '{pattern}' in {p}"
+        lines = []
+        for item in items[:100]:  # safety limit
+            kind = "DIR " if item.is_dir() else "FILE"
+            lines.append(f"{kind}  {item.name}")
+        return "\n".join(lines)
+    except Exception as e:
+        return f"Error listing files: {e}"
+
+
+def read_file(path: str, max_chars: int = 8000) -> str:
+    """Read a text file (truncated for safety)."""
+    try:
+        p = Path(path).expanduser().resolve()
+        if not p.is_file():
+            return f"Not a file: {p}"
+        text = p.read_text(encoding="utf-8", errors="replace")
+        if len(text) > max_chars:
+            return text[:max_chars] + f"\n\n... [truncated, total {len(text)} chars]"
+        return text
+    except Exception as e:
+        return f"Error reading file: {e}"
+
+
+def write_file(path: str, content: str) -> str:
+    """Write content to a file (creates parent dirs if needed)."""
+    try:
+        p = Path(path).expanduser().resolve()
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(content, encoding="utf-8")
+        return f"Successfully wrote {len(content)} chars to {p}"
+    except Exception as e:
+        return f"Error writing file: {e}"
+
+
+def run_shell(command: str, timeout: int = 30) -> str:
+    """Run a shell command (safe subset, timeout protected)."""
+    # Basic safety: block obviously dangerous patterns
+    blocked = ["rm -rf /", "mkfs", ":(){:|:&};:", "dd if=/dev/zero"]
+    lower = command.lower()
+    for b in blocked:
+        if b in lower:
+            return f"Blocked potentially dangerous command containing: {b}"
+
+    try:
         result = subprocess.run(
-            ["python", path],
+            command,
+            shell=True,
             capture_output=True,
             text=True,
-            timeout=10,
+            timeout=timeout,
+            cwd=os.getcwd(),
         )
-        os.unlink(path)
-        output = result.stdout + result.stderr
-        return output.strip() or "(no output)"
+        out = result.stdout.strip()
+        err = result.stderr.strip()
+        if result.returncode != 0:
+            return f"Exit {result.returncode}\nSTDOUT:\n{out}\nSTDERR:\n{err}"
+        return out or "(no output)"
     except subprocess.TimeoutExpired:
-        return "Execution timed out (10s limit)."
+        return f"Command timed out after {timeout}s"
     except Exception as e:
-        return f"Execution error: {e}"
+        return f"Shell error: {e}"
 
 
-def list_directory(path: str = ".") -> str:
-    """List files and folders in a directory."""
-    try:
-        entries = os.listdir(path)
-        return "\n".join(sorted(entries)) if entries else "(empty)"
-    except Exception as e:
-        return str(e)
+def mcp_list_resources() -> str:
+    """Stub: list available MCP resources (placeholder for real MCP client)."""
+    return (
+        "MCP support is present as a stub.\n"
+        "In a future release this will connect to real MCP servers.\n"
+        "Current resources: none registered."
+    )
 
 
-def read_file(path: str, max_chars: int = 4000) -> str:
-    """Read a text file (truncated)."""
-    try:
-        with open(path, "r", encoding="utf-8", errors="ignore") as f:
-            content = f.read(max_chars)
-        return content
-    except Exception as e:
-        return str(e)
+def mcp_call_tool(name: str, arguments: Optional[Dict[str, Any]] = None) -> str:
+    """Stub: call an MCP tool."""
+    return f"MCP tool call stub → name={name}, args={arguments or {}}. Not connected to a live server yet."
 
 
-# Default tool registry
-DEFAULT_TOOLS: List[Tool] = [
-    Tool(
-        name="web_search",
-        description="Search the web for up-to-date information",
-        func=web_search,
-        parameters={
-            "type": "object",
-            "properties": {
-                "query": {"type": "string", "description": "Search query"},
-                "max_results": {"type": "integer", "default": 5},
+# Tool registry with OpenAI/Ollama-compatible schemas
+TOOL_SPECS: List[Dict[str, Any]] = [
+    {
+        "type": "function",
+        "function": {
+            "name": "web_search",
+            "description": "Search the web for up-to-date information.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {"type": "string", "description": "Search query"},
+                    "max_results": {"type": "integer", "description": "Max results (default 5)"},
+                },
+                "required": ["query"],
             },
-            "required": ["query"],
         },
-    ),
-    Tool(
-        name="execute_python",
-        description="Execute a short Python code snippet and return stdout/stderr",
-        func=execute_python,
-        parameters={
-            "type": "object",
-            "properties": {"code": {"type": "string", "description": "Python code to run"}},
-            "required": ["code"],
-        },
-    ),
-    Tool(
-        name="list_directory",
-        description="List files in a directory",
-        func=list_directory,
-        parameters={
-            "type": "object",
-            "properties": {"path": {"type": "string", "default": "."}},
-            "required": [],
-        },
-    ),
-    Tool(
-        name="read_file",
-        description="Read the content of a text file",
-        func=read_file,
-        parameters={
-            "type": "object",
-            "properties": {
-                "path": {"type": "string"},
-                "max_chars": {"type": "integer", "default": 4000},
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "list_files",
+            "description": "List files and directories in a path.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "path": {"type": "string", "description": "Directory path (default '.')"},
+                    "pattern": {"type": "string", "description": "Glob pattern (default '*')"},
+                },
+                "required": [],
             },
-            "required": ["path"],
         },
-    ),
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "read_file",
+            "description": "Read the content of a text file.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "path": {"type": "string", "description": "File path"},
+                    "max_chars": {"type": "integer", "description": "Max characters to return"},
+                },
+                "required": ["path"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "write_file",
+            "description": "Write text content to a file.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "path": {"type": "string", "description": "File path"},
+                    "content": {"type": "string", "description": "Content to write"},
+                },
+                "required": ["path", "content"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "run_shell",
+            "description": "Execute a shell command and return stdout/stderr.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "command": {"type": "string", "description": "Shell command to run"},
+                    "timeout": {"type": "integer", "description": "Timeout in seconds"},
+                },
+                "required": ["command"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "mcp_list_resources",
+            "description": "List available MCP resources (stub).",
+            "parameters": {"type": "object", "properties": {}, "required": []},
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "mcp_call_tool",
+            "description": "Call an MCP tool by name (stub).",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string"},
+                    "arguments": {"type": "object"},
+                },
+                "required": ["name"],
+            },
+        },
+    },
 ]
 
+TOOL_FUNCS: Dict[str, Callable[..., str]] = {
+    "web_search": web_search,
+    "list_files": list_files,
+    "read_file": read_file,
+    "write_file": write_file,
+    "run_shell": run_shell,
+    "mcp_list_resources": mcp_list_resources,
+    "mcp_call_tool": mcp_call_tool,
+}
 
-def add_custom_tools(agent: Any) -> None:
-    """Helper used by examples to register extra tools."""
-    # Already registered by default; this function stays for compatibility
-    pass
+
+def get_default_tools() -> tuple[List[Dict[str, Any]], Dict[str, Callable[..., str]]]:
+    """Return (tool schemas, name→function map)."""
+    return TOOL_SPECS, TOOL_FUNCS
+
+
+def execute_tool(name: str, arguments: Dict[str, Any], registry: Dict[str, Callable[..., str]]) -> str:
+    """Execute a tool by name with given arguments."""
+    if name not in registry:
+        return f"Unknown tool: {name}"
+    try:
+        return registry[name](**arguments)
+    except TypeError as e:
+        return f"Invalid arguments for {name}: {e}"
+    except Exception as e:
+        return f"Tool {name} failed: {e}"
