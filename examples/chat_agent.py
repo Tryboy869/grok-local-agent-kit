@@ -1,17 +1,20 @@
-from grok_local_agent_kit.agent import create_agent
-from grok_local_agent_kit.tools import add_custom_tools
+"""
+Simple interactive chat agent example.
+Requires Ollama running + a model pulled (e.g. ollama pull llama3.2)
+"""
 
-# Initialize chat agent with Ollama (or LM Studio)
-agent = create_agent(model="llama3.2", provider="ollama")
-add_custom_tools(agent)
+from grok_local_agent_kit import create_agent
 
-print("🚀 Local Chat Agent Ready! Supports tools, routing, MCP.")
+agent = create_agent(model="llama3.2", verbose=True)
 
-# Interactive example
+print("🚀 Local Chat Agent ready! Type 'exit' to quit.\n")
+
 if __name__ == "__main__":
     while True:
-        prompt = input("You: ")
-        if prompt.lower() in ['exit', 'quit']:
+        prompt = input("You: ").strip()
+        if prompt.lower() in {"exit", "quit", "q"}:
             break
+        if not prompt:
+            continue
         response = agent.chat(prompt)
-        print(f"Agent: {response}")
+        print(f"\nAgent: {response}\n")

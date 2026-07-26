@@ -1,15 +1,18 @@
-from grok_local_agent_kit.agent import create_agent
-from grok_local_agent_kit.tools import add_custom_tools
+"""
+Example: give the agent a goal and let it use tools autonomously.
+"""
 
-agent = create_agent(model="llama3.2")
-add_custom_tools(agent)
+from grok_local_agent_kit import create_agent
 
-print("🤖 Automation Agent Example")
+agent = create_agent(model="llama3.2", verbose=True)
 
-# Example automation: create files, search, etc.
-response = agent.chat("Create a new Python script hello_world.py that prints 'Hello from local agent!'")
-print(response)
+goal = """
+List the files in the current directory, then summarize what kind of project this is.
+If you find a README, read the first 500 characters and use that in your summary.
+"""
 
-# Verify
-response2 = agent.chat("List files in current dir")
-print(response2)
+if __name__ == "__main__":
+    print("Running autonomous goal...\n")
+    result = agent.run(goal)
+    print("\n=== FINAL RESULT ===")
+    print(result)

@@ -1,26 +1,26 @@
-# Contributing to grok-local-agent-kit
+# Contributing to Grok Local Agent Kit
 
-Thanks for considering contributing!
+Thank you for your interest!
 
-## How to Contribute
+## Quick start
 
 1. Fork the repo
-2. Create a feature branch (`git checkout -b feature/amazing-thing`)
-3. Make changes, add tests
-4. Run `ruff check` and tests
-5. Commit with clear message
-6. Open PR
+2. Clone your fork
+3. Create a branch: `git checkout -b feature/my-idea`
+4. Install dev deps: `pip install -e ".[dev]"`
+5. Make your changes + add tests
+6. Run `pytest` and `ruff check .`
+7. Commit and open a Pull Request
 
-## Development
+## Guidelines
 
-```bash
-pip install -e .[dev]
-ruff check --fix
-pytest
-```
+- Keep the spirit: local-first, simple, no heavy cloud dependencies
+- Prefer small, focused PRs
+- Add tests for new tools or agent behaviour
+- Update the README / ROADMAP when relevant
 
-Focus areas: More tools, better MCP, GUI, vision support.
+## Code of Conduct
 
-Report issues or ideas in Issues.
+Be respectful. We're all here to make local agents better.
 
-Happy hacking! 🧠
+Questions? Open an issue!
