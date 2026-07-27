@@ -19,7 +19,7 @@ pip install -e ".[dev]"
    ruff check --fix .
    black .
    ```
-4. Run tests (when present): `pytest`
+4. Run tests: `pytest`
 5. Commit with a clear message (conventional commits preferred):
    - `feat: ...`
    - `fix: ...`
@@ -29,12 +29,13 @@ pip install -e ".[dev]"
 ## What we need most
 
 - Real MCP client implementation (stdio / SSE)
-- More robust tool sandboxing
+- More robust tool sandboxing (especially execute_python & shell)
 - Memory / conversation persistence
 - Vision support (local multimodal models)
 - Better error messages & logging
 - Demo GIFs / recordings for the README
 - Windows & macOS packaging notes
+- Additional ready-to-run examples
 
 ## Code style
 

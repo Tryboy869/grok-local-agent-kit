@@ -9,13 +9,14 @@ from .llm import LLMClient
 from .tools import execute_tool, get_default_tools
 
 
-SYSTEM_PROMPT = """You are a helpful local AI agent. You have access to tools.
-When you need information or to perform actions, call the appropriate tool.
-Be concise and accurate. Prefer using tools over guessing."""
+SYSTEM_PROMPT = """You are a helpful local AI agent running entirely on the user's machine.
+You have access to tools. When you need information or to perform actions, call the appropriate tool.
+Be concise, accurate, and prefer using tools over guessing.
+Never invent file contents or search results — always call the tool."""
 
 
 class Agent:
-    """Local-first agent with tool calling loop."""
+    """Local-first agent with tool calling loop (ReAct-style)."""
 
     def __init__(
         self,
@@ -23,7 +24,7 @@ class Agent:
         provider: str = "ollama",
         base_url: Optional[str] = None,
         system_prompt: str = SYSTEM_PROMPT,
-        max_iterations: int = 8,
+        max_iterations: int = 10,
         verbose: bool = False,
     ):
         self.llm = LLMClient(model=model, provider=provider, base_url=base_url)
@@ -60,8 +61,8 @@ class Agent:
         return self._run_loop()
 
     def run(self, prompt: str) -> str:
-        """Alias for chat — useful for one-shot tasks."""
-        self.history = []  # fresh for one-shot
+        """One-shot task (fresh history)."""
+        self.history = []
         return self.chat(prompt)
 
     def _run_loop(self) -> str:
@@ -72,7 +73,7 @@ class Agent:
 
         for iteration in range(self.max_iterations):
             if self.verbose:
-                print(f"\n[iteration {iteration + 1}]")
+                print(f"\n[iteration {iteration + 1}/{self.max_iterations}]")
 
             response = self.llm.chat(messages, tools=self.tool_schemas)
 
@@ -80,55 +81,63 @@ class Agent:
             tool_calls = response.get("tool_calls")
 
             if not tool_calls:
-                # Final answer
                 final = content or "(no response)"
                 self.history.append({"role": "assistant", "content": final})
                 return final
 
-            # Process tool calls
+            # Build assistant message compatible with both Ollama & OpenAI-compatible
             assistant_msg: Dict[str, Any] = {"role": "assistant", "content": content or ""}
-            # Keep format compatible with both providers
-            if tool_calls:
-                assistant_msg["tool_calls"] = [
-                    {
-                        "id": tc["id"],
-                        "type": "function",
-                        "function": {
-                            "name": tc["name"],
-                            "arguments": json.dumps(tc["arguments"])
-                            if not isinstance(tc["arguments"], str)
-                            else tc["arguments"],
-                        },
-                    }
-                    for tc in tool_calls
-                ]
+            assistant_msg["tool_calls"] = [
+                {
+                    "id": tc.get("id") or f"call_{i}",
+                    "type": "function",
+                    "function": {
+                        "name": tc["name"],
+                        "arguments": json.dumps(tc["arguments"])
+                        if not isinstance(tc["arguments"], str)
+                        else tc["arguments"],
+                    },
+                }
+                for i, tc in enumerate(tool_calls)
+            ]
             messages.append(assistant_msg)
 
             for tc in tool_calls:
                 name = tc["name"]
-                args = tc["arguments"] if isinstance(tc["arguments"], dict) else {}
+                raw_args = tc.get("arguments", {})
+                if isinstance(raw_args, str):
+                    try:
+                        args = json.loads(raw_args) if raw_args.strip() else {}
+                    except json.JSONDecodeError:
+                        args = {"raw": raw_args}
+                else:
+                    args = raw_args if isinstance(raw_args, dict) else {}
+
                 if self.verbose:
                     print(f"  → tool: {name}({args})")
 
                 result = execute_tool(name, args, self.tool_funcs)
                 if self.verbose:
-                    print(f"  ← {result[:200]}{'...' if len(result) > 200 else ''}")
+                    preview = result[:240] + ("..." if len(result) > 240 else "")
+                    print(f"  ← {preview}")
 
-                # Tool result message (OpenAI style; Ollama also accepts it)
                 messages.append(
                     {
                         "role": "tool",
-                        "tool_call_id": tc["id"],
+                        "tool_call_id": tc.get("id") or f"call_{name}",
                         "content": result,
                     }
                 )
 
-        # Max iterations reached
-        fallback = "Reached maximum tool iterations. Partial results may be incomplete."
+        fallback = (
+            "Reached maximum tool iterations. "
+            "Partial results may be incomplete — try a more focused prompt."
+        )
         self.history.append({"role": "assistant", "content": fallback})
         return fallback
 
     def reset(self) -> None:
+        """Clear conversation history."""
         self.history = []
 
     def close(self) -> None:

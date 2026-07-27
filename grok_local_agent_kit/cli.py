@@ -30,18 +30,23 @@ def cli() -> None:
 )
 @click.option("--base-url", default=None, help="Custom base URL")
 @click.option("--verbose", "-v", is_flag=True, help="Show tool calls")
-def chat(prompt: str | None, model: str, provider: str, base_url: str | None, verbose: bool) -> None:
+def chat(
+    prompt: str | None, model: str, provider: str, base_url: str | None, verbose: bool
+) -> None:
     """Interactive chat or one-shot prompt."""
     # Normalize provider
     if provider == "lmstudio":
         provider = "openai"  # same protocol
         base_url = base_url or "http://localhost:1234/v1"
 
-    agent = create_agent(model=model, provider=provider, base_url=base_url, verbose=verbose)
+    agent = create_agent(
+        model=model, provider=provider, base_url=base_url, verbose=verbose
+    )
 
     if prompt:
         result = agent.run(prompt)
         console.print(Markdown(result))
+        agent.close()
         return
 
     console.print("[bold green]Local Agent ready.[/] Type 'exit' or Ctrl-C to quit.\n")

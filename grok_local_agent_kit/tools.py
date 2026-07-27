@@ -1,10 +1,11 @@
-"""Built-in tools: web search, file ops, shell, MCP stub."""
+"""Built-in tools: web search, file ops, shell, execute_python, MCP stub."""
 
 from __future__ import annotations
 
 import json
 import os
 import subprocess
+import tempfile
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
@@ -17,7 +18,10 @@ except ImportError:
 def web_search(query: str, max_results: int = 5) -> str:
     """Search the web (DuckDuckGo). Returns a concise summary of results."""
     if DDGS is None:
-        return "Error: duckduckgo-search package not installed. Run: pip install duckduckgo-search"
+        return (
+            "Error: duckduckgo-search package not installed. "
+            "Run: pip install duckduckgo-search"
+        )
     try:
         with DDGS() as ddgs:
             results = list(ddgs.text(query, max_results=max_results))
@@ -25,7 +29,10 @@ def web_search(query: str, max_results: int = 5) -> str:
             return "No results found."
         lines = []
         for i, r in enumerate(results, 1):
-            lines.append(f"{i}. {r.get('title', 'No title')}\n   {r.get('href', '')}\n   {r.get('body', '')[:200]}")
+            title = r.get("title", "No title")
+            href = r.get("href", "")
+            body = (r.get("body") or "")[:220]
+            lines.append(f"{i}. {title}\n   {href}\n   {body}")
         return "\n\n".join(lines)
     except Exception as e:
         return f"Search error: {e}"
@@ -41,7 +48,7 @@ def list_files(path: str = ".", pattern: str = "*") -> str:
         if not items:
             return f"No items matching '{pattern}' in {p}"
         lines = []
-        for item in items[:100]:  # safety limit
+        for item in items[:120]:
             kind = "DIR " if item.is_dir() else "FILE"
             lines.append(f"{kind}  {item.name}")
         return "\n".join(lines)
@@ -75,9 +82,16 @@ def write_file(path: str, content: str) -> str:
 
 
 def run_shell(command: str, timeout: int = 30) -> str:
-    """Run a shell command (safe subset, timeout protected)."""
-    # Basic safety: block obviously dangerous patterns
-    blocked = ["rm -rf /", "mkfs", ":(){:|:&};:", "dd if=/dev/zero"]
+    """Run a shell command (basic safety + timeout)."""
+    blocked = [
+        "rm -rf /",
+        "rm -rf /*",
+        "mkfs",
+        ":(){:|:&};:",
+        "dd if=/dev/zero",
+        "chmod -R 777 /",
+        "> /dev/sda",
+    ]
     lower = command.lower()
     for b in blocked:
         if b in lower:
@@ -103,18 +117,54 @@ def run_shell(command: str, timeout: int = 30) -> str:
         return f"Shell error: {e}"
 
 
+def execute_python(code: str, timeout: int = 15) -> str:
+    """Execute a short Python snippet in a temporary file (sandbox-ish)."""
+    # Very basic safety — not a real sandbox
+    forbidden = ["os.system", "subprocess", "__import__", "open(", "eval(", "exec("]
+    for f in forbidden:
+        if f in code:
+            return f"Blocked code containing potentially unsafe construct: {f}"
+
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as tmp:
+            tmp.write(code)
+            tmp_path = tmp.name
+
+        result = subprocess.run(
+            ["python", tmp_path],
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+            cwd=os.getcwd(),
+        )
+        Path(tmp_path).unlink(missing_ok=True)
+
+        out = result.stdout.strip()
+        err = result.stderr.strip()
+        if result.returncode != 0:
+            return f"Exit {result.returncode}\nSTDOUT:\n{out}\nSTDERR:\n{err}"
+        return out or "(no output)"
+    except subprocess.TimeoutExpired:
+        return f"Python execution timed out after {timeout}s"
+    except Exception as e:
+        return f"execute_python error: {e}"
+
+
 def mcp_list_resources() -> str:
     """Stub: list available MCP resources (placeholder for real MCP client)."""
     return (
         "MCP support is present as a stub.\n"
-        "In a future release this will connect to real MCP servers.\n"
+        "In v0.5 this will connect to real MCP servers (stdio + SSE).\n"
         "Current resources: none registered."
     )
 
 
 def mcp_call_tool(name: str, arguments: Optional[Dict[str, Any]] = None) -> str:
     """Stub: call an MCP tool."""
-    return f"MCP tool call stub → name={name}, args={arguments or {}}. Not connected to a live server yet."
+    return (
+        f"MCP tool call stub → name={name}, args={arguments or {}}. "
+        "Not connected to a live server yet (coming in v0.5)."
+    )
 
 
 # Tool registry with OpenAI/Ollama-compatible schemas
@@ -128,7 +178,10 @@ TOOL_SPECS: List[Dict[str, Any]] = [
                 "type": "object",
                 "properties": {
                     "query": {"type": "string", "description": "Search query"},
-                    "max_results": {"type": "integer", "description": "Max results (default 5)"},
+                    "max_results": {
+                        "type": "integer",
+                        "description": "Max results (default 5)",
+                    },
                 },
                 "required": ["query"],
             },
@@ -143,7 +196,10 @@ TOOL_SPECS: List[Dict[str, Any]] = [
                 "type": "object",
                 "properties": {
                     "path": {"type": "string", "description": "Directory path (default '.')"},
-                    "pattern": {"type": "string", "description": "Glob pattern (default '*')"},
+                    "pattern": {
+                        "type": "string",
+                        "description": "Glob pattern (default '*')",
+                    },
                 },
                 "required": [],
             },
@@ -158,7 +214,10 @@ TOOL_SPECS: List[Dict[str, Any]] = [
                 "type": "object",
                 "properties": {
                     "path": {"type": "string", "description": "File path"},
-                    "max_chars": {"type": "integer", "description": "Max characters to return"},
+                    "max_chars": {
+                        "type": "integer",
+                        "description": "Max characters to return",
+                    },
                 },
                 "required": ["path"],
             },
@@ -188,7 +247,10 @@ TOOL_SPECS: List[Dict[str, Any]] = [
                 "type": "object",
                 "properties": {
                     "command": {"type": "string", "description": "Shell command to run"},
-                    "timeout": {"type": "integer", "description": "Timeout in seconds"},
+                    "timeout": {
+                        "type": "integer",
+                        "description": "Timeout in seconds",
+                    },
                 },
                 "required": ["command"],
             },
@@ -197,8 +259,26 @@ TOOL_SPECS: List[Dict[str, Any]] = [
     {
         "type": "function",
         "function": {
+            "name": "execute_python",
+            "description": "Execute a short Python code snippet and return its output.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "code": {"type": "string", "description": "Python source code"},
+                    "timeout": {
+                        "type": "integer",
+                        "description": "Timeout in seconds (default 15)",
+                    },
+                },
+                "required": ["code"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
             "name": "mcp_list_resources",
-            "description": "List available MCP resources (stub).",
+            "description": "List available MCP resources (stub until v0.5).",
             "parameters": {"type": "object", "properties": {}, "required": []},
         },
     },
@@ -206,7 +286,7 @@ TOOL_SPECS: List[Dict[str, Any]] = [
         "type": "function",
         "function": {
             "name": "mcp_call_tool",
-            "description": "Call an MCP tool by name (stub).",
+            "description": "Call an MCP tool by name (stub until v0.5).",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -225,6 +305,7 @@ TOOL_FUNCS: Dict[str, Callable[..., str]] = {
     "read_file": read_file,
     "write_file": write_file,
     "run_shell": run_shell,
+    "execute_python": execute_python,
     "mcp_list_resources": mcp_list_resources,
     "mcp_call_tool": mcp_call_tool,
 }
@@ -232,10 +313,12 @@ TOOL_FUNCS: Dict[str, Callable[..., str]] = {
 
 def get_default_tools() -> tuple[List[Dict[str, Any]], Dict[str, Callable[..., str]]]:
     """Return (tool schemas, name→function map)."""
-    return TOOL_SPECS, TOOL_FUNCS
+    return TOOL_SPECS, dict(TOOL_FUNCS)
 
 
-def execute_tool(name: str, arguments: Dict[str, Any], registry: Dict[str, Callable[..., str]]) -> str:
+def execute_tool(
+    name: str, arguments: Dict[str, Any], registry: Dict[str, Callable[..., str]]
+) -> str:
     """Execute a tool by name with given arguments."""
     if name not in registry:
         return f"Unknown tool: {name}"

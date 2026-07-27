@@ -43,7 +43,7 @@ def main() -> None:
         verbose=args.verbose,
     )
 
-    print("🚀 Local Chat Agent ready (tools: web, files, shell, MCP stub)")
+    print("🚀 Local Chat Agent ready (tools: web, files, shell, python, MCP stub)")
     print("   Type 'exit' to quit.\n")
 
     try:

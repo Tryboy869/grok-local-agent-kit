@@ -1,12 +1,13 @@
 # Public Roadmap — grok-local-agent-kit
 
-## ✅ v0.4.0 (current) — MVP
+## ✅ v0.4.1 (current) — MVP solidifié
 - Real Agent with ReAct-style tool loop
 - Multi-LLM: Ollama + OpenAI-compatible (LM Studio, vLLM…)
-- Tools: web search, file read/write/list, safe shell
+- Tools: web search, file read/write/list, safe shell, execute_python
 - MCP stub
 - CLI (`grok-agent`)
 - Ready-to-run examples (chat + automation)
+- Unit tests aligned with current API
 - Polished README, CONTRIBUTING, one-command install
 
 ## 🚧 v0.5 — MCP real
@@ -27,7 +28,7 @@
 ## 📋 v1.0 — Production ready
 - Vision / multimodal models
 - Skill marketplace format
-- Sandboxed code execution
+- Sandboxed code execution (stronger isolation)
 - Official docs site
 - PyPI release with stable API
 
