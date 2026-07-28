@@ -2,7 +2,8 @@
 """
 Automation agent example — one-shot goal with tools.
 
-Creates a small Python script, lists files, and searches the web.
+Creates a small Python script, lists files, runs a calculation,
+and searches the web.
 
 Requires Ollama (or LM Studio) running.
 
@@ -21,13 +22,15 @@ def main() -> None:
     print("🤖 Automation Agent\n")
 
     goal = (
-        "Create a file named hello_from_agent.py that prints "
-        "'Hello from local agent!'. Then list the files in the current directory "
-        "and confirm the new file exists. Finally do a quick web search for "
-        "'local AI agents 2026' and give me the top titles."
+        "1. Create a file named hello_from_agent.py that prints "
+        "'Hello from local agent!'. "
+        "2. List the files in the current directory and confirm the new file exists. "
+        "3. Use the calculator to compute sqrt(144) + 10. "
+        "4. Do a quick web search for 'local AI agents 2026' and give me the top 3 titles. "
+        "Finally summarize everything you did."
     )
 
-    print(f"Goal: {goal}\n")
+    print(f"Goal:\n{goal}\n")
     result = agent.run(goal)
     print("\n=== Final answer ===")
     print(result)

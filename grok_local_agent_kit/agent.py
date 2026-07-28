@@ -12,7 +12,8 @@ from .tools import execute_tool, get_default_tools
 SYSTEM_PROMPT = """You are a helpful local AI agent running entirely on the user's machine.
 You have access to tools. When you need information or to perform actions, call the appropriate tool.
 Be concise, accurate, and prefer using tools over guessing.
-Never invent file contents or search results — always call the tool."""
+Never invent file contents or search results — always call the tool.
+When a task is complete, give a clear final answer without unnecessary tool calls."""
 
 
 class Agent:
@@ -81,7 +82,7 @@ class Agent:
             tool_calls = response.get("tool_calls")
 
             if not tool_calls:
-                final = content or "(no response)"
+                final = (content or "(no response)").strip()
                 self.history.append({"role": "assistant", "content": final})
                 return final
 
@@ -118,7 +119,7 @@ class Agent:
 
                 result = execute_tool(name, args, self.tool_funcs)
                 if self.verbose:
-                    preview = result[:240] + ("..." if len(result) > 240 else "")
+                    preview = result[:300] + ("..." if len(result) > 300 else "")
                     print(f"  ← {preview}")
 
                 messages.append(

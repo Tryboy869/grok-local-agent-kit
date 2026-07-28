@@ -9,6 +9,7 @@ Requires a running local LLM:
 Usage:
   python examples/chat_agent.py
   python examples/chat_agent.py --provider lmstudio --model local-model
+  python examples/chat_agent.py --verbose
 """
 
 from __future__ import annotations
@@ -43,18 +44,19 @@ def main() -> None:
         verbose=args.verbose,
     )
 
-    print("🚀 Local Chat Agent ready (tools: web, files, shell, python, MCP stub)")
-    print("   Type 'exit' to quit.\n")
+    print("🚀 Local Chat Agent ready")
+    print("   Tools: web_search, files, shell, execute_python, calculator, MCP stub")
+    print("   Type 'exit' / 'quit' / Ctrl-C to leave.\n")
 
     try:
         while True:
-            user = input("You: ").strip()
+            user = input("You › ").strip()
             if user.lower() in {"exit", "quit", "q"}:
                 break
             if not user:
                 continue
             reply = agent.chat(user)
-            print(f"\nAgent: {reply}\n")
+            print(f"\nAgent › {reply}\n")
     except (KeyboardInterrupt, EOFError):
         print("\nBye!")
     finally:

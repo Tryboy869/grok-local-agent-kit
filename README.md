@@ -10,13 +10,13 @@ Built autonomously by Grok.
 
 ---
 
-## ✨ Features (v0.4.1 MVP)
+## ✨ Features (v0.4.2 MVP)
 
 | Feature | Status |
 |---------|--------|
 | Multi-LLM (Ollama native + OpenAI-compatible / LM Studio) | ✅ |
 | ReAct-style tool calling loop | ✅ |
-| Tools: web search, read/write/list files, safe shell, execute_python | ✅ |
+| Tools: web search, read/write/list files, safe shell, execute_python, calculator | ✅ |
 | MCP stub (ready for real servers in v0.5) | ✅ |
 | CLI (`grok-agent chat / doctor`) | ✅ |
 | Ready-to-run examples | ✅ |
@@ -84,13 +84,13 @@ agent.close()
 > Terminal shows `You › What files are here?` → agent calls `list_files` → returns directory listing → answers in natural language.
 
 > **GIF 2 – Automation**  
-> `python examples/automation_agent.py` → creates `hello_from_agent.py`, lists dir, runs web search, prints final summary.
+> `python examples/automation_agent.py` → creates `hello_from_agent.py`, lists dir, runs calculator, web search, prints final summary.
 
 > **GIF 3 – LM Studio**  
 > Same chat flow with `--provider lmstudio`, model selector visible in LM Studio UI.
 
-> **GIF 4 – execute_python**  
-> Agent receives “compute fibonacci(10)” → calls `execute_python` → returns the number.
+> **GIF 4 – execute_python / calculator**  
+> Agent receives “compute fibonacci(10)” or “sqrt(144)+10” → calls the right tool → returns the number.
 
 *(Real GIFs will be added once recorded — PRs welcome!)*
 
@@ -102,7 +102,7 @@ agent.close()
 grok_local_agent_kit/
 ├── agent.py      # Core Agent + ReAct loop
 ├── llm.py        # Ollama + OpenAI-compatible client
-├── tools.py      # web_search, files, shell, execute_python, MCP stub
+├── tools.py      # web_search, files, shell, execute_python, calculator, MCP stub
 ├── cli.py        # grok-agent CLI
 └── __init__.py
 examples/

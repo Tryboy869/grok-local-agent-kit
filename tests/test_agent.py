@@ -9,16 +9,18 @@ from grok_local_agent_kit.tools import (
     write_file,
     web_search,
     execute_python,
+    calculator,
 )
 
 
 def test_get_default_tools():
     schemas, funcs = get_default_tools()
     assert isinstance(schemas, list)
-    assert len(schemas) >= 6
+    assert len(schemas) >= 7
     assert "web_search" in funcs
     assert "list_files" in funcs
     assert "execute_python" in funcs
+    assert "calculator" in funcs
     assert "mcp_list_resources" in funcs
 
 
@@ -46,11 +48,19 @@ def test_execute_python_blocked():
     assert "Blocked" in result or "error" in result.lower()
 
 
+def test_calculator():
+    assert calculator("2 + 2") == "4"
+    assert "12" in calculator("sqrt(144)") or calculator("sqrt(144)") == "12.0"
+    blocked = calculator("__import__('os').system('ls')")
+    assert "Blocked" in blocked or "error" in blocked.lower() or "Calculator error" in blocked
+
+
 def test_agent_init():
     agent = create_agent(model="dummy", provider="ollama", verbose=False)
     assert agent.llm.model == "dummy"
     assert "web_search" in agent.tool_funcs
     assert "execute_python" in agent.tool_funcs
+    assert "calculator" in agent.tool_funcs
     agent.close()
 
 

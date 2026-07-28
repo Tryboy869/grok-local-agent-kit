@@ -36,6 +36,7 @@ pip install -e ".[dev]"
 - Demo GIFs / recordings for the README
 - Windows & macOS packaging notes
 - Additional ready-to-run examples
+- Calculator / math tool enhancements
 
 ## Code style
 

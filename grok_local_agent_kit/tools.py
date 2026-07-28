@@ -1,8 +1,9 @@
-"""Built-in tools: web search, file ops, shell, execute_python, MCP stub."""
+"""Built-in tools: web search, file ops, shell, execute_python, calculator, MCP stub."""
 
 from __future__ import annotations
 
-import json
+import ast
+import math
 import os
 import subprocess
 import tempfile
@@ -31,8 +32,8 @@ def web_search(query: str, max_results: int = 5) -> str:
         for i, r in enumerate(results, 1):
             title = r.get("title", "No title")
             href = r.get("href", "")
-            body = (r.get("body") or "")[:220]
-            lines.append(f"{i}. {title}\n   {href}\n   {body}")
+            body = (r.get("body") or "")[:250]
+            lines.append(f"{i}. {title}\n   URL: {href}\n   {body}")
         return "\n\n".join(lines)
     except Exception as e:
         return f"Search error: {e}"
@@ -48,9 +49,12 @@ def list_files(path: str = ".", pattern: str = "*") -> str:
         if not items:
             return f"No items matching '{pattern}' in {p}"
         lines = []
-        for item in items[:120]:
+        for item in items[:150]:
             kind = "DIR " if item.is_dir() else "FILE"
-            lines.append(f"{kind}  {item.name}")
+            size = f" ({item.stat().st_size} B)" if item.is_file() else ""
+            lines.append(f"{kind}  {item.name}{size}")
+        if len(items) > 150:
+            lines.append(f"... and {len(items) - 150} more")
         return "\n".join(lines)
     except Exception as e:
         return f"Error listing files: {e}"
@@ -91,6 +95,9 @@ def run_shell(command: str, timeout: int = 30) -> str:
         "dd if=/dev/zero",
         "chmod -R 777 /",
         "> /dev/sda",
+        "shutdown",
+        "reboot",
+        "poweroff",
     ]
     lower = command.lower()
     for b in blocked:
@@ -119,8 +126,22 @@ def run_shell(command: str, timeout: int = 30) -> str:
 
 def execute_python(code: str, timeout: int = 15) -> str:
     """Execute a short Python snippet in a temporary file (sandbox-ish)."""
-    # Very basic safety — not a real sandbox
-    forbidden = ["os.system", "subprocess", "__import__", "open(", "eval(", "exec("]
+    # Very basic safety — not a real sandbox. Prefer calculator for pure math.
+    forbidden = [
+        "os.system",
+        "subprocess",
+        "__import__",
+        "open(",
+        "eval(",
+        "exec(",
+        "compile(",
+        "getattr(",
+        "setattr(",
+        "globals(",
+        "locals(",
+        "breakpoint(",
+        "input(",
+    ]
     for f in forbidden:
         if f in code:
             return f"Blocked code containing potentially unsafe construct: {f}"
@@ -148,6 +169,92 @@ def execute_python(code: str, timeout: int = 15) -> str:
         return f"Python execution timed out after {timeout}s"
     except Exception as e:
         return f"execute_python error: {e}"
+
+
+def calculator(expression: str) -> str:
+    """Safely evaluate a mathematical expression (no side effects)."""
+    try:
+        # Allow only safe nodes via AST
+        tree = ast.parse(expression, mode="eval")
+        for node in ast.walk(tree):
+            if isinstance(
+                node,
+                (
+                    ast.Call,
+                    ast.Attribute,
+                    ast.Name,
+                    ast.Subscript,
+                    ast.Import,
+                    ast.ImportFrom,
+                ),
+            ):
+                # Allow math names via a restricted eval below
+                if isinstance(node, ast.Name) and node.id not in {
+                    "abs",
+                    "round",
+                    "min",
+                    "max",
+                    "sum",
+                    "pow",
+                    "sqrt",
+                    "sin",
+                    "cos",
+                    "tan",
+                    "log",
+                    "log10",
+                    "exp",
+                    "pi",
+                    "e",
+                    "True",
+                    "False",
+                }:
+                    return f"Blocked name in expression: {node.id}"
+                if isinstance(node, (ast.Call, ast.Attribute, ast.Subscript, ast.Import, ast.ImportFrom)):
+                    # Further restrict — only allow simple math funcs
+                    if isinstance(node, ast.Call):
+                        if not isinstance(node.func, ast.Name):
+                            return "Blocked complex call"
+                        if node.func.id not in {
+                            "abs",
+                            "round",
+                            "min",
+                            "max",
+                            "sum",
+                            "pow",
+                            "sqrt",
+                            "sin",
+                            "cos",
+                            "tan",
+                            "log",
+                            "log10",
+                            "exp",
+                        }:
+                            return f"Blocked function: {node.func.id}"
+                    else:
+                        return "Blocked node type in expression"
+
+        safe_globals = {
+            "__builtins__": {},
+            "abs": abs,
+            "round": round,
+            "min": min,
+            "max": max,
+            "sum": sum,
+            "pow": pow,
+            "sqrt": math.sqrt,
+            "sin": math.sin,
+            "cos": math.cos,
+            "tan": math.tan,
+            "log": math.log,
+            "log10": math.log10,
+            "exp": math.exp,
+            "pi": math.pi,
+            "e": math.e,
+        }
+        result = eval(compile(tree, "<calculator>", "eval"), safe_globals, {})
+        return str(result)
+    except Exception as e:
+        return f"Calculator error: {e}"
 
 
 def mcp_list_resources() -> str:
@@ -277,6 +384,23 @@ TOOL_SPECS: List[Dict[str, Any]] = [
     {
         "type": "function",
         "function": {
+            "name": "calculator",
+            "description": "Safely evaluate a mathematical expression (e.g. '2+2', 'sqrt(16)+pi').",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "expression": {
+                        "type": "string",
+                        "description": "Math expression to evaluate",
+                    },
+                },
+                "required": ["expression"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
             "name": "mcp_list_resources",
             "description": "List available MCP resources (stub until v0.5).",
             "parameters": {"type": "object", "properties": {}, "required": []},
@@ -306,6 +430,7 @@ TOOL_FUNCS: Dict[str, Callable[..., str]] = {
     "write_file": write_file,
     "run_shell": run_shell,
     "execute_python": execute_python,
+    "calculator": calculator,
     "mcp_list_resources": mcp_list_resources,
     "mcp_call_tool": mcp_call_tool,
 }
