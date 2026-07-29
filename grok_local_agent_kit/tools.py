@@ -174,7 +174,6 @@ def execute_python(code: str, timeout: int = 15) -> str:
 def calculator(expression: str) -> str:
     """Safely evaluate a mathematical expression (no side effects)."""
     try:
-        # Allow only safe nodes via AST
         tree = ast.parse(expression, mode="eval")
         for node in ast.walk(tree):
             if isinstance(
@@ -188,7 +187,6 @@ def calculator(expression: str) -> str:
                     ast.ImportFrom,
                 ),
             ):
-                # Allow math names via a restricted eval below
                 if isinstance(node, ast.Name) and node.id not in {
                     "abs",
                     "round",
@@ -210,7 +208,6 @@ def calculator(expression: str) -> str:
                 }:
                     return f"Blocked name in expression: {node.id}"
                 if isinstance(node, (ast.Call, ast.Attribute, ast.Subscript, ast.Import, ast.ImportFrom)):
-                    # Further restrict — only allow simple math funcs
                     if isinstance(node, ast.Call):
                         if not isinstance(node.func, ast.Name):
                             return "Blocked complex call"
@@ -261,7 +258,7 @@ def mcp_list_resources() -> str:
     """Stub: list available MCP resources (placeholder for real MCP client)."""
     return (
         "MCP support is present as a stub.\n"
-        "In v0.5 this will connect to real MCP servers (stdio + SSE).\n"
+        "In v0.6 this will connect to real MCP servers (stdio + SSE).\n"
         "Current resources: none registered."
     )
 
@@ -270,7 +267,7 @@ def mcp_call_tool(name: str, arguments: Optional[Dict[str, Any]] = None) -> str:
     """Stub: call an MCP tool."""
     return (
         f"MCP tool call stub → name={name}, args={arguments or {}}. "
-        "Not connected to a live server yet (coming in v0.5)."
+        "Not connected to a live server yet (coming in v0.6)."
     )
 
 
@@ -402,7 +399,7 @@ TOOL_SPECS: List[Dict[str, Any]] = [
         "type": "function",
         "function": {
             "name": "mcp_list_resources",
-            "description": "List available MCP resources (stub until v0.5).",
+            "description": "List available MCP resources (stub until full MCP client).",
             "parameters": {"type": "object", "properties": {}, "required": []},
         },
     },
@@ -410,7 +407,7 @@ TOOL_SPECS: List[Dict[str, Any]] = [
         "type": "function",
         "function": {
             "name": "mcp_call_tool",
-            "description": "Call an MCP tool by name (stub until v0.5).",
+            "description": "Call an MCP tool by name (stub until full MCP client).",
             "parameters": {
                 "type": "object",
                 "properties": {

@@ -19,7 +19,7 @@ from grok_local_agent_kit import create_agent
 def main() -> None:
     agent = create_agent(model="llama3.2", provider="ollama", verbose=True)
 
-    print("🤖 Automation Agent\n")
+    print("🤖 Automation Agent (v0.5.0)\n")
 
     goal = (
         "1. Create a file named hello_from_agent.py that prints "

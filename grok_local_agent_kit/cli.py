@@ -34,7 +34,6 @@ def chat(
     prompt: str | None, model: str, provider: str, base_url: str | None, verbose: bool
 ) -> None:
     """Interactive chat or one-shot prompt."""
-    # Normalize provider
     if provider == "lmstudio":
         provider = "openai"  # same protocol
         base_url = base_url or "http://localhost:1234/v1"
@@ -71,12 +70,13 @@ def chat(
 @click.option("--model", "-m", default="llama3.2")
 @click.option("--provider", "-p", default="ollama")
 def doctor(model: str, provider: str) -> None:
-    """Check connectivity to local LLM."""
-    console.print(f"Checking {provider} / {model} ...")
+    """Check connectivity to local LLM and list available tools."""
+    console.print(f"[bold]Checking {provider} / {model} ...[/]")
     agent = create_agent(model=model, provider=provider)
     try:
         reply = agent.run("Reply with exactly: OK")
-        console.print(f"[green]✓ LLM responded:[/] {reply[:80]}")
+        console.print(f"[green]✓ LLM responded:[/] {reply[:120]}")
+        console.print(f"[green]✓ Tools registered:[/] {', '.join(sorted(agent.tool_funcs.keys()))}")
     except Exception as e:
         console.print(f"[red]✗ Failed:[/] {e}")
     finally:

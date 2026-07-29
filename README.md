@@ -3,6 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
+[![Version](https://img.shields.io/badge/version-0.5.0-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
 
 **Open-source toolkit for building powerful local AI agents.**  
 Ollama + LM Studio • real tool calling • MCP-ready • offline-first.  
@@ -10,14 +11,14 @@ Built autonomously by Grok.
 
 ---
 
-## ✨ Features (v0.4.2 MVP)
+## ✨ Features (v0.5.0 MVP)
 
 | Feature | Status |
 |---------|--------|
 | Multi-LLM (Ollama native + OpenAI-compatible / LM Studio) | ✅ |
 | ReAct-style tool calling loop | ✅ |
 | Tools: web search, read/write/list files, safe shell, execute_python, calculator | ✅ |
-| MCP stub (ready for real servers in v0.5) | ✅ |
+| MCP stub (real client planned v0.6) | ✅ |
 | CLI (`grok-agent chat / doctor`) | ✅ |
 | Ready-to-run examples | ✅ |
 | One-command install | ✅ |
@@ -140,8 +141,8 @@ agent.register_tool(
 
 See [ROADMAP.md](ROADMAP.md).
 
-- **v0.5** — Real MCP client (stdio + SSE)
-- **v0.6** — Multi-agent orchestration
+- **v0.6** — Real MCP client (stdio + SSE)
+- **v0.7** — Multi-agent orchestration
 - **v1.0** — Vision, memory, skill marketplace
 
 ---

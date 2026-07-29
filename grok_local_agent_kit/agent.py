@@ -25,7 +25,7 @@ class Agent:
         provider: str = "ollama",
         base_url: Optional[str] = None,
         system_prompt: str = SYSTEM_PROMPT,
-        max_iterations: int = 10,
+        max_iterations: int = 12,
         verbose: bool = False,
     ):
         self.llm = LLMClient(model=model, provider=provider, base_url=base_url)

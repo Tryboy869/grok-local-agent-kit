@@ -1,6 +1,6 @@
 # Public Roadmap — grok-local-agent-kit
 
-## ✅ v0.4.2 (current) — MVP solidifié
+## ✅ v0.5.0 (current) — MVP solidifié
 - Real Agent with ReAct-style tool loop
 - Multi-LLM: Ollama + OpenAI-compatible (LM Studio, vLLM…)
 - Tools: web search, file read/write/list, safe shell, execute_python, calculator
@@ -10,17 +10,17 @@
 - Unit tests aligned with current API
 - Polished README, CONTRIBUTING, one-command install
 
-## 🚧 v0.5 — MCP real
+## 🚧 v0.6 — MCP real
 - Full MCP client (stdio + HTTP/SSE)
 - Discover & call tools from external MCP servers
 - Resource & prompt support
 
-## 📋 v0.6 — Multi-agent
+## 📋 v0.7 — Multi-agent
 - Agent-to-agent messaging
 - Simple orchestrator / swarm patterns
 - Shared tool registry
 
-## 📋 v0.7 — Memory & persistence
+## 📋 v0.8 — Memory & persistence
 - Conversation history to disk
 - Vector memory (local embeddings)
 - Session management

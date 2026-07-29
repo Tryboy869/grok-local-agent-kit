@@ -44,7 +44,7 @@ def main() -> None:
         verbose=args.verbose,
     )
 
-    print("🚀 Local Chat Agent ready")
+    print("🚀 Local Chat Agent ready (v0.5.0)")
     print("   Tools: web_search, files, shell, execute_python, calculator, MCP stub")
     print("   Type 'exit' / 'quit' / Ctrl-C to leave.\n")
 
