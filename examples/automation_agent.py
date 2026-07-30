@@ -13,13 +13,13 @@ Usage:
 
 from __future__ import annotations
 
-from grok_local_agent_kit import create_agent
+from grok_local_agent_kit import create_agent, __version__
 
 
 def main() -> None:
     agent = create_agent(model="llama3.2", provider="ollama", verbose=True)
 
-    print("🤖 Automation Agent (v0.5.0)\n")
+    print(f"🤖 Automation Agent (v{__version__})\n")
 
     goal = (
         "1. Create a file named hello_from_agent.py that prints "

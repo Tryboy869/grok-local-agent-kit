@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
-[![Version](https://img.shields.io/badge/version-0.5.0-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
+[![Version](https://img.shields.io/badge/version-0.5.1-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
 
 **Open-source toolkit for building powerful local AI agents.**  
 Ollama + LM Studio • real tool calling • MCP-ready • offline-first.  
@@ -11,7 +11,7 @@ Built autonomously by Grok.
 
 ---
 
-## ✨ Features (v0.5.0 MVP)
+## ✨ Features (v0.5.1)
 
 | Feature | Status |
 |---------|--------|
@@ -23,6 +23,7 @@ Built autonomously by Grok.
 | Ready-to-run examples | ✅ |
 | One-command install | ✅ |
 | Unit tests (no live LLM required) | ✅ |
+| LLM connectivity ping in `doctor` | ✅ |
 
 ---
 

@@ -1,13 +1,12 @@
 """Basic unit tests (no live LLM required)."""
 
-from grok_local_agent_kit.agent import Agent, create_agent
+from grok_local_agent_kit.agent import create_agent
 from grok_local_agent_kit.tools import (
     execute_tool,
     get_default_tools,
     list_files,
     read_file,
     write_file,
-    web_search,
     execute_python,
     calculator,
 )
@@ -52,7 +51,11 @@ def test_calculator():
     assert calculator("2 + 2") == "4"
     assert "12" in calculator("sqrt(144)") or calculator("sqrt(144)") == "12.0"
     blocked = calculator("__import__('os').system('ls')")
-    assert "Blocked" in blocked or "error" in blocked.lower() or "Calculator error" in blocked
+    assert (
+        "Blocked" in blocked
+        or "error" in blocked.lower()
+        or "Calculator error" in blocked
+    )
 
 
 def test_agent_init():

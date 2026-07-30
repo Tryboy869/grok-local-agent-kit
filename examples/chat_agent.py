@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import argparse
 
-from grok_local_agent_kit import create_agent
+from grok_local_agent_kit import create_agent, __version__
 
 
 def main() -> None:
@@ -44,7 +44,7 @@ def main() -> None:
         verbose=args.verbose,
     )
 
-    print("🚀 Local Chat Agent ready (v0.5.0)")
+    print(f"🚀 Local Chat Agent ready (v{__version__})")
     print("   Tools: web_search, files, shell, execute_python, calculator, MCP stub")
     print("   Type 'exit' / 'quit' / Ctrl-C to leave.\n")
 

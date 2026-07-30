@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "grok-local-agent-kit"
-version = "0.5.0"
+version = "0.5.1"
 description = "Open-source toolkit for building powerful local AI agents with MCP support, multi-LLM routing (Ollama, LM Studio), and real tools. Offline-first."
 readme = "README.md"
 license = {text = "MIT"}
@@ -48,3 +48,6 @@ include = ["grok_local_agent_kit*"]
 [tool.ruff]
 line-length = 100
 target-version = "py310"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
