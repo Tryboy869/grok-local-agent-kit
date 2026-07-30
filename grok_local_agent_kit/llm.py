@@ -6,11 +6,15 @@ import json
 from typing import Any, Dict, List, Optional
 
 import httpx
-import ollama
+
+try:
+    import ollama
+except ImportError:  # pragma: no cover
+    ollama = None  # type: ignore
 
 
 class LLMClient:
-    """Unified interface for local LLMs."""
+    """Unified interface for local LLMs (Ollama + OpenAI-compatible)."""
 
     def __init__(
         self,
@@ -19,22 +23,25 @@ class LLMClient:
         base_url: Optional[str] = None,
         api_key: Optional[str] = None,
         temperature: float = 0.3,
+        timeout: float = 120.0,
     ):
         self.model = model
-        self.provider = provider.lower()
+        self.provider = provider.lower().strip()
         self.temperature = temperature
+        self.timeout = timeout
 
-        if self.provider == "ollama":
-            self.base_url = base_url or "http://localhost:11434"
-            self._client = None  # use ollama package
+        if self.provider in {"ollama"}:
+            self.base_url = (base_url or "http://localhost:11434").rstrip("/")
+            self._client: Optional[httpx.Client] = None
         else:
-            # OpenAI-compatible (LM Studio default port 1234)
-            self.base_url = (base_url or "http://localhost:1234/v1").rstrip("/")
+            # openai / lmstudio / vllm / any OpenAI-compatible server
+            default = "http://localhost:1234/v1"
+            self.base_url = (base_url or default).rstrip("/")
             self.api_key = api_key or "lm-studio"
             self._client = httpx.Client(
                 base_url=self.base_url,
                 headers={"Authorization": f"Bearer {self.api_key}"},
-                timeout=120.0,
+                timeout=timeout,
             )
 
     def chat(
@@ -44,10 +51,10 @@ class LLMClient:
         tool_choice: str = "auto",
     ) -> Dict[str, Any]:
         """
-        Returns a normalized response:
+        Normalized response:
         {
           "content": str | None,
-          "tool_calls": list[dict] | None,  # [{id, name, arguments}]
+          "tool_calls": list[{"id", "name", "arguments"}] | None,
           "raw": original
         }
         """
@@ -58,6 +65,13 @@ class LLMClient:
     def _chat_ollama(
         self, messages: List[Dict[str, Any]], tools: Optional[List[Dict[str, Any]]]
     ) -> Dict[str, Any]:
+        if ollama is None:
+            return {
+                "content": "[LLM error] ollama package not installed. pip install ollama",
+                "tool_calls": None,
+                "raw": None,
+            }
+
         kwargs: Dict[str, Any] = {
             "model": self.model,
             "messages": messages,
@@ -71,25 +85,25 @@ class LLMClient:
         except Exception as e:
             return {"content": f"[LLM error] {e}", "tool_calls": None, "raw": None}
 
-        msg = resp.get("message", {})
+        msg = resp.get("message", {}) or {}
         content = msg.get("content") or None
         tool_calls = None
 
         if msg.get("tool_calls"):
             tool_calls = []
             for tc in msg["tool_calls"]:
-                fn = tc.get("function", {})
+                fn = tc.get("function", {}) or {}
                 args = fn.get("arguments", {})
                 if isinstance(args, str):
                     try:
-                        args = json.loads(args)
+                        args = json.loads(args) if args.strip() else {}
                     except json.JSONDecodeError:
                         args = {"raw": args}
                 tool_calls.append(
                     {
                         "id": tc.get("id") or f"call_{len(tool_calls)}",
                         "name": fn.get("name", ""),
-                        "arguments": args,
+                        "arguments": args if isinstance(args, dict) else {"raw": args},
                     }
                 )
 
@@ -101,6 +115,7 @@ class LLMClient:
         tools: Optional[List[Dict[str, Any]]],
         tool_choice: str,
     ) -> Dict[str, Any]:
+        assert self._client is not None
         payload: Dict[str, Any] = {
             "model": self.model,
             "messages": messages,
@@ -117,30 +132,51 @@ class LLMClient:
         except Exception as e:
             return {"content": f"[LLM error] {e}", "tool_calls": None, "raw": None}
 
-        choice = data["choices"][0]["message"]
+        choice = (data.get("choices") or [{}])[0].get("message") or {}
         content = choice.get("content")
         tool_calls = None
 
         if choice.get("tool_calls"):
             tool_calls = []
             for tc in choice["tool_calls"]:
-                fn = tc["function"]
+                fn = tc.get("function") or {}
                 args = fn.get("arguments", "{}")
                 if isinstance(args, str):
                     try:
-                        args = json.loads(args)
+                        args = json.loads(args) if args.strip() else {}
                     except json.JSONDecodeError:
                         args = {"raw": args}
                 tool_calls.append(
                     {
-                        "id": tc["id"],
-                        "name": fn["name"],
-                        "arguments": args,
+                        "id": tc.get("id") or f"call_{len(tool_calls)}",
+                        "name": fn.get("name", ""),
+                        "arguments": args if isinstance(args, dict) else {"raw": args},
                     }
                 )
 
         return {"content": content, "tool_calls": tool_calls, "raw": data}
 
+    def ping(self) -> str:
+        """Lightweight connectivity check."""
+        try:
+            if self.provider == "ollama":
+                if ollama is None:
+                    return "ollama package missing"
+                # list models is cheap
+                models = ollama.list()
+                names = [m.get("name") or m.get("model", "?") for m in models.get("models", [])]
+                return f"ok — models: {', '.join(names[:8]) or '(none)'}"
+            assert self._client is not None
+            r = self._client.get("/models")
+            if r.status_code >= 400:
+                return f"HTTP {r.status_code}"
+            data = r.json()
+            ids = [m.get("id", "?") for m in data.get("data", [])]
+            return f"ok — models: {', '.join(ids[:8]) or '(none)'}"
+        except Exception as e:
+            return f"unreachable: {e}"
+
     def close(self) -> None:
-        if self._client:
+        if self._client is not None:
             self._client.close()
+            self._client = None
