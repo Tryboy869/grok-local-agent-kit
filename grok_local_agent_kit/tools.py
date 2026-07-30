@@ -12,7 +12,7 @@ from typing import Any, Callable, Dict, List, Optional
 
 try:
     from duckduckgo_search import DDGS
-except ImportError:
+except ImportError:  # pragma: no cover
     DDGS = None  # type: ignore
 
 
@@ -175,60 +175,49 @@ def calculator(expression: str) -> str:
     """Safely evaluate a mathematical expression (no side effects)."""
     try:
         tree = ast.parse(expression, mode="eval")
+        allowed_names = {
+            "abs",
+            "round",
+            "min",
+            "max",
+            "sum",
+            "pow",
+            "sqrt",
+            "sin",
+            "cos",
+            "tan",
+            "log",
+            "log10",
+            "exp",
+            "pi",
+            "e",
+            "True",
+            "False",
+        }
+        allowed_funcs = {
+            "abs",
+            "round",
+            "min",
+            "max",
+            "sum",
+            "pow",
+            "sqrt",
+            "sin",
+            "cos",
+            "tan",
+            "log",
+            "log10",
+            "exp",
+        }
+
         for node in ast.walk(tree):
-            if isinstance(
-                node,
-                (
-                    ast.Call,
-                    ast.Attribute,
-                    ast.Name,
-                    ast.Subscript,
-                    ast.Import,
-                    ast.ImportFrom,
-                ),
-            ):
-                if isinstance(node, ast.Name) and node.id not in {
-                    "abs",
-                    "round",
-                    "min",
-                    "max",
-                    "sum",
-                    "pow",
-                    "sqrt",
-                    "sin",
-                    "cos",
-                    "tan",
-                    "log",
-                    "log10",
-                    "exp",
-                    "pi",
-                    "e",
-                    "True",
-                    "False",
-                }:
-                    return f"Blocked name in expression: {node.id}"
-                if isinstance(node, (ast.Call, ast.Attribute, ast.Subscript, ast.Import, ast.ImportFrom)):
-                    if isinstance(node, ast.Call):
-                        if not isinstance(node.func, ast.Name):
-                            return "Blocked complex call"
-                        if node.func.id not in {
-                            "abs",
-                            "round",
-                            "min",
-                            "max",
-                            "sum",
-                            "pow",
-                            "sqrt",
-                            "sin",
-                            "cos",
-                            "tan",
-                            "log",
-                            "log10",
-                            "exp",
-                        }:
-                            return f"Blocked function: {node.func.id}"
-                    else:
-                        return "Blocked node type in expression"
+            if isinstance(node, ast.Name) and node.id not in allowed_names:
+                return f"Blocked name in expression: {node.id}"
+            if isinstance(node, ast.Call):
+                if not isinstance(node.func, ast.Name) or node.func.id not in allowed_funcs:
+                    return "Blocked complex call"
+            if isinstance(node, (ast.Attribute, ast.Subscript, ast.Import, ast.ImportFrom)):
+                return "Blocked node type in expression"
 
         safe_globals = {
             "__builtins__": {},
