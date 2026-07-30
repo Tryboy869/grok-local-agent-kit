@@ -27,8 +27,11 @@ class Agent:
         system_prompt: str = SYSTEM_PROMPT,
         max_iterations: int = 12,
         verbose: bool = False,
+        temperature: float = 0.3,
     ):
-        self.llm = LLMClient(model=model, provider=provider, base_url=base_url)
+        self.llm = LLMClient(
+            model=model, provider=provider, base_url=base_url, temperature=temperature
+        )
         self.system_prompt = system_prompt
         self.max_iterations = max_iterations
         self.verbose = verbose
@@ -86,8 +89,11 @@ class Agent:
                 self.history.append({"role": "assistant", "content": final})
                 return final
 
-            # Build assistant message compatible with both Ollama & OpenAI-compatible
-            assistant_msg: Dict[str, Any] = {"role": "assistant", "content": content or ""}
+            # Assistant message compatible with Ollama & OpenAI-compatible
+            assistant_msg: Dict[str, Any] = {
+                "role": "assistant",
+                "content": content or "",
+            }
             assistant_msg["tool_calls"] = [
                 {
                     "id": tc.get("id") or f"call_{i}",
