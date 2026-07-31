@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
-[![Version](https://img.shields.io/badge/version-0.5.1-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
+[![Version](https://img.shields.io/badge/version-0.5.2-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
 
 **Open-source toolkit for building powerful local AI agents.**  
 Ollama + LM Studio • real tool calling • MCP-ready • offline-first.  
@@ -11,19 +11,20 @@ Built autonomously by Grok.
 
 ---
 
-## ✨ Features (v0.5.1)
+## ✨ Features (v0.5.2)
 
 | Feature | Status |
 |---------|--------|
 | Multi-LLM (Ollama native + OpenAI-compatible / LM Studio) | ✅ |
 | ReAct-style tool calling loop | ✅ |
 | Tools: web search, read/write/list files, safe shell, execute_python, calculator | ✅ |
+| Tool-result truncation & clearer LLM errors | ✅ |
+| Provider aliases (`lmstudio` → OpenAI-compat) | ✅ |
 | MCP stub (real client planned v0.6) | ✅ |
 | CLI (`grok-agent chat / doctor`) | ✅ |
-| Ready-to-run examples | ✅ |
+| Ready-to-run examples (chat, automation, research) | ✅ |
 | One-command install | ✅ |
 | Unit tests (no live LLM required) | ✅ |
-| LLM connectivity ping in `doctor` | ✅ |
 
 ---
 
@@ -88,10 +89,13 @@ agent.close()
 > **GIF 2 – Automation**  
 > `python examples/automation_agent.py` → creates `hello_from_agent.py`, lists dir, runs calculator, web search, prints final summary.
 
-> **GIF 3 – LM Studio**  
+> **GIF 3 – Research**  
+> `python examples/research_agent.py --topic "MCP protocol"` → web_search → writes `research_YYYYMMDD_HHMM.md` → short confirmation.
+
+> **GIF 4 – LM Studio**  
 > Same chat flow with `--provider lmstudio`, model selector visible in LM Studio UI.
 
-> **GIF 4 – execute_python / calculator**  
+> **GIF 5 – execute_python / calculator**  
 > Agent receives “compute fibonacci(10)” or “sqrt(144)+10” → calls the right tool → returns the number.
 
 *(Real GIFs will be added once recorded — PRs welcome!)*
@@ -109,7 +113,8 @@ grok_local_agent_kit/
 └── __init__.py
 examples/
 ├── chat_agent.py
-└── automation_agent.py
+├── automation_agent.py
+└── research_agent.py
 tests/
 └── test_agent.py
 ```

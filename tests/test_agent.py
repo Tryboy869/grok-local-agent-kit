@@ -67,6 +67,13 @@ def test_agent_init():
     agent.close()
 
 
+def test_create_agent_lmstudio_alias():
+    agent = create_agent(model="dummy", provider="lmstudio", verbose=False)
+    assert agent.llm.provider == "openai"
+    assert "1234" in agent.llm.base_url
+    agent.close()
+
+
 def test_register_custom_tool():
     agent = create_agent(model="dummy", verbose=False)
 

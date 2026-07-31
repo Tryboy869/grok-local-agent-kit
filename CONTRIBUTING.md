@@ -28,15 +28,16 @@ pip install -e ".[dev]"
 
 ## What we need most
 
-- Real MCP client implementation (stdio / SSE)
-- More robust tool sandboxing (especially execute_python & shell)
+- Real MCP client implementation (stdio / SSE) — **highest priority for v0.6**
+- More robust tool sandboxing (especially `execute_python` & `run_shell`)
 - Memory / conversation persistence
 - Vision support (local multimodal models)
-- Better error messages & logging
+- Better error messages & structured logging
 - Demo GIFs / recordings for the README
 - Windows & macOS packaging notes
 - Additional ready-to-run examples
 - Calculator / math tool enhancements
+- CI coverage for more edge cases
 
 ## Code style
 
@@ -44,6 +45,7 @@ pip install -e ".[dev]"
 - Type hints encouraged
 - Keep the core dependency surface small
 - Prefer clarity over cleverness
+- No live LLM required for unit tests
 
 ## Reporting issues
 

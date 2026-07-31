@@ -13,7 +13,11 @@ SYSTEM_PROMPT = """You are a helpful local AI agent running entirely on the user
 You have access to tools. When you need information or to perform actions, call the appropriate tool.
 Be concise, accurate, and prefer using tools over guessing.
 Never invent file contents or search results — always call the tool.
-When a task is complete, give a clear final answer without unnecessary tool calls."""
+When a task is complete, give a clear final answer without unnecessary tool calls.
+If a tool fails, explain the error briefly and try an alternative when possible."""
+
+# Max characters of a tool result kept in the conversation context
+TOOL_RESULT_MAX_CHARS = 6000
 
 
 class Agent:
@@ -68,6 +72,14 @@ class Agent:
         """One-shot task (fresh history)."""
         self.history = []
         return self.chat(prompt)
+
+    def _truncate_tool_result(self, result: str) -> str:
+        if len(result) <= TOOL_RESULT_MAX_CHARS:
+            return result
+        return (
+            result[:TOOL_RESULT_MAX_CHARS]
+            + f"\n\n... [truncated, original length {len(result)} chars]"
+        )
 
     def _run_loop(self) -> str:
         messages: List[Dict[str, Any]] = [
@@ -124,6 +136,8 @@ class Agent:
                     print(f"  → tool: {name}({args})")
 
                 result = execute_tool(name, args, self.tool_funcs)
+                result = self._truncate_tool_result(result)
+
                 if self.verbose:
                     preview = result[:300] + ("..." if len(result) > 300 else "")
                     print(f"  ← {preview}")
@@ -157,5 +171,9 @@ def create_agent(
     base_url: Optional[str] = None,
     **kwargs: Any,
 ) -> Agent:
-    """Factory helper."""
+    """Factory helper. Accepts provider aliases: ollama | lmstudio | openai."""
+    provider = (provider or "ollama").lower().strip()
+    if provider == "lmstudio":
+        provider = "openai"
+        base_url = base_url or "http://localhost:1234/v1"
     return Agent(model=model, provider=provider, base_url=base_url, **kwargs)

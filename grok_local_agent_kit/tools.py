@@ -98,6 +98,10 @@ def run_shell(command: str, timeout: int = 30) -> str:
         "shutdown",
         "reboot",
         "poweroff",
+        "halt",
+        "init 0",
+        "init 6",
+        "fork bomb",
     ]
     lower = command.lower()
     for b in blocked:
@@ -141,6 +145,7 @@ def execute_python(code: str, timeout: int = 15) -> str:
         "locals(",
         "breakpoint(",
         "input(",
+        "importlib",
     ]
     for f in forbidden:
         if f in code:

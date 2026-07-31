@@ -31,16 +31,10 @@ def main() -> None:
     parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args()
 
-    provider = args.provider
-    base_url = args.base_url
-    if provider == "lmstudio":
-        provider = "openai"
-        base_url = base_url or "http://localhost:1234/v1"
-
     agent = create_agent(
         model=args.model,
-        provider=provider,
-        base_url=base_url,
+        provider=args.provider,
+        base_url=args.base_url,
         verbose=args.verbose,
     )
 

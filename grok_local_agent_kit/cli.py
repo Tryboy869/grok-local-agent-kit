@@ -35,10 +35,6 @@ def chat(
     prompt: str | None, model: str, provider: str, base_url: str | None, verbose: bool
 ) -> None:
     """Interactive chat or one-shot prompt."""
-    if provider == "lmstudio":
-        provider = "openai"  # same protocol
-        base_url = base_url or "http://localhost:1234/v1"
-
     agent = create_agent(
         model=model, provider=provider, base_url=base_url, verbose=verbose
     )
@@ -81,10 +77,6 @@ def chat(
 @click.option("--base-url", default=None)
 def doctor(model: str, provider: str, base_url: str | None) -> None:
     """Check connectivity to local LLM and list available tools."""
-    if provider == "lmstudio":
-        provider = "openai"
-        base_url = base_url or "http://localhost:1234/v1"
-
     console.print(f"[bold]Checking {provider} / {model} ...[/]")
     agent = create_agent(model=model, provider=provider, base_url=base_url)
     try:

@@ -67,7 +67,10 @@ class LLMClient:
     ) -> Dict[str, Any]:
         if ollama is None:
             return {
-                "content": "[LLM error] ollama package not installed. pip install ollama",
+                "content": (
+                    "[LLM error] ollama package not installed. "
+                    "Run: pip install ollama"
+                ),
                 "tool_calls": None,
                 "raw": None,
             }
@@ -83,7 +86,14 @@ class LLMClient:
         try:
             resp = ollama.chat(**kwargs)
         except Exception as e:
-            return {"content": f"[LLM error] {e}", "tool_calls": None, "raw": None}
+            return {
+                "content": (
+                    f"[LLM error] {e}. "
+                    "Is Ollama running? Try: ollama serve && ollama pull {self.model}"
+                ),
+                "tool_calls": None,
+                "raw": None,
+            }
 
         msg = resp.get("message", {}) or {}
         content = msg.get("content") or None
@@ -129,6 +139,15 @@ class LLMClient:
             r = self._client.post("/chat/completions", json=payload)
             r.raise_for_status()
             data = r.json()
+        except httpx.ConnectError:
+            return {
+                "content": (
+                    f"[LLM error] Cannot reach {self.base_url}. "
+                    "Is LM Studio / OpenAI-compatible server running?"
+                ),
+                "tool_calls": None,
+                "raw": None,
+            }
         except Exception as e:
             return {"content": f"[LLM error] {e}", "tool_calls": None, "raw": None}
 
@@ -162,9 +181,11 @@ class LLMClient:
             if self.provider == "ollama":
                 if ollama is None:
                     return "ollama package missing"
-                # list models is cheap
                 models = ollama.list()
-                names = [m.get("name") or m.get("model", "?") for m in models.get("models", [])]
+                names = [
+                    m.get("name") or m.get("model", "?")
+                    for m in models.get("models", [])
+                ]
                 return f"ok — models: {', '.join(names[:8]) or '(none)'}"
             assert self._client is not None
             r = self._client.get("/models")
