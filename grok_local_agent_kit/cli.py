@@ -88,9 +88,8 @@ def doctor(model: str, provider: str, base_url: str | None) -> None:
 
         reply = agent.run("Reply with exactly: OK")
         console.print(f"[green]✓ LLM responded:[/] {reply[:120]}")
-        console.print(
-            f"[green]✓ Tools registered:[/] {', '.join(sorted(agent.tool_funcs.keys()))}"
-        )
+        tools = ", ".join(sorted(agent.tool_funcs.keys()))
+        console.print(f"[green]✓ Tools registered:[/] {tools}")
     except Exception as e:
         console.print(f"[red]✗ Failed:[/] {e}")
     finally:
