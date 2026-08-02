@@ -28,7 +28,7 @@ pip install -e ".[dev]"
 
 ## What we need most
 
-- Real MCP client implementation (stdio / SSE) — **highest priority for v0.6**
+- **Real MCP client** (stdio / SSE) — highest priority for next minor
 - More robust tool sandboxing (especially `execute_python` & `run_shell`)
 - Memory / conversation persistence
 - Vision support (local multimodal models)
