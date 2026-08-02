@@ -1,4 +1,4 @@
-"""Built-in tools: web search, file ops, shell, execute_python, calculator, MCP stub."""
+"""Built-in tools: web search, file ops (cwd-safe), shell, execute_python, calculator, MCP stub."""
 
 from __future__ import annotations
 
@@ -14,6 +14,21 @@ try:
     from duckduckgo_search import DDGS
 except ImportError:  # pragma: no cover
     DDGS = None  # type: ignore
+
+
+def _safe_path(path: str, must_be_under_cwd: bool = True) -> Path:
+    """Resolve path and optionally enforce it stays under current working directory."""
+    p = Path(path).expanduser().resolve()
+    if must_be_under_cwd:
+        cwd = Path.cwd().resolve()
+        try:
+            p.relative_to(cwd)
+        except ValueError:
+            raise PermissionError(
+                f"Path '{p}' is outside the working directory '{cwd}'. "
+                "For safety, file tools are restricted to the current workspace."
+            )
+    return p
 
 
 def web_search(query: str, max_results: int = 5) -> str:
@@ -40,9 +55,9 @@ def web_search(query: str, max_results: int = 5) -> str:
 
 
 def list_files(path: str = ".", pattern: str = "*") -> str:
-    """List files and directories in the given path."""
+    """List files and directories in the given path (restricted to workspace)."""
     try:
-        p = Path(path).expanduser().resolve()
+        p = _safe_path(path)
         if not p.exists():
             return f"Path does not exist: {p}"
         items = sorted(p.glob(pattern))
@@ -56,31 +71,37 @@ def list_files(path: str = ".", pattern: str = "*") -> str:
         if len(items) > 150:
             lines.append(f"... and {len(items) - 150} more")
         return "\n".join(lines)
+    except PermissionError as e:
+        return str(e)
     except Exception as e:
         return f"Error listing files: {e}"
 
 
 def read_file(path: str, max_chars: int = 8000) -> str:
-    """Read a text file (truncated for safety)."""
+    """Read a text file (truncated for safety, cwd-restricted)."""
     try:
-        p = Path(path).expanduser().resolve()
+        p = _safe_path(path)
         if not p.is_file():
             return f"Not a file: {p}"
         text = p.read_text(encoding="utf-8", errors="replace")
         if len(text) > max_chars:
             return text[:max_chars] + f"\n\n... [truncated, total {len(text)} chars]"
         return text
+    except PermissionError as e:
+        return str(e)
     except Exception as e:
         return f"Error reading file: {e}"
 
 
 def write_file(path: str, content: str) -> str:
-    """Write content to a file (creates parent dirs if needed)."""
+    """Write content to a file (creates parent dirs, cwd-restricted)."""
     try:
-        p = Path(path).expanduser().resolve()
+        p = _safe_path(path)
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text(content, encoding="utf-8")
         return f"Successfully wrote {len(content)} chars to {p}"
+    except PermissionError as e:
+        return str(e)
     except Exception as e:
         return f"Error writing file: {e}"
 
@@ -102,6 +123,8 @@ def run_shell(command: str, timeout: int = 30) -> str:
         "init 0",
         "init 6",
         "fork bomb",
+        "curl | bash",
+        "wget | sh",
     ]
     lower = command.lower()
     for b in blocked:
@@ -130,7 +153,6 @@ def run_shell(command: str, timeout: int = 30) -> str:
 
 def execute_python(code: str, timeout: int = 15) -> str:
     """Execute a short Python snippet in a temporary file (sandbox-ish)."""
-    # Very basic safety — not a real sandbox. Prefer calculator for pure math.
     forbidden = [
         "os.system",
         "subprocess",
@@ -146,6 +168,10 @@ def execute_python(code: str, timeout: int = 15) -> str:
         "breakpoint(",
         "input(",
         "importlib",
+        "ctypes",
+        "socket",
+        "urllib",
+        "requests",
     ]
     for f in forbidden:
         if f in code:
@@ -249,19 +275,30 @@ def calculator(expression: str) -> str:
 
 
 def mcp_list_resources() -> str:
-    """Stub: list available MCP resources (placeholder for real MCP client)."""
+    """List available MCP resources (enhanced stub — real client in next release)."""
     return (
-        "MCP support is present as a stub.\n"
-        "In v0.6 this will connect to real MCP servers (stdio + SSE).\n"
-        "Current resources: none registered."
+        "MCP client status: stub (v0.6.0)\n"
+        "Planned for next minor: real stdio + SSE MCP client.\n"
+        "Current registered resources: none.\n"
+        "You can still call mcp_call_tool for testing the interface."
     )
 
 
 def mcp_call_tool(name: str, arguments: Optional[Dict[str, Any]] = None) -> str:
-    """Stub: call an MCP tool."""
+    """Call an MCP tool by name (stub until full MCP client)."""
     return (
-        f"MCP tool call stub → name={name}, args={arguments or {}}. "
-        "Not connected to a live server yet (coming in v0.6)."
+        f"MCP tool call stub → name={name}, args={arguments or {}}.\n"
+        "Not connected to a live MCP server yet. "
+        "Wire a real server in v0.6.x / v0.7."
+    )
+
+
+def mcp_list_tools() -> str:
+    """List tools that would be available from connected MCP servers (stub)."""
+    return (
+        "MCP tools discovery stub.\n"
+        "When a real MCP client is connected you will see external tools here.\n"
+        "Local tools remain available via the standard registry."
     )
 
 
@@ -289,7 +326,7 @@ TOOL_SPECS: List[Dict[str, Any]] = [
         "type": "function",
         "function": {
             "name": "list_files",
-            "description": "List files and directories in a path.",
+            "description": "List files and directories in a path (workspace-restricted).",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -307,7 +344,7 @@ TOOL_SPECS: List[Dict[str, Any]] = [
         "type": "function",
         "function": {
             "name": "read_file",
-            "description": "Read the content of a text file.",
+            "description": "Read the content of a text file (workspace-restricted).",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -325,7 +362,7 @@ TOOL_SPECS: List[Dict[str, Any]] = [
         "type": "function",
         "function": {
             "name": "write_file",
-            "description": "Write text content to a file.",
+            "description": "Write text content to a file (workspace-restricted).",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -340,7 +377,7 @@ TOOL_SPECS: List[Dict[str, Any]] = [
         "type": "function",
         "function": {
             "name": "run_shell",
-            "description": "Execute a shell command and return stdout/stderr.",
+            "description": "Execute a shell command and return stdout/stderr (with safety filters).",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -400,6 +437,14 @@ TOOL_SPECS: List[Dict[str, Any]] = [
     {
         "type": "function",
         "function": {
+            "name": "mcp_list_tools",
+            "description": "List tools exposed by connected MCP servers (stub).",
+            "parameters": {"type": "object", "properties": {}, "required": []},
+        },
+    },
+    {
+        "type": "function",
+        "function": {
             "name": "mcp_call_tool",
             "description": "Call an MCP tool by name (stub until full MCP client).",
             "parameters": {
@@ -423,6 +468,7 @@ TOOL_FUNCS: Dict[str, Callable[..., str]] = {
     "execute_python": execute_python,
     "calculator": calculator,
     "mcp_list_resources": mcp_list_resources,
+    "mcp_list_tools": mcp_list_tools,
     "mcp_call_tool": mcp_call_tool,
 }
 
