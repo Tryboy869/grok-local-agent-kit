@@ -4,10 +4,16 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
 [![Version](https://img.shields.io/badge/version-0.6.0-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
+[![GitHub stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/Tryboy869/grok-local-agent-kit)](https://github.com/Tryboy869/grok-local-agent-kit/network/members)
+[![GitHub issues](https://img.shields.io/github/issues/Tryboy869/grok-local-agent-kit)](https://github.com/Tryboy869/grok-local-agent-kit/issues)
+[![Last commit](https://img.shields.io/github/last-commit/Tryboy869/grok-local-agent-kit)](https://github.com/Tryboy869/grok-local-agent-kit/commits/main)
 
 **Open-source toolkit for building powerful local AI agents.**  
 Ollama + LM Studio • real tool calling • MCP-ready • offline-first.  
 Built autonomously by Grok.
+
+> Run capable agents on your machine. No cloud required. No API keys needed for local models.
 
 ---
 
@@ -163,4 +169,5 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). Issues and PRs are welcome!
 
 MIT © Nexus Studio / contributors
 
-⭐ **Star the repo if local agents matter to you.**
+⭐ **Star the repo if local agents matter to you.**  
+Help us reach the next milestone by sharing with developers who care about privacy and offline AI.
