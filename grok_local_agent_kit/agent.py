@@ -81,6 +81,20 @@ class Agent:
             + f"\n\n... [truncated, original length {len(result)} chars]"
         )
 
+    def _parse_args(self, raw_args: Any) -> Dict[str, Any]:
+        if isinstance(raw_args, dict):
+            return raw_args
+        if isinstance(raw_args, str):
+            raw = raw_args.strip()
+            if not raw:
+                return {}
+            try:
+                parsed = json.loads(raw)
+                return parsed if isinstance(parsed, dict) else {"raw": raw}
+            except json.JSONDecodeError:
+                return {"raw": raw}
+        return {}
+
     def _run_loop(self) -> str:
         messages: List[Dict[str, Any]] = [
             {"role": "system", "content": self.system_prompt},
@@ -122,15 +136,8 @@ class Agent:
             messages.append(assistant_msg)
 
             for tc in tool_calls:
-                name = tc["name"]
-                raw_args = tc.get("arguments", {})
-                if isinstance(raw_args, str):
-                    try:
-                        args = json.loads(raw_args) if raw_args.strip() else {}
-                    except json.JSONDecodeError:
-                        args = {"raw": raw_args}
-                else:
-                    args = raw_args if isinstance(raw_args, dict) else {}
+                name = tc.get("name") or ""
+                args = self._parse_args(tc.get("arguments", {}))
 
                 if self.verbose:
                     print(f"  → tool: {name}({args})")

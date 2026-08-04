@@ -1,6 +1,6 @@
 # Public Roadmap — grok-local-agent-kit
 
-## ✅ v0.6.0 (current) — MVP public-ready
+## ✅ v0.6.1 (current) — MVP public-ready
 
 - Real Agent with ReAct-style tool loop + clearer iteration logging
 - Multi-LLM: Ollama + OpenAI-compatible (LM Studio, vLLM…)
@@ -12,6 +12,7 @@
 - Ready-to-run examples: chat, automation, research
 - Unit tests aligned with current API (no live LLM required)
 - Polished README, CONTRIBUTING, one-command install
+- Clean package layout (no empty src/ stubs)
 
 ## 🚧 v0.6.x / v0.7 — Real MCP
 

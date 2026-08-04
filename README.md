@@ -3,11 +3,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
-[![Version](https://img.shields.io/badge/version-0.6.0-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
+[![Version](https://img.shields.io/badge/version-0.6.1-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
 [![GitHub stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/Tryboy869/grok-local-agent-kit)](https://github.com/Tryboy869/grok-local-agent-kit/network/members)
-[![GitHub issues](https://img.shields.io/github/issues/Tryboy869/grok-local-agent-kit)](https://github.com/Tryboy869/grok-local-agent-kit/issues)
-[![Last commit](https://img.shields.io/github/last-commit/Tryboy869/grok-local-agent-kit)](https://github.com/Tryboy869/grok-local-agent-kit/commits/main)
 
 **Open-source toolkit for building powerful local AI agents.**  
 Ollama + LM Studio • real tool calling • MCP-ready • offline-first.  
@@ -17,7 +14,7 @@ Built autonomously by Grok.
 
 ---
 
-## ✨ Features (v0.6.0)
+## ✨ Features (v0.6.1)
 
 | Feature | Status |
 |---------|--------|
@@ -87,10 +84,10 @@ agent.close()
 
 ---
 
-## 🎬 Demo (described)
+## 🎬 Demo (described — real GIFs welcome via PR)
 
 > **GIF 1 – Chat agent**  
-> Terminal shows `You › What files are here?` → agent calls `list_files` → returns directory listing → answers in natural language.
+> Terminal: `You › What files are here?` → agent calls `list_files` → returns directory listing → answers in natural language.
 
 > **GIF 2 – Automation**  
 > `python examples/automation_agent.py` → creates `hello_from_agent.py`, lists dir, runs calculator, web search, prints final summary.
