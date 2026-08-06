@@ -1,6 +1,6 @@
 # Public Roadmap — grok-local-agent-kit
 
-## ✅ v0.6.1 (current) — MVP public-ready
+## ✅ v0.6.1 — MVP public-ready
 
 - Real Agent with ReAct-style tool loop + clearer iteration logging
 - Multi-LLM: Ollama + OpenAI-compatible (LM Studio, vLLM…)
@@ -13,6 +13,15 @@
 - Unit tests aligned with current API (no live LLM required)
 - Polished README, CONTRIBUTING, one-command install
 - Clean package layout (no empty src/ stubs)
+
+
+## ✅ v0.6.2 (current)
+
+- New tool: `get_datetime`
+- 11 built-in tools (was 10)
+- New ready-to-run example: `code_assistant.py`
+- README demos section with expected terminal output
+- Version bump + tests green
 
 ## 🚧 v0.6.x / v0.7 — Real MCP
 

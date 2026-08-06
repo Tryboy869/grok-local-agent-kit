@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
-[![Version](https://img.shields.io/badge/version-0.6.1-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
+[![Version](https://img.shields.io/badge/version-0.6.2-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
 [![GitHub stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers)
 
 **Open-source toolkit for building powerful local AI agents.**  
@@ -14,22 +14,51 @@ Built autonomously by Grok.
 
 ---
 
-## ✨ Features (v0.6.1)
+## ✨ Features (v0.6.2)
 
 | Feature | Status |
 |---------|--------|
 | Multi-LLM (Ollama native + OpenAI-compatible / LM Studio) | ✅ |
 | ReAct-style tool calling loop | ✅ |
-| Tools: web search, read/write/list files (cwd-safe), safe shell, execute_python, calculator | ✅ |
+| Tools: web search, read/write/list files (cwd-safe), safe shell, execute_python, calculator, get_datetime | ✅ |
 | Tool-result truncation & clearer LLM errors | ✅ |
 | Provider aliases (`lmstudio` → OpenAI-compat) | ✅ |
 | Enhanced MCP stub (list resources/tools + call) | ✅ |
 | CLI (`grok-agent chat / doctor`) | ✅ |
-| Ready-to-run examples (chat, automation, research) | ✅ |
+| Ready-to-run examples (chat, automation, research, code_assistant) | ✅ |
 | One-command install | ✅ |
 | Unit tests (no live LLM required) | ✅ |
 
 ---
+
+## 🎬 Demo (what it looks like)
+
+**Interactive chat**
+```
+$ grok-agent chat -v
+Local Agent ready (v0.6.2). Type 'exit' or Ctrl-C to quit.
+
+You › List files and create a note saying hello
+  → tool: list_files({'path': '.'})
+  ← FILE  README.md ...
+  → tool: write_file({'path': 'note.txt', 'content': 'hello'})
+  ← Successfully wrote ...
+Agent › Done. Created note.txt and listed the workspace.
+```
+
+**Automation agent**
+```
+$ python examples/automation_agent.py
+🤖 Automation Agent (v0.6.2)
+  → tool: write_file(...)
+  → tool: list_files(...)
+  → tool: calculator(...)
+  → tool: web_search(...)
+=== Final answer ===
+I created hello_from_agent.py, confirmed it, computed 22.0, and found ...
+```
+
+*(Replace with real terminal GIFs / asciinema when available.)*
 
 ## ⚡ Quick start (1 command)
 
@@ -84,87 +113,44 @@ agent.close()
 
 ---
 
-## 🎬 Demo (described — real GIFs welcome via PR)
+## 🛠️ Built-in tools
 
-> **GIF 1 – Chat agent**  
-> Terminal: `You › What files are here?` → agent calls `list_files` → returns directory listing → answers in natural language.
-
-> **GIF 2 – Automation**  
-> `python examples/automation_agent.py` → creates `hello_from_agent.py`, lists dir, runs calculator, web search, prints final summary.
-
-> **GIF 3 – Research**  
-> `python examples/research_agent.py --topic "MCP protocol"` → web_search → writes `research_YYYYMMDD_HHMM.md` → short confirmation.
-
-> **GIF 4 – LM Studio**  
-> Same chat flow with `--provider lmstudio`, model selector visible in LM Studio UI.
-
-> **GIF 5 – execute_python / calculator**  
-> Agent receives “compute fibonacci(10)” or “sqrt(144)+10” → calls the right tool → returns the number.
-
-*(Real GIFs will be added once recorded — PRs welcome!)*
+| Tool | Description |
+|------|-------------|
+| `web_search` | DuckDuckGo search |
+| `list_files` | List files (cwd-safe) |
+| `read_file` / `write_file` | Read/write text files (cwd-safe) |
+| `run_shell` | Restricted shell commands |
+| `execute_python` | Safe Python snippet execution |
+| `calculator` | Math expressions |
+| `get_datetime` | Current UTC time |
+| `mcp_*` | MCP discovery & call stubs |
 
 ---
 
-## 📦 Project layout
+## 📦 Examples
 
-```
-grok_local_agent_kit/
-├── agent.py      # Core Agent + ReAct loop
-├── llm.py        # Ollama + OpenAI-compatible client
-├── tools.py      # web_search, files (cwd-safe), shell, execute_python, calculator, MCP
-├── cli.py        # grok-agent CLI
-└── __init__.py
-examples/
-├── chat_agent.py
-├── automation_agent.py
-└── research_agent.py
-tests/
-└── test_agent.py
-```
-
----
-
-## 🛠️ Extending
-
-```python
-agent = create_agent()
-
-def my_tool(x: str) -> str:
-    return f"Got {x}"
-
-agent.register_tool(
-    name="my_tool",
-    func=my_tool,
-    description="Does something useful",
-    parameters={
-        "type": "object",
-        "properties": {"x": {"type": "string"}},
-        "required": ["x"],
-    },
-)
+```bash
+python examples/chat_agent.py
+python examples/automation_agent.py
+python examples/research_agent.py
+python examples/code_assistant.py
 ```
 
 ---
 
 ## 🗺️ Roadmap
 
-See [ROADMAP.md](ROADMAP.md).
-
-- **v0.6.x / 0.7** — Real MCP client (stdio + SSE)
-- **v0.8** — Multi-agent orchestration
-- **v1.0** — Vision, memory, skill marketplace
-
----
+See [ROADMAP.md](ROADMAP.md). Next focus: real MCP client.
 
 ## 🤝 Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Issues and PRs are welcome!
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## 📄 License
+
+MIT — see [LICENSE](LICENSE).
 
 ---
 
-## License
-
-MIT © Nexus Studio / contributors
-
-⭐ **Star the repo if local agents matter to you.**  
-Help us reach the next milestone by sharing with developers who care about privacy and offline AI.
+Built autonomously by Grok · Nexus Studio / Tryboy869
