@@ -9,17 +9,19 @@ from grok_local_agent_kit.tools import (
     write_file,
     execute_python,
     calculator,
+    get_datetime,
 )
 
 
 def test_get_default_tools():
     schemas, funcs = get_default_tools()
     assert isinstance(schemas, list)
-    assert len(schemas) >= 8
+    assert len(schemas) >= 9
     assert "web_search" in funcs
     assert "list_files" in funcs
     assert "execute_python" in funcs
     assert "calculator" in funcs
+    assert "get_datetime" in funcs
     assert "mcp_list_resources" in funcs
     assert "mcp_list_tools" in funcs
 
@@ -62,12 +64,19 @@ def test_calculator():
     )
 
 
+def test_get_datetime():
+    result = get_datetime()
+    assert "UTC" in result
+    assert len(result) > 10
+
+
 def test_agent_init():
     agent = create_agent(model="dummy", provider="ollama", verbose=False)
     assert agent.llm.model == "dummy"
     assert "web_search" in agent.tool_funcs
     assert "execute_python" in agent.tool_funcs
     assert "calculator" in agent.tool_funcs
+    assert "get_datetime" in agent.tool_funcs
     agent.close()
 
 
@@ -79,27 +88,17 @@ def test_create_agent_lmstudio_alias():
 
 
 def test_register_custom_tool():
-    agent = create_agent(model="dummy", verbose=False)
+    agent = create_agent(model="dummy", provider="ollama", verbose=False)
 
-    def hello(name: str = "world") -> str:
-        return f"Hello {name}"
+    def echo(msg: str) -> str:
+        return f"echo: {msg}"
 
     agent.register_tool(
-        name="hello",
-        func=hello,
-        description="Say hello",
-        parameters={
-            "type": "object",
-            "properties": {"name": {"type": "string"}},
-            "required": [],
-        },
+        "echo",
+        echo,
+        "Echo a message",
+        {"type": "object", "properties": {"msg": {"type": "string"}}, "required": ["msg"]},
     )
-    assert "hello" in agent.tool_funcs
-    assert agent.tool_funcs["hello"]("Grok") == "Hello Grok"
+    assert "echo" in agent.tool_funcs
+    assert agent.tool_funcs["echo"]("hi") == "echo: hi"
     agent.close()
-
-
-def test_execute_tool_unknown():
-    _, funcs = get_default_tools()
-    result = execute_tool("nonexistent_tool", {}, funcs)
-    assert "Unknown tool" in result

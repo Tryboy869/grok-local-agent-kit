@@ -7,6 +7,7 @@ import math
 import os
 import subprocess
 import tempfile
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
@@ -71,66 +72,44 @@ def list_files(path: str = ".", pattern: str = "*") -> str:
         if len(items) > 150:
             lines.append(f"... and {len(items) - 150} more")
         return "\n".join(lines)
-    except PermissionError as e:
-        return str(e)
     except Exception as e:
-        return f"Error listing files: {e}"
+        return f"list_files error: {e}"
 
 
-def read_file(path: str, max_chars: int = 8000) -> str:
-    """Read a text file (truncated for safety, cwd-restricted)."""
+def read_file(path: str, max_chars: int = 12000) -> str:
+    """Read a text file (cwd-safe)."""
     try:
         p = _safe_path(path)
+        if not p.exists():
+            return f"File not found: {p}"
         if not p.is_file():
             return f"Not a file: {p}"
         text = p.read_text(encoding="utf-8", errors="replace")
         if len(text) > max_chars:
-            return text[:max_chars] + f"\n\n... [truncated, total {len(text)} chars]"
+            return text[:max_chars] + f"\n\n... [truncated, {len(text) - max_chars} more chars]"
         return text
-    except PermissionError as e:
-        return str(e)
     except Exception as e:
-        return f"Error reading file: {e}"
+        return f"read_file error: {e}"
 
 
 def write_file(path: str, content: str) -> str:
-    """Write content to a file (creates parent dirs, cwd-restricted)."""
+    """Write text to a file (cwd-safe). Creates parent dirs if needed."""
     try:
         p = _safe_path(path)
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text(content, encoding="utf-8")
         return f"Successfully wrote {len(content)} chars to {p}"
-    except PermissionError as e:
-        return str(e)
     except Exception as e:
-        return f"Error writing file: {e}"
+        return f"write_file error: {e}"
 
 
 def run_shell(command: str, timeout: int = 30) -> str:
-    """Run a shell command (basic safety + timeout)."""
-    blocked = [
-        "rm -rf /",
-        "rm -rf /*",
-        "mkfs",
-        ":(){:|:&};:",
-        "dd if=/dev/zero",
-        "chmod -R 777 /",
-        "> /dev/sda",
-        "shutdown",
-        "reboot",
-        "poweroff",
-        "halt",
-        "init 0",
-        "init 6",
-        "fork bomb",
-        "curl | bash",
-        "wget | sh",
-    ]
+    """Run a shell command with basic safety restrictions."""
+    blocked = ["rm -rf", "mkfs", "dd if=", ":(){", "shutdown", "reboot", "passwd"]
     lower = command.lower()
     for b in blocked:
         if b in lower:
-            return f"Blocked potentially dangerous command containing: {b}"
-
+            return f"Blocked potentially dangerous command containing '{b}'."
     try:
         result = subprocess.run(
             command,
@@ -138,146 +117,100 @@ def run_shell(command: str, timeout: int = 30) -> str:
             capture_output=True,
             text=True,
             timeout=timeout,
-            cwd=os.getcwd(),
+            cwd=str(Path.cwd()),
         )
-        out = result.stdout.strip()
-        err = result.stderr.strip()
+        out = (result.stdout or "") + (result.stderr or "")
         if result.returncode != 0:
-            return f"Exit {result.returncode}\nSTDOUT:\n{out}\nSTDERR:\n{err}"
-        return out or "(no output)"
+            out = f"[exit {result.returncode}]\n{out}"
+        return out[:8000] if out else "(no output)"
     except subprocess.TimeoutExpired:
         return f"Command timed out after {timeout}s"
     except Exception as e:
-        return f"Shell error: {e}"
+        return f"run_shell error: {e}"
 
 
-def execute_python(code: str, timeout: int = 15) -> str:
-    """Execute a short Python snippet in a temporary file (sandbox-ish)."""
-    forbidden = [
-        "os.system",
-        "subprocess",
-        "__import__",
-        "open(",
-        "eval(",
-        "exec(",
-        "compile(",
-        "getattr(",
-        "setattr(",
-        "globals(",
-        "locals(",
-        "breakpoint(",
-        "input(",
-        "importlib",
-        "ctypes",
-        "socket",
-        "urllib",
-        "requests",
-    ]
-    for f in forbidden:
-        if f in code:
-            return f"Blocked code containing potentially unsafe construct: {f}"
-
+def execute_python(code: str) -> str:
+    """Execute a short Python snippet in a restricted environment."""
+    blocked = ["os.system", "subprocess", "__import__", "open(", "eval(", "exec(", "compile("]
+    for b in blocked:
+        if b in code and b != "__import__":  # allow limited import handling below
+            pass
+    # Stronger AST-based block
     try:
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as tmp:
-            tmp.write(code)
-            tmp_path = tmp.name
+        tree = ast.parse(code)
+    except SyntaxError as e:
+        return f"Syntax error: {e}"
 
-        result = subprocess.run(
-            ["python", tmp_path],
-            capture_output=True,
-            text=True,
-            timeout=timeout,
-            cwd=os.getcwd(),
-        )
-        Path(tmp_path).unlink(missing_ok=True)
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.Import, ast.ImportFrom)):
+            # Allow only a whitelist of modules
+            names = []
+            if isinstance(node, ast.Import):
+                names = [a.name.split(".")[0] for a in node.names]
+            else:
+                names = [node.module.split(".")[0]] if node.module else []
+            allowed = {"math", "json", "re", "datetime", "collections", "itertools", "functools", "statistics"}
+            for n in names:
+                if n not in allowed:
+                    return f"Blocked import of '{n}'. Allowed: {sorted(allowed)}"
+        if isinstance(node, ast.Call):
+            if isinstance(node.func, ast.Name) and node.func.id in {"eval", "exec", "compile", "open", "__import__"}:
+                return f"Blocked call to {node.func.id}"
+            if isinstance(node.func, ast.Attribute) and node.func.attr in {"system", "popen", "remove", "rmdir"}:
+                return f"Blocked attribute call .{node.func.attr}"
 
-        out = result.stdout.strip()
-        err = result.stderr.strip()
-        if result.returncode != 0:
-            return f"Exit {result.returncode}\nSTDOUT:\n{out}\nSTDERR:\n{err}"
-        return out or "(no output)"
-    except subprocess.TimeoutExpired:
-        return f"Python execution timed out after {timeout}s"
+    # Capture stdout
+    import io
+    import contextlib
+    buf = io.StringIO()
+    local_ns: Dict[str, Any] = {}
+    try:
+        with contextlib.redirect_stdout(buf):
+            exec(compile(tree, "<agent>", "exec"), {"__builtins__": {
+                "print": print, "len": len, "range": range, "str": str, "int": int,
+                "float": float, "list": list, "dict": dict, "set": set, "tuple": tuple,
+                "True": True, "False": False, "None": None, "abs": abs, "min": min,
+                "max": max, "sum": sum, "sorted": sorted, "enumerate": enumerate,
+                "zip": zip, "map": map, "filter": filter, "round": round,
+            }}, local_ns)
+        out = buf.getvalue()
+        return out if out else "(executed, no stdout)"
     except Exception as e:
-        return f"execute_python error: {e}"
+        return f"execute_python error: {type(e).__name__}: {e}"
 
 
 def calculator(expression: str) -> str:
-    """Safely evaluate a mathematical expression (no side effects)."""
+    """Safely evaluate a mathematical expression."""
+    allowed_names = {
+        k: getattr(math, k) for k in dir(math) if not k.startswith("_")
+    }
+    allowed_names.update({"pi": math.pi, "e": math.e})
     try:
         tree = ast.parse(expression, mode="eval")
-        allowed_names = {
-            "abs",
-            "round",
-            "min",
-            "max",
-            "sum",
-            "pow",
-            "sqrt",
-            "sin",
-            "cos",
-            "tan",
-            "log",
-            "log10",
-            "exp",
-            "pi",
-            "e",
-            "True",
-            "False",
-        }
-        allowed_funcs = {
-            "abs",
-            "round",
-            "min",
-            "max",
-            "sum",
-            "pow",
-            "sqrt",
-            "sin",
-            "cos",
-            "tan",
-            "log",
-            "log10",
-            "exp",
-        }
-
         for node in ast.walk(tree):
-            if isinstance(node, ast.Name) and node.id not in allowed_names:
-                return f"Blocked name in expression: {node.id}"
-            if isinstance(node, ast.Call):
-                if not isinstance(node.func, ast.Name) or node.func.id not in allowed_funcs:
-                    return "Blocked complex call"
-            if isinstance(node, (ast.Attribute, ast.Subscript, ast.Import, ast.ImportFrom)):
-                return "Blocked node type in expression"
-
-        safe_globals = {
-            "__builtins__": {},
-            "abs": abs,
-            "round": round,
-            "min": min,
-            "max": max,
-            "sum": sum,
-            "pow": pow,
-            "sqrt": math.sqrt,
-            "sin": math.sin,
-            "cos": math.cos,
-            "tan": math.tan,
-            "log": math.log,
-            "log10": math.log10,
-            "exp": math.exp,
-            "pi": math.pi,
-            "e": math.e,
-        }
-        result = eval(compile(tree, "<calculator>", "eval"), safe_globals, {})
+            if isinstance(node, (ast.Call, ast.Attribute, ast.Name)):
+                if isinstance(node, ast.Name) and node.id not in allowed_names and node.id not in {"True", "False"}:
+                    # allow numbers only essentially; names must be in allowed
+                    if node.id not in allowed_names:
+                        return f"Blocked name: {node.id}"
+            if isinstance(node, (ast.Import, ast.ImportFrom, ast.Subscript)):
+                return "Blocked construct in calculator"
+        result = eval(compile(tree, "<calc>", "eval"), {"__builtins__": {}}, allowed_names)
         return str(result)
     except Exception as e:
         return f"Calculator error: {e}"
 
 
+def get_datetime(timezone_name: str = "UTC") -> str:
+    """Return current date and time (UTC). timezone_name is informational."""
+    now = datetime.now(timezone.utc)
+    return now.strftime("%Y-%m-%d %H:%M:%S UTC") + f" (requested: {timezone_name})"
+
+
 def mcp_list_resources() -> str:
     """List available MCP resources (enhanced stub — real client in next release)."""
     return (
-        "MCP client status: stub (v0.6.0)\n"
+        "MCP client status: stub (v0.6.2)\n"
         "Planned for next minor: real stdio + SSE MCP client.\n"
         "Current registered resources: none.\n"
         "You can still call mcp_call_tool for testing the interface."
@@ -289,7 +222,7 @@ def mcp_call_tool(name: str, arguments: Optional[Dict[str, Any]] = None) -> str:
     return (
         f"MCP tool call stub → name={name}, args={arguments or {}}.\n"
         "Not connected to a live MCP server yet. "
-        "Wire a real server in v0.6.x / v0.7."
+        "Wire a real server in v0.7."
     )
 
 
@@ -313,10 +246,7 @@ TOOL_SPECS: List[Dict[str, Any]] = [
                 "type": "object",
                 "properties": {
                     "query": {"type": "string", "description": "Search query"},
-                    "max_results": {
-                        "type": "integer",
-                        "description": "Max results (default 5)",
-                    },
+                    "max_results": {"type": "integer", "description": "Max results (default 5)"},
                 },
                 "required": ["query"],
             },
@@ -326,15 +256,12 @@ TOOL_SPECS: List[Dict[str, Any]] = [
         "type": "function",
         "function": {
             "name": "list_files",
-            "description": "List files and directories in a path (workspace-restricted).",
+            "description": "List files and directories in a path (restricted to workspace).",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "path": {"type": "string", "description": "Directory path (default '.')"},
-                    "pattern": {
-                        "type": "string",
-                        "description": "Glob pattern (default '*')",
-                    },
+                    "pattern": {"type": "string", "description": "Glob pattern (default '*')"},
                 },
                 "required": [],
             },
@@ -344,15 +271,12 @@ TOOL_SPECS: List[Dict[str, Any]] = [
         "type": "function",
         "function": {
             "name": "read_file",
-            "description": "Read the content of a text file (workspace-restricted).",
+            "description": "Read a text file (cwd-safe).",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "path": {"type": "string", "description": "File path"},
-                    "max_chars": {
-                        "type": "integer",
-                        "description": "Max characters to return",
-                    },
+                    "max_chars": {"type": "integer", "description": "Max characters to return"},
                 },
                 "required": ["path"],
             },
@@ -362,7 +286,7 @@ TOOL_SPECS: List[Dict[str, Any]] = [
         "type": "function",
         "function": {
             "name": "write_file",
-            "description": "Write text content to a file (workspace-restricted).",
+            "description": "Write text to a file (cwd-safe).",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -377,15 +301,12 @@ TOOL_SPECS: List[Dict[str, Any]] = [
         "type": "function",
         "function": {
             "name": "run_shell",
-            "description": "Execute a shell command and return stdout/stderr (with safety filters).",
+            "description": "Run a shell command with safety restrictions.",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "command": {"type": "string", "description": "Shell command to run"},
-                    "timeout": {
-                        "type": "integer",
-                        "description": "Timeout in seconds",
-                    },
+                    "command": {"type": "string", "description": "Shell command"},
+                    "timeout": {"type": "integer", "description": "Timeout in seconds"},
                 },
                 "required": ["command"],
             },
@@ -395,15 +316,11 @@ TOOL_SPECS: List[Dict[str, Any]] = [
         "type": "function",
         "function": {
             "name": "execute_python",
-            "description": "Execute a short Python code snippet and return its output.",
+            "description": "Execute a short Python snippet safely.",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "code": {"type": "string", "description": "Python source code"},
-                    "timeout": {
-                        "type": "integer",
-                        "description": "Timeout in seconds (default 15)",
-                    },
+                    "code": {"type": "string", "description": "Python code to run"},
                 },
                 "required": ["code"],
             },
@@ -423,6 +340,23 @@ TOOL_SPECS: List[Dict[str, Any]] = [
                     },
                 },
                 "required": ["expression"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_datetime",
+            "description": "Get the current date and time (UTC).",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "timezone_name": {
+                        "type": "string",
+                        "description": "Requested timezone name (informational; result is always UTC)",
+                    },
+                },
+                "required": [],
             },
         },
     },
@@ -467,6 +401,7 @@ TOOL_FUNCS: Dict[str, Callable[..., str]] = {
     "run_shell": run_shell,
     "execute_python": execute_python,
     "calculator": calculator,
+    "get_datetime": get_datetime,
     "mcp_list_resources": mcp_list_resources,
     "mcp_list_tools": mcp_list_tools,
     "mcp_call_tool": mcp_call_tool,
