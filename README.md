@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
-[![Version](https://img.shields.io/badge/version-0.6.2-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
+[![Version](https://img.shields.io/badge/version-0.7.0-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
 [![GitHub stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers)
 
 **Open-source toolkit for building powerful local AI agents.**  
@@ -14,13 +14,14 @@ Built autonomously by Grok.
 
 ---
 
-## ✨ Features (v0.6.2)
+## ✨ Features (v0.7.0)
 
 | Feature | Status |
 |---------|--------|
 | Multi-LLM (Ollama native + OpenAI-compatible / LM Studio) | ✅ |
 | ReAct-style tool calling loop | ✅ |
-| Tools: web search, read/write/list files (cwd-safe), safe shell, execute_python, calculator, get_datetime | ✅ |
+| 12 tools: web search, files (cwd-safe), shell, execute_python, calculator, datetime, list_tools, MCP stubs | ✅ |
+| Conversation history save/load | ✅ |
 | Tool-result truncation & clearer LLM errors | ✅ |
 | Provider aliases (`lmstudio` → OpenAI-compat) | ✅ |
 | Enhanced MCP stub (list resources/tools + call) | ✅ |
@@ -34,9 +35,9 @@ Built autonomously by Grok.
 ## 🎬 Demo (what it looks like)
 
 **Interactive chat**
-```
+```text
 $ grok-agent chat -v
-Local Agent ready (v0.6.2). Type 'exit' or Ctrl-C to quit.
+Local Agent ready (v0.7.0). Type 'exit' or Ctrl-C to quit.
 
 You › List files and create a note saying hello
   → tool: list_files({'path': '.'})
@@ -47,9 +48,9 @@ Agent › Done. Created note.txt and listed the workspace.
 ```
 
 **Automation agent**
-```
+```text
 $ python examples/automation_agent.py
-🤖 Automation Agent (v0.6.2)
+🤖 Automation Agent (v0.7.0)
   → tool: write_file(...)
   → tool: list_files(...)
   → tool: calculator(...)
@@ -58,7 +59,10 @@ $ python examples/automation_agent.py
 I created hello_from_agent.py, confirmed it, computed 22.0, and found ...
 ```
 
-*(Replace with real terminal GIFs / asciinema when available.)*
+*(Replace the text demos above with real terminal GIFs / asciinema when available.  
+Suggested: record `grok-agent chat -v` creating a file + web search, and the automation example.)*
+
+---
 
 ## ⚡ Quick start (1 command)
 
@@ -108,6 +112,7 @@ from grok_local_agent_kit import create_agent
 
 agent = create_agent(model="llama3.2", provider="ollama", verbose=True)
 print(agent.run("List files in the current directory and create a hello.txt"))
+agent.save_history("session.json")   # new in 0.7
 agent.close()
 ```
 
@@ -124,6 +129,7 @@ agent.close()
 | `execute_python` | Safe Python snippet execution |
 | `calculator` | Math expressions |
 | `get_datetime` | Current UTC time |
+| `list_tools` | Introspect available tools |
 | `mcp_*` | MCP discovery & call stubs |
 
 ---
@@ -137,15 +143,17 @@ python examples/research_agent.py
 python examples/code_assistant.py
 ```
 
+All examples are ready-to-run once a local LLM is available.
+
 ---
 
 ## 🗺️ Roadmap
 
-See [ROADMAP.md](ROADMAP.md). Next focus: real MCP client.
+See [ROADMAP.md](ROADMAP.md). Next major focus: **real MCP client**.
 
 ## 🤝 Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md). Highest priority: full MCP stdio/SSE client.
 
 ## 📄 License
 
