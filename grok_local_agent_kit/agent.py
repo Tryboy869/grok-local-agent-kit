@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
 from .llm import LLMClient
@@ -170,6 +171,30 @@ class Agent:
 
     def close(self) -> None:
         self.llm.close()
+
+    def save_history(self, path: str = "agent_history.json") -> str:
+        """Persist conversation history to a JSON file (cwd-safe)."""
+        try:
+            p = Path(path).expanduser().resolve()
+            cwd = Path.cwd().resolve()
+            p.relative_to(cwd)  # safety
+            data = {"history": self.history, "version": "0.7.0"}
+            p.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+            return f"Saved {len(self.history)} messages to {p}"
+        except Exception as e:
+            return f"save_history error: {e}"
+
+    def load_history(self, path: str = "agent_history.json") -> str:
+        """Load conversation history from a JSON file (cwd-safe)."""
+        try:
+            p = Path(path).expanduser().resolve()
+            cwd = Path.cwd().resolve()
+            p.relative_to(cwd)
+            data = json.loads(p.read_text(encoding="utf-8"))
+            self.history = data.get("history", [])
+            return f"Loaded {len(self.history)} messages from {p}"
+        except Exception as e:
+            return f"load_history error: {e}"
 
 
 def create_agent(
