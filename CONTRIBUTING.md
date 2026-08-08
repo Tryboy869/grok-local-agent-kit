@@ -26,18 +26,18 @@ pip install -e ".[dev]"
    - `docs: ...`
 6. Open a Pull Request against `main`
 
-## What we need most
+## What we need most (priority order)
 
-- **Real MCP client** (stdio / SSE) — highest priority for next minor
-- More robust tool sandboxing (especially `execute_python` & `run_shell`)
-- Memory / conversation persistence
-- Vision support (local multimodal models)
-- Better error messages & structured logging
-- Demo GIFs / recordings for the README
-- Windows & macOS packaging notes
-- Additional ready-to-run examples
-- Calculator / math tool enhancements
-- CI coverage for more edge cases
+1. **Real MCP client** (stdio / SSE) — highest priority for v0.8
+2. More robust tool sandboxing (especially `execute_python` & `run_shell`)
+3. Streaming responses from the LLM
+4. Memory / conversation persistence beyond JSON
+5. Vision support (local multimodal models)
+6. Better error messages & structured logging
+7. Demo GIFs / recordings for the README
+8. Windows & macOS packaging notes
+9. Additional ready-to-run examples
+10. CI coverage for more edge cases
 
 ## Code style
 

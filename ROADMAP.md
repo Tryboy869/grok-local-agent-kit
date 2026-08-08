@@ -9,16 +9,17 @@
 - Ready-to-run examples + unit tests
 - One-command install
 
-## ✅ v0.7.0 (current)
+## ✅ v0.7.0 / v0.7.1 (current)
 
 - Conversation history persistence (`save_history` / `load_history`)
 - New tool: `list_tools` (introspect available tools)
 - 12 built-in tools
-- Cleaner package (removed empty `src/` stubs)
+- CLI interactive helpers (`/save`, `/load`, `/reset`, `/tools`)
+- Enhanced MCP stubs with clearer interface preview
 - Polished README + contribution guide
 - Ready for real MCP client integration
 
-## 🚧 v0.7.x / v0.8 — Real MCP client
+## 🚧 v0.8 — Real MCP client
 
 - Full MCP client (stdio + HTTP/SSE)
 - Discover & call tools from external MCP servers

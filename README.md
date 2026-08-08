@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
-[![Version](https://img.shields.io/badge/version-0.7.0-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
+[![Version](https://img.shields.io/badge/version-0.7.1-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
 [![GitHub stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers)
 
 **Open-source toolkit for building powerful local AI agents.**  
@@ -14,18 +14,18 @@ Built autonomously by Grok.
 
 ---
 
-## ✨ Features (v0.7.0)
+## ✨ Features (v0.7.1)
 
 | Feature | Status |
 |---------|--------|
 | Multi-LLM (Ollama native + OpenAI-compatible / LM Studio) | ✅ |
 | ReAct-style tool calling loop | ✅ |
-| 12 tools: web search, files (cwd-safe), shell, execute_python, calculator, datetime, list_tools, MCP stubs | ✅ |
-| Conversation history save/load | ✅ |
+| 12 tools: web search, files (cwd-safe), shell, execute_python, calculator, datetime, **list_tools**, MCP stubs | ✅ |
+| Conversation history save/load (+ CLI `/save` `/load`) | ✅ |
 | Tool-result truncation & clearer LLM errors | ✅ |
 | Provider aliases (`lmstudio` → OpenAI-compat) | ✅ |
 | Enhanced MCP stub (list resources/tools + call) | ✅ |
-| CLI (`grok-agent chat / doctor`) | ✅ |
+| CLI (`grok-agent chat / doctor`) with interactive helpers | ✅ |
 | Ready-to-run examples (chat, automation, research, code_assistant) | ✅ |
 | One-command install | ✅ |
 | Unit tests (no live LLM required) | ✅ |
@@ -37,7 +37,8 @@ Built autonomously by Grok.
 **Interactive chat**
 ```text
 $ grok-agent chat -v
-Local Agent ready (v0.7.0). Type 'exit' or Ctrl-C to quit.
+Local Agent ready (v0.7.1). Type 'exit' or Ctrl-C to quit.
+Special: /save [file], /load [file], /reset, /tools
 
 You › List files and create a note saying hello
   → tool: list_files({'path': '.'})
@@ -45,12 +46,17 @@ You › List files and create a note saying hello
   → tool: write_file({'path': 'note.txt', 'content': 'hello'})
   ← Successfully wrote ...
 Agent › Done. Created note.txt and listed the workspace.
+
+You › /tools
+Available tools (12):
+- web_search: Search the web ...
+...
 ```
 
 **Automation agent**
 ```text
 $ python examples/automation_agent.py
-🤖 Automation Agent (v0.7.0)
+🤖 Automation Agent (v0.7.1)
   → tool: write_file(...)
   → tool: list_files(...)
   → tool: calculator(...)
@@ -60,7 +66,7 @@ I created hello_from_agent.py, confirmed it, computed 22.0, and found ...
 ```
 
 *(Replace the text demos above with real terminal GIFs / asciinema when available.  
-Suggested: record `grok-agent chat -v` creating a file + web search, and the automation example.)*
+Suggested recordings: `grok-agent chat -v` creating a file + web search, and the automation example.)*
 
 ---
 
@@ -101,6 +107,9 @@ grok-agent chat "Search the web for local AI agents and summarize"
 # With LM Studio
 grok-agent chat --provider lmstudio --model your-model-name
 
+# Save history on exit
+grok-agent chat --save-history session.json
+
 # Health check
 grok-agent doctor
 ```
@@ -112,7 +121,7 @@ from grok_local_agent_kit import create_agent
 
 agent = create_agent(model="llama3.2", provider="ollama", verbose=True)
 print(agent.run("List files in the current directory and create a hello.txt"))
-agent.save_history("session.json")   # new in 0.7
+agent.save_history("session.json")
 agent.close()
 ```
 
@@ -149,7 +158,7 @@ All examples are ready-to-run once a local LLM is available.
 
 ## 🗺️ Roadmap
 
-See [ROADMAP.md](ROADMAP.md). Next major focus: **real MCP client**.
+See [ROADMAP.md](ROADMAP.md). Next major focus: **real MCP client** (v0.8).
 
 ## 🤝 Contributing
 

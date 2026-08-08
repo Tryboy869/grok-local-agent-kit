@@ -31,8 +31,18 @@ def cli() -> None:
 )
 @click.option("--base-url", default=None, help="Custom base URL")
 @click.option("--verbose", "-v", is_flag=True, help="Show tool calls")
+@click.option(
+    "--save-history",
+    default=None,
+    help="Save conversation history to this JSON file on exit",
+)
 def chat(
-    prompt: str | None, model: str, provider: str, base_url: str | None, verbose: bool
+    prompt: str | None,
+    model: str,
+    provider: str,
+    base_url: str | None,
+    verbose: bool,
+    save_history: str | None,
 ) -> None:
     """Interactive chat or one-shot prompt."""
     agent = create_agent(
@@ -42,20 +52,46 @@ def chat(
     if prompt:
         result = agent.run(prompt)
         console.print(Markdown(result))
+        if save_history:
+            console.print(agent.save_history(save_history))
         agent.close()
         return
 
     console.print(
         f"[bold green]Local Agent ready (v{__version__}).[/] "
         "Type 'exit' or Ctrl-C to quit.\n"
+        "Special: /save [file], /load [file], /reset, /tools\n"
     )
     try:
         while True:
             user = console.input("[bold cyan]You › [/]")
-            if user.strip().lower() in {"exit", "quit", "q"}:
+            stripped = user.strip()
+            if stripped.lower() in {"exit", "quit", "q"}:
                 break
-            if not user.strip():
+            if not stripped:
                 continue
+
+            # Lightweight interactive commands
+            if stripped.startswith("/save"):
+                parts = stripped.split(maxsplit=1)
+                path = parts[1] if len(parts) > 1 else "agent_history.json"
+                console.print(agent.save_history(path))
+                continue
+            if stripped.startswith("/load"):
+                parts = stripped.split(maxsplit=1)
+                path = parts[1] if len(parts) > 1 else "agent_history.json"
+                console.print(agent.load_history(path))
+                continue
+            if stripped in {"/reset", "/clear"}:
+                agent.reset()
+                console.print("[yellow]History cleared.[/]")
+                continue
+            if stripped in {"/tools", "/list_tools"}:
+                from .tools import list_tools as _lt
+
+                console.print(_lt())
+                continue
+
             result = agent.chat(user)
             console.print()
             console.print(Markdown(result))
@@ -63,6 +99,8 @@ def chat(
     except (KeyboardInterrupt, EOFError):
         console.print("\nBye!")
     finally:
+        if save_history:
+            console.print(agent.save_history(save_history))
         agent.close()
 
 
@@ -89,7 +127,8 @@ def doctor(model: str, provider: str, base_url: str | None) -> None:
         reply = agent.run("Reply with exactly: OK")
         console.print(f"[green]✓ LLM responded:[/] {reply[:120]}")
         tools = ", ".join(sorted(agent.tool_funcs.keys()))
-        console.print(f"[green]✓ Tools registered:[/] {tools}")
+        console.print(f"[green]✓ Tools registered ({len(agent.tool_funcs)}):[/] {tools}")
+        console.print(f"[dim]Version {__version__}[/]")
     except Exception as e:
         console.print(f"[red]✗ Failed:[/] {e}")
     finally:

@@ -4,9 +4,7 @@ from __future__ import annotations
 
 import ast
 import math
-import os
 import subprocess
-import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
@@ -131,11 +129,6 @@ def run_shell(command: str, timeout: int = 30) -> str:
 
 def execute_python(code: str) -> str:
     """Execute a short Python snippet in a restricted environment."""
-    blocked = ["os.system", "subprocess", "__import__", "open(", "eval(", "exec(", "compile("]
-    for b in blocked:
-        if b in code and b != "__import__":  # allow limited import handling below
-            pass
-    # Stronger AST-based block
     try:
         tree = ast.parse(code)
     except SyntaxError as e:
@@ -143,36 +136,79 @@ def execute_python(code: str) -> str:
 
     for node in ast.walk(tree):
         if isinstance(node, (ast.Import, ast.ImportFrom)):
-            # Allow only a whitelist of modules
             names = []
             if isinstance(node, ast.Import):
                 names = [a.name.split(".")[0] for a in node.names]
             else:
                 names = [node.module.split(".")[0]] if node.module else []
-            allowed = {"math", "json", "re", "datetime", "collections", "itertools", "functools", "statistics"}
+            allowed = {
+                "math",
+                "json",
+                "re",
+                "datetime",
+                "collections",
+                "itertools",
+                "functools",
+                "statistics",
+            }
             for n in names:
                 if n not in allowed:
                     return f"Blocked import of '{n}'. Allowed: {sorted(allowed)}"
         if isinstance(node, ast.Call):
-            if isinstance(node.func, ast.Name) and node.func.id in {"eval", "exec", "compile", "open", "__import__"}:
+            if isinstance(node.func, ast.Name) and node.func.id in {
+                "eval",
+                "exec",
+                "compile",
+                "open",
+                "__import__",
+            }:
                 return f"Blocked call to {node.func.id}"
-            if isinstance(node.func, ast.Attribute) and node.func.attr in {"system", "popen", "remove", "rmdir"}:
+            if isinstance(node.func, ast.Attribute) and node.func.attr in {
+                "system",
+                "popen",
+                "remove",
+                "rmdir",
+            }:
                 return f"Blocked attribute call .{node.func.attr}"
 
-    # Capture stdout
-    import io
     import contextlib
+    import io
+
     buf = io.StringIO()
     local_ns: Dict[str, Any] = {}
     try:
         with contextlib.redirect_stdout(buf):
-            exec(compile(tree, "<agent>", "exec"), {"__builtins__": {
-                "print": print, "len": len, "range": range, "str": str, "int": int,
-                "float": float, "list": list, "dict": dict, "set": set, "tuple": tuple,
-                "True": True, "False": False, "None": None, "abs": abs, "min": min,
-                "max": max, "sum": sum, "sorted": sorted, "enumerate": enumerate,
-                "zip": zip, "map": map, "filter": filter, "round": round,
-            }}, local_ns)
+            exec(
+                compile(tree, "<agent>", "exec"),
+                {
+                    "__builtins__": {
+                        "print": print,
+                        "len": len,
+                        "range": range,
+                        "str": str,
+                        "int": int,
+                        "float": float,
+                        "list": list,
+                        "dict": dict,
+                        "set": set,
+                        "tuple": tuple,
+                        "True": True,
+                        "False": False,
+                        "None": None,
+                        "abs": abs,
+                        "min": min,
+                        "max": max,
+                        "sum": sum,
+                        "sorted": sorted,
+                        "enumerate": enumerate,
+                        "zip": zip,
+                        "map": map,
+                        "filter": filter,
+                        "round": round,
+                    }
+                },
+                local_ns,
+            )
         out = buf.getvalue()
         return out if out else "(executed, no stdout)"
     except Exception as e:
@@ -181,18 +217,16 @@ def execute_python(code: str) -> str:
 
 def calculator(expression: str) -> str:
     """Safely evaluate a mathematical expression."""
-    allowed_names = {
-        k: getattr(math, k) for k in dir(math) if not k.startswith("_")
-    }
+    allowed_names = {k: getattr(math, k) for k in dir(math) if not k.startswith("_")}
     allowed_names.update({"pi": math.pi, "e": math.e})
     try:
         tree = ast.parse(expression, mode="eval")
         for node in ast.walk(tree):
-            if isinstance(node, (ast.Call, ast.Attribute, ast.Name)):
-                if isinstance(node, ast.Name) and node.id not in allowed_names and node.id not in {"True", "False"}:
-                    # allow numbers only essentially; names must be in allowed
-                    if node.id not in allowed_names:
-                        return f"Blocked name: {node.id}"
+            if isinstance(node, ast.Name) and node.id not in allowed_names and node.id not in {
+                "True",
+                "False",
+            }:
+                return f"Blocked name: {node.id}"
             if isinstance(node, (ast.Import, ast.ImportFrom, ast.Subscript)):
                 return "Blocked construct in calculator"
         result = eval(compile(tree, "<calc>", "eval"), {"__builtins__": {}}, allowed_names)
@@ -207,13 +241,28 @@ def get_datetime(timezone_name: str = "UTC") -> str:
     return now.strftime("%Y-%m-%d %H:%M:%S UTC") + f" (requested: {timezone_name})"
 
 
+def list_tools() -> str:
+    """Return the list of currently registered tools and short descriptions."""
+    lines = []
+    for schema in TOOL_SPECS:
+        fn = schema.get("function", {})
+        name = fn.get("name", "?")
+        desc = (fn.get("description") or "").strip()
+        lines.append(f"- {name}: {desc}")
+    return f"Available tools ({len(lines)}):\n" + "\n".join(lines)
+
+
 def mcp_list_resources() -> str:
-    """List available MCP resources (enhanced stub — real client in next release)."""
+    """List available MCP resources (enhanced stub — real client planned for v0.8)."""
     return (
-        "MCP client status: stub (v0.6.2)\n"
-        "Planned for next minor: real stdio + SSE MCP client.\n"
-        "Current registered resources: none.\n"
-        "You can still call mcp_call_tool for testing the interface."
+        "MCP client status: enhanced stub (v0.7.1)\n"
+        "Planned for v0.8: real stdio + SSE/HTTP MCP client.\n"
+        "Current registered resources: none (no live server connected).\n"
+        "Interface preview:\n"
+        "  mcp_list_resources() → list resources\n"
+        "  mcp_list_tools()     → discover external tools\n"
+        "  mcp_call_tool(name, arguments) → invoke a remote tool\n"
+        "You can still call these tools to exercise the agent loop."
     )
 
 
@@ -222,16 +271,16 @@ def mcp_call_tool(name: str, arguments: Optional[Dict[str, Any]] = None) -> str:
     return (
         f"MCP tool call stub → name={name}, args={arguments or {}}.\n"
         "Not connected to a live MCP server yet. "
-        "Wire a real server in v0.7."
+        "Full client lands in v0.8 (stdio + SSE)."
     )
 
 
 def mcp_list_tools() -> str:
     """List tools that would be available from connected MCP servers (stub)."""
     return (
-        "MCP tools discovery stub.\n"
+        "MCP tools discovery stub (v0.7.1).\n"
         "When a real MCP client is connected you will see external tools here.\n"
-        "Local tools remain available via the standard registry."
+        "Local tools remain available via the standard registry (see list_tools)."
     )
 
 
@@ -246,7 +295,10 @@ TOOL_SPECS: List[Dict[str, Any]] = [
                 "type": "object",
                 "properties": {
                     "query": {"type": "string", "description": "Search query"},
-                    "max_results": {"type": "integer", "description": "Max results (default 5)"},
+                    "max_results": {
+                        "type": "integer",
+                        "description": "Max results (default 5)",
+                    },
                 },
                 "required": ["query"],
             },
@@ -260,8 +312,14 @@ TOOL_SPECS: List[Dict[str, Any]] = [
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "path": {"type": "string", "description": "Directory path (default '.')"},
-                    "pattern": {"type": "string", "description": "Glob pattern (default '*')"},
+                    "path": {
+                        "type": "string",
+                        "description": "Directory path (default '.')",
+                    },
+                    "pattern": {
+                        "type": "string",
+                        "description": "Glob pattern (default '*')",
+                    },
                 },
                 "required": [],
             },
@@ -276,7 +334,10 @@ TOOL_SPECS: List[Dict[str, Any]] = [
                 "type": "object",
                 "properties": {
                     "path": {"type": "string", "description": "File path"},
-                    "max_chars": {"type": "integer", "description": "Max characters to return"},
+                    "max_chars": {
+                        "type": "integer",
+                        "description": "Max characters to return",
+                    },
                 },
                 "required": ["path"],
             },
@@ -306,7 +367,10 @@ TOOL_SPECS: List[Dict[str, Any]] = [
                 "type": "object",
                 "properties": {
                     "command": {"type": "string", "description": "Shell command"},
-                    "timeout": {"type": "integer", "description": "Timeout in seconds"},
+                    "timeout": {
+                        "type": "integer",
+                        "description": "Timeout in seconds",
+                    },
                 },
                 "required": ["command"],
             },
@@ -363,6 +427,14 @@ TOOL_SPECS: List[Dict[str, Any]] = [
     {
         "type": "function",
         "function": {
+            "name": "list_tools",
+            "description": "List all currently registered tools and their short descriptions.",
+            "parameters": {"type": "object", "properties": {}, "required": []},
+        },
+    },
+    {
+        "type": "function",
+        "function": {
             "name": "mcp_list_resources",
             "description": "List available MCP resources (stub until full MCP client).",
             "parameters": {"type": "object", "properties": {}, "required": []},
@@ -402,6 +474,7 @@ TOOL_FUNCS: Dict[str, Callable[..., str]] = {
     "execute_python": execute_python,
     "calculator": calculator,
     "get_datetime": get_datetime,
+    "list_tools": list_tools,
     "mcp_list_resources": mcp_list_resources,
     "mcp_list_tools": mcp_list_tools,
     "mcp_call_tool": mcp_call_tool,
