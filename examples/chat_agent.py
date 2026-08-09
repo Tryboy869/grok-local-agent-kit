@@ -21,11 +21,12 @@ from grok_local_agent_kit import create_agent, __version__
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Local chat agent")
-    parser.add_argument("--model", default="llama3.2")
+    parser.add_argument("--model", default=None, help="Override GROK_AGENT_MODEL")
     parser.add_argument(
         "--provider",
-        default="ollama",
+        default=None,
         choices=["ollama", "lmstudio", "openai"],
+        help="Override GROK_AGENT_PROVIDER",
     )
     parser.add_argument("--base-url", default=None)
     parser.add_argument("--verbose", action="store_true")
