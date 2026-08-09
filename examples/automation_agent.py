@@ -17,7 +17,7 @@ from grok_local_agent_kit import create_agent, __version__
 
 
 def main() -> None:
-    agent = create_agent(model="llama3.2", provider="ollama", verbose=True)
+    agent = create_agent(verbose=True)
 
     print(f"🤖 Automation Agent (v{__version__})\n")
 
