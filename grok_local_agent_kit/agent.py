@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
@@ -15,7 +16,8 @@ You have access to tools. When you need information or to perform actions, call 
 Be concise, accurate, and prefer using tools over guessing.
 Never invent file contents or search results — always call the tool.
 When a task is complete, give a clear final answer without unnecessary tool calls.
-If a tool fails, explain the error briefly and try an alternative when possible."""
+If a tool fails, explain the error briefly and try an alternative when possible.
+Prefer small, focused tool calls. You can call multiple tools in sequence across turns."""
 
 # Max characters of a tool result kept in the conversation context
 TOOL_RESULT_MAX_CHARS = 6000
@@ -63,6 +65,19 @@ class Agent:
                 },
             }
         )
+
+    def register_tools(self, tools: List[Dict[str, Any]]) -> None:
+        """
+        Register multiple tools at once.
+        Each item: {"name": str, "func": callable, "description": str, "parameters": dict}
+        """
+        for t in tools:
+            self.register_tool(
+                name=t["name"],
+                func=t["func"],
+                description=t.get("description", ""),
+                parameters=t.get("parameters", {"type": "object", "properties": {}}),
+            )
 
     def chat(self, user_message: str) -> str:
         """Single-turn or multi-turn chat with automatic tool use."""
@@ -178,7 +193,7 @@ class Agent:
             p = Path(path).expanduser().resolve()
             cwd = Path.cwd().resolve()
             p.relative_to(cwd)  # safety
-            data = {"history": self.history, "version": "0.7.1"}
+            data = {"history": self.history, "version": "0.7.2"}
             p.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
             return f"Saved {len(self.history)} messages to {p}"
         except Exception as e:
@@ -198,13 +213,21 @@ class Agent:
 
 
 def create_agent(
-    model: str = "llama3.2",
-    provider: str = "ollama",
+    model: Optional[str] = None,
+    provider: Optional[str] = None,
     base_url: Optional[str] = None,
     **kwargs: Any,
 ) -> Agent:
-    """Factory helper. Accepts provider aliases: ollama | lmstudio | openai."""
-    provider = (provider or "ollama").lower().strip()
+    """
+    Factory helper. Accepts provider aliases: ollama | lmstudio | openai.
+
+    Environment variables (used as defaults when args omitted):
+      GROK_AGENT_MODEL, GROK_AGENT_PROVIDER, GROK_AGENT_BASE_URL
+    """
+    model = model or os.environ.get("GROK_AGENT_MODEL", "llama3.2")
+    provider = (provider or os.environ.get("GROK_AGENT_PROVIDER", "ollama")).lower().strip()
+    base_url = base_url or os.environ.get("GROK_AGENT_BASE_URL")
+
     if provider == "lmstudio":
         provider = "openai"
         base_url = base_url or "http://localhost:1234/v1"
