@@ -9,7 +9,7 @@
 - Ready-to-run examples + unit tests
 - One-command install
 
-## ✅ v0.7.0 / v0.7.1 (current)
+## ✅ v0.7.0 / v0.7.1
 
 - Conversation history persistence (`save_history` / `load_history`)
 - New tool: `list_tools` (introspect available tools)
@@ -17,7 +17,13 @@
 - CLI interactive helpers (`/save`, `/load`, `/reset`, `/tools`)
 - Enhanced MCP stubs with clearer interface preview
 - Polished README + contribution guide
-- Ready for real MCP client integration
+
+## ✅ v0.7.2 (current)
+
+- Env var defaults: `GROK_AGENT_MODEL`, `GROK_AGENT_PROVIDER`, `GROK_AGENT_BASE_URL`
+- `register_tools()` batch registration helper
+- Slightly improved system prompt & agent docs
+- README / version bump + clearer demo descriptions
 
 ## 🚧 v0.8 — Real MCP client
 
