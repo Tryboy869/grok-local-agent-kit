@@ -184,6 +184,10 @@ class Agent:
         """Clear conversation history."""
         self.history = []
 
+    def get_history(self) -> list:
+        """Return a shallow copy of the conversation history."""
+        return list(self.history)
+
     def close(self) -> None:
         self.llm.close()
 
@@ -193,7 +197,7 @@ class Agent:
             p = Path(path).expanduser().resolve()
             cwd = Path.cwd().resolve()
             p.relative_to(cwd)  # safety
-            data = {"history": self.history, "version": "0.7.2"}
+            data = {"history": self.history, "version": "0.7.3"}
             p.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
             return f"Saved {len(self.history)} messages to {p}"
         except Exception as e:
