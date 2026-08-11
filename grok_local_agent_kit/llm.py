@@ -175,6 +175,75 @@ class LLMClient:
 
         return {"content": content, "tool_calls": tool_calls, "raw": data}
 
+    def stream_chat(
+        self,
+        messages: List[Dict[str, Any]],
+        tools: Optional[List[Dict[str, Any]]] = None,
+    ):
+        """
+        Yield content chunks when the model produces a final answer without tools.
+        Falls back to a single full response if streaming is unavailable.
+        When tools are present, streaming is skipped (tool-calling is more reliable non-stream).
+        """
+        if tools:
+            yield from []
+            return self.chat(messages, tools=tools)
+
+        if self.provider == "ollama":
+            if ollama is None:
+                yield "[LLM error] ollama package not installed."
+                return {"content": None, "tool_calls": None, "raw": None}
+            try:
+                stream = ollama.chat(
+                    model=self.model,
+                    messages=messages,
+                    options={"temperature": self.temperature},
+                    stream=True,
+                )
+                full = ""
+                for chunk in stream:
+                    msg = chunk.get("message", {}) or {}
+                    delta = msg.get("content") or ""
+                    if delta:
+                        full += delta
+                        yield delta
+                return {"content": full, "tool_calls": None, "raw": None}
+            except Exception as e:
+                yield f"[LLM error] {e}"
+                return {"content": None, "tool_calls": None, "raw": None}
+
+        # OpenAI-compatible streaming
+        assert self._client is not None
+        payload = {
+            "model": self.model,
+            "messages": messages,
+            "temperature": self.temperature,
+            "stream": True,
+        }
+        try:
+            with self._client.stream("POST", "/chat/completions", json=payload) as r:
+                r.raise_for_status()
+                full = ""
+                for line in r.iter_lines():
+                    if not line or not line.startswith("data:"):
+                        continue
+                    data = line[5:].strip()
+                    if data == "[DONE]":
+                        break
+                    try:
+                        obj = json.loads(data)
+                        delta = (obj.get("choices") or [{}])[0].get("delta") or {}
+                        piece = delta.get("content") or ""
+                        if piece:
+                            full += piece
+                            yield piece
+                    except Exception:
+                        continue
+                return {"content": full, "tool_calls": None, "raw": None}
+        except Exception as e:
+            yield f"[LLM error] {e}"
+            return {"content": None, "tool_calls": None, "raw": None}
+
     def ping(self) -> str:
         """Lightweight connectivity check."""
         try:
