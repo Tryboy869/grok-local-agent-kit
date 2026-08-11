@@ -34,7 +34,7 @@ pip install -e ".[dev]"
 4. Memory / conversation persistence beyond JSON
 5. Vision support (local multimodal models)
 6. Better error messages & structured logging
-7. Demo GIFs / recordings for the README
+7. Demo GIFs / asciinema recordings for the README (highest visibility)
 8. Windows & macOS packaging notes
 9. Additional ready-to-run examples
 10. CI coverage for more edge cases

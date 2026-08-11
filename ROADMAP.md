@@ -18,12 +18,19 @@
 - Enhanced MCP stubs with clearer interface preview
 - Polished README + contribution guide
 
-## ✅ v0.7.2 (current)
+## ✅ v0.7.2
 
 - Env var defaults: `GROK_AGENT_MODEL`, `GROK_AGENT_PROVIDER`, `GROK_AGENT_BASE_URL`
 - `register_tools()` batch registration helper
 - Slightly improved system prompt & agent docs
 - README / version bump + clearer demo descriptions
+
+## ✅ v0.7.3 (current)
+
+- Streaming responses for final answers (`LLMClient.stream_chat`)
+- `Agent.get_history()` helper
+- Cleaner package entrypoints
+- Version / docs polish
 
 ## 🚧 v0.8 — Real MCP client
 
@@ -48,7 +55,7 @@
 - Stronger sandboxed code execution
 - Official docs site
 - PyPI release with stable API
-- Streaming responses
+- Full streaming throughout the tool loop
 
 ## Ideas / later
 
