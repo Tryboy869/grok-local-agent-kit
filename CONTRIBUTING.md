@@ -30,7 +30,7 @@ pip install -e ".[dev]"
 
 1. **Real MCP client** (stdio / SSE) — highest priority for v0.8
 2. More robust tool sandboxing (especially `execute_python` & `run_shell`)
-3. Streaming responses from the LLM
+3. Full token-level streaming inside the tool loop (final answers already supported)
 4. Memory / conversation persistence beyond JSON
 5. Vision support (local multimodal models)
 6. Better error messages & structured logging

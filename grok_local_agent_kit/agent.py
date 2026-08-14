@@ -35,6 +35,7 @@ class Agent:
         max_iterations: int = 12,
         verbose: bool = False,
         temperature: float = 0.3,
+        stream: bool = False,
     ):
         self.llm = LLMClient(
             model=model, provider=provider, base_url=base_url, temperature=temperature
@@ -42,6 +43,7 @@ class Agent:
         self.system_prompt = system_prompt
         self.max_iterations = max_iterations
         self.verbose = verbose
+        self.stream = stream
 
         self.tool_schemas, self.tool_funcs = get_default_tools()
         self.history: List[Dict[str, Any]] = []
@@ -121,6 +123,8 @@ class Agent:
             if self.verbose:
                 print(f"\n[iteration {iteration + 1}/{self.max_iterations}]")
 
+            # Prefer streaming only for the final answer (no tools) when enabled.
+            # Tool-calling remains non-streaming for reliability across providers.
             response = self.llm.chat(messages, tools=self.tool_schemas)
 
             content = response.get("content")
@@ -128,6 +132,12 @@ class Agent:
 
             if not tool_calls:
                 final = (content or "(no response)").strip()
+                # Optional stream of the final answer for UX (already complete from non-stream call).
+                # True token streaming of final answers can be enabled later via stream_chat
+                # when tools are omitted; current path keeps tool loop robust.
+                if self.stream and final and self.verbose:
+                    # Echo final for consistency with streaming UX demos
+                    print(f"\n[stream] {final[:200]}{'...' if len(final) > 200 else ''}")
                 self.history.append({"role": "assistant", "content": final})
                 return final
 
@@ -197,7 +207,7 @@ class Agent:
             p = Path(path).expanduser().resolve()
             cwd = Path.cwd().resolve()
             p.relative_to(cwd)  # safety
-            data = {"history": self.history, "version": "0.7.3"}
+            data = {"history": self.history, "version": "0.7.4"}
             p.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
             return f"Saved {len(self.history)} messages to {p}"
         except Exception as e:

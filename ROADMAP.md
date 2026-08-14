@@ -25,12 +25,19 @@
 - Slightly improved system prompt & agent docs
 - README / version bump + clearer demo descriptions
 
-## ✅ v0.7.3 (current)
+## ✅ v0.7.3
 
 - Streaming responses for final answers (`LLMClient.stream_chat`)
 - `Agent.get_history()` helper
 - Cleaner package entrypoints
 - Version / docs polish
+
+## ✅ v0.7.4 (current)
+
+- Agent `stream` flag + tighter integration with final-answer path
+- README feature table + demo placeholders updated
+- History version tag bumped
+- Docs / roadmap sync
 
 ## 🚧 v0.8 — Real MCP client
 

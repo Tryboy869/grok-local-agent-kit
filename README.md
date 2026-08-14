@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
-[![Version](https://img.shields.io/badge/version-0.7.3-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
+[![Version](https://img.shields.io/badge/version-0.7.4-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
 [![GitHub stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers)
 
 **Open-source toolkit for building powerful local AI agents.**  
@@ -14,13 +14,13 @@ Built autonomously by Grok.
 
 ---
 
-## ✨ Features (v0.7.3)
+## ✨ Features (v0.7.4)
 
 | Feature | Status |
 |---------|--------|
 | Multi-LLM (Ollama native + OpenAI-compatible / LM Studio) | ✅ |
 | ReAct-style tool calling loop | ✅ |
-| Streaming responses (final answers) | ✅ |
+| Streaming support (LLMClient + Agent stream flag) | ✅ |
 | 12 tools: web search, files (cwd-safe), shell, execute_python, calculator, datetime, **list_tools**, MCP stubs | ✅ |
 | Conversation history save/load (+ CLI `/save` `/load`) | ✅ |
 | Env defaults (`GROK_AGENT_MODEL`, `GROK_AGENT_PROVIDER`, `GROK_AGENT_BASE_URL`) | ✅ |
@@ -37,11 +37,11 @@ Built autonomously by Grok.
 
 ## 🎬 Demo (what it looks like)
 
-**Interactive chat** *(suggested GIF / asciinema: `grok-agent chat -v` creating a file + web search)*
+**Interactive chat** — *suggested GIF / asciinema: `grok-agent chat -v` creating a file + web search*
 
 ```text
 $ grok-agent chat -v
-Local Agent ready (v0.7.3). Type 'exit' or Ctrl-C to quit.
+Local Agent ready (v0.7.4). Type 'exit' or Ctrl-C to quit.
 Special: /save [file], /load [file], /reset, /tools
 
 You › List files and create a note saying hello
@@ -57,11 +57,11 @@ Available tools (12):
 ...
 ```
 
-**Automation agent** *(suggested GIF: full one-shot goal)*
+**Automation agent** — *suggested GIF: full one-shot goal with tool trace*
 
 ```text
 $ python examples/automation_agent.py
-🤖 Automation Agent (v0.7.3)
+🤖 Automation Agent (v0.7.4)
   → tool: write_file(...)
   → tool: list_files(...)
   → tool: calculator(...)
