@@ -32,12 +32,18 @@
 - Cleaner package entrypoints
 - Version / docs polish
 
-## ✅ v0.7.4 (current)
+## ✅ v0.7.4
 
 - Agent `stream` flag + tighter integration with final-answer path
 - README feature table + demo placeholders updated
 - History version tag bumped
 - Docs / roadmap sync
+
+## ✅ v0.7.5 (current)
+
+- Real final-answer streaming via `LLMClient.stream_chat` when `stream=True`
+- CLI respects env defaults properly + new `--stream` flag
+- Version / history / README / roadmap sync
 
 ## 🚧 v0.8 — Real MCP client
 

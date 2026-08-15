@@ -9,7 +9,7 @@ Requires a running local LLM:
 Usage:
   python examples/chat_agent.py
   python examples/chat_agent.py --provider lmstudio --model local-model
-  python examples/chat_agent.py --verbose
+  python examples/chat_agent.py --verbose --stream
 """
 
 from __future__ import annotations
@@ -30,6 +30,7 @@ def main() -> None:
     )
     parser.add_argument("--base-url", default=None)
     parser.add_argument("--verbose", action="store_true")
+    parser.add_argument("--stream", action="store_true", help="Stream final answer tokens")
     args = parser.parse_args()
 
     agent = create_agent(
@@ -37,6 +38,7 @@ def main() -> None:
         provider=args.provider,
         base_url=args.base_url,
         verbose=args.verbose,
+        stream=args.stream or args.verbose,
     )
 
     print(f"🚀 Local Chat Agent ready (v{__version__})")

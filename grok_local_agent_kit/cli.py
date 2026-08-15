@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+
 import click
 from rich.console import Console
 from rich.markdown import Markdown
@@ -10,6 +12,10 @@ from . import __version__
 from .agent import create_agent
 
 console = Console()
+
+
+def _env_default(key: str, fallback: str) -> str:
+    return os.environ.get(key, fallback)
 
 
 @click.group()
@@ -21,16 +27,28 @@ def cli() -> None:
 
 @cli.command()
 @click.argument("prompt", required=False)
-@click.option("--model", "-m", default="llama3.2", help="Model name")
+@click.option(
+    "--model",
+    "-m",
+    default=lambda: _env_default("GROK_AGENT_MODEL", "llama3.2"),
+    show_default="llama3.2 or $GROK_AGENT_MODEL",
+    help="Model name",
+)
 @click.option(
     "--provider",
     "-p",
-    default="ollama",
+    default=lambda: _env_default("GROK_AGENT_PROVIDER", "ollama"),
     type=click.Choice(["ollama", "lmstudio", "openai"]),
+    show_default="ollama or $GROK_AGENT_PROVIDER",
     help="LLM provider",
 )
-@click.option("--base-url", default=None, help="Custom base URL")
-@click.option("--verbose", "-v", is_flag=True, help="Show tool calls")
+@click.option(
+    "--base-url",
+    default=lambda: os.environ.get("GROK_AGENT_BASE_URL"),
+    help="Custom base URL (or $GROK_AGENT_BASE_URL)",
+)
+@click.option("--verbose", "-v", is_flag=True, help="Show tool calls and stream tokens")
+@click.option("--stream", is_flag=True, help="Stream final answer tokens (when no tools needed)")
 @click.option(
     "--save-history",
     default=None,
@@ -42,11 +60,16 @@ def chat(
     provider: str,
     base_url: str | None,
     verbose: bool,
+    stream: bool,
     save_history: str | None,
 ) -> None:
     """Interactive chat or one-shot prompt."""
     agent = create_agent(
-        model=model, provider=provider, base_url=base_url, verbose=verbose
+        model=model,
+        provider=provider,
+        base_url=base_url,
+        verbose=verbose,
+        stream=stream or verbose,  # verbose implies live token feedback when streaming
     )
 
     if prompt:
@@ -105,14 +128,18 @@ def chat(
 
 
 @cli.command()
-@click.option("--model", "-m", default="llama3.2")
+@click.option(
+    "--model",
+    "-m",
+    default=lambda: _env_default("GROK_AGENT_MODEL", "llama3.2"),
+)
 @click.option(
     "--provider",
     "-p",
-    default="ollama",
+    default=lambda: _env_default("GROK_AGENT_PROVIDER", "ollama"),
     type=click.Choice(["ollama", "lmstudio", "openai"]),
 )
-@click.option("--base-url", default=None)
+@click.option("--base-url", default=lambda: os.environ.get("GROK_AGENT_BASE_URL"))
 def doctor(model: str, provider: str, base_url: str | None) -> None:
     """Check connectivity to local LLM and list available tools."""
     console.print(f"[bold]Checking {provider} / {model} ...[/]")

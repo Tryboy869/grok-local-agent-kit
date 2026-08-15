@@ -123,21 +123,38 @@ class Agent:
             if self.verbose:
                 print(f"\n[iteration {iteration + 1}/{self.max_iterations}]")
 
-            # Prefer streaming only for the final answer (no tools) when enabled.
-            # Tool-calling remains non-streaming for reliability across providers.
+            # Non-streaming call first so we can reliably detect tool_calls.
             response = self.llm.chat(messages, tools=self.tool_schemas)
 
             content = response.get("content")
             tool_calls = response.get("tool_calls")
 
             if not tool_calls:
-                final = (content or "(no response)").strip()
-                # Optional stream of the final answer for UX (already complete from non-stream call).
-                # True token streaming of final answers can be enabled later via stream_chat
-                # when tools are omitted; current path keeps tool loop robust.
-                if self.stream and final and self.verbose:
-                    # Echo final for consistency with streaming UX demos
-                    print(f"\n[stream] {final[:200]}{'...' if len(final) > 200 else ''}")
+                # Final answer path. Optionally re-stream for live UX when stream=True.
+                if self.stream:
+                    final_parts: List[str] = []
+                    # Re-call without tools so providers can stream tokens cleanly.
+                    stream_resp = self.llm.stream_chat(messages, tools=None)
+                    # stream_chat is a generator that yields chunks then returns the full dict.
+                    try:
+                        while True:
+                            chunk = next(stream_resp)
+                            if isinstance(chunk, str) and chunk:
+                                final_parts.append(chunk)
+                                if self.verbose:
+                                    print(chunk, end="", flush=True)
+                    except StopIteration as stop:
+                        # Generator return value (normalized response) is in stop.value
+                        ret = stop.value if stop.value is not None else {}
+                        if isinstance(ret, dict) and ret.get("content"):
+                            final = ret["content"].strip()
+                        else:
+                            final = ("".join(final_parts) or content or "(no response)").strip()
+                    if self.verbose and final_parts:
+                        print()  # newline after live tokens
+                else:
+                    final = (content or "(no response)").strip()
+
                 self.history.append({"role": "assistant", "content": final})
                 return final
 
@@ -207,7 +224,7 @@ class Agent:
             p = Path(path).expanduser().resolve()
             cwd = Path.cwd().resolve()
             p.relative_to(cwd)  # safety
-            data = {"history": self.history, "version": "0.7.4"}
+            data = {"history": self.history, "version": "0.7.5"}
             p.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
             return f"Saved {len(self.history)} messages to {p}"
         except Exception as e:
