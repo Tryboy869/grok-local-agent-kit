@@ -9,49 +9,26 @@
 - Ready-to-run examples + unit tests
 - One-command install
 
-## ✅ v0.7.0 / v0.7.1
+## ✅ v0.7.x
 
 - Conversation history persistence (`save_history` / `load_history`)
-- New tool: `list_tools` (introspect available tools)
-- 12 built-in tools
-- CLI interactive helpers (`/save`, `/load`, `/reset`, `/tools`)
-- Enhanced MCP stubs with clearer interface preview
+- `list_tools`, 12 built-in tools, CLI interactive helpers
+- Env var defaults, `register_tools()`, streaming final answers
 - Polished README + contribution guide
 
-## ✅ v0.7.2
+## ✅ v0.8.0 (current)
 
-- Env var defaults: `GROK_AGENT_MODEL`, `GROK_AGENT_PROVIDER`, `GROK_AGENT_BASE_URL`
-- `register_tools()` batch registration helper
-- Slightly improved system prompt & agent docs
-- README / version bump + clearer demo descriptions
+- MCP foundation: config via `GROK_MCP_SERVERS` / `.mcp_servers.json`
+- Configurable tool-result truncation
+- Cleaner package layout, CHANGELOG, docs sync
 
-## ✅ v0.7.3
-
-- Streaming responses for final answers (`LLMClient.stream_chat`)
-- `Agent.get_history()` helper
-- Cleaner package entrypoints
-- Version / docs polish
-
-## ✅ v0.7.4
-
-- Agent `stream` flag + tighter integration with final-answer path
-- README feature table + demo placeholders updated
-- History version tag bumped
-- Docs / roadmap sync
-
-## ✅ v0.7.5 (current)
-
-- Real final-answer streaming via `LLMClient.stream_chat` when `stream=True`
-- CLI respects env defaults properly + new `--stream` flag
-- Version / history / README / roadmap sync
-
-## 🚧 v0.8 — Real MCP client
+## 🚧 v0.8.x — Real MCP client
 
 - Full MCP client (stdio + HTTP/SSE)
 - Discover & call tools from external MCP servers
 - Resource & prompt support
-- Config file / env for MCP server list
 - Optional `mcp` extra dependency
+- Wire configured servers into the live tool registry
 
 ## 📋 v0.9 — Multi-agent & memory
 

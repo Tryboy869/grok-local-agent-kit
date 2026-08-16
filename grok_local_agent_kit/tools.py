@@ -1,9 +1,11 @@
-"""Built-in tools: web search, file ops (cwd-safe), shell, execute_python, calculator, MCP stub."""
+"""Built-in tools: web search, file ops (cwd-safe), shell, execute_python, calculator, MCP foundation."""
 
 from __future__ import annotations
 
 import ast
+import json
 import math
+import os
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
@@ -252,35 +254,79 @@ def list_tools() -> str:
     return f"Available tools ({len(lines)}):\n" + "\n".join(lines)
 
 
+def _load_mcp_config() -> Dict[str, Any]:
+    """Load optional MCP server list from env or local config file (foundation for v0.8+)."""
+    # Env: GROK_MCP_SERVERS='[{"name":"filesystem","command":"npx","args":["-y","@modelcontextprotocol/server-filesystem","."]}]'
+    raw = os.environ.get("GROK_MCP_SERVERS", "").strip()
+    if raw:
+        try:
+            data = json.loads(raw)
+            if isinstance(data, list):
+                return {"servers": data}
+        except json.JSONDecodeError:
+            pass
+    # Optional local file
+    for candidate in (".mcp_servers.json", "mcp_servers.json", ".grok/mcp.json"):
+        p = Path(candidate)
+        if p.is_file():
+            try:
+                data = json.loads(p.read_text(encoding="utf-8"))
+                if isinstance(data, dict) and "servers" in data:
+                    return data
+                if isinstance(data, list):
+                    return {"servers": data}
+            except Exception:
+                continue
+    return {"servers": []}
+
+
 def mcp_list_resources() -> str:
-    """List available MCP resources (enhanced stub — real client planned for v0.8)."""
+    """List available MCP resources (foundation — real stdio/SSE client in progress)."""
+    cfg = _load_mcp_config()
+    servers = cfg.get("servers") or []
+    lines = [
+        "MCP client status: foundation (v0.8.0)",
+        "Real stdio + SSE/HTTP client is the next step.",
+        f"Configured servers: {len(servers)}",
+    ]
+    for i, s in enumerate(servers[:10], 1):
+        name = s.get("name") or s.get("command") or f"server_{i}"
+        transport = s.get("transport") or ("stdio" if s.get("command") else "unknown")
+        lines.append(f"  {i}. {name} ({transport})")
+    if not servers:
+        lines.append("No servers configured. Set GROK_MCP_SERVERS or create .mcp_servers.json.")
+        lines.append("Example: [{\"name\":\"fs\",\"command\":\"npx\",\"args\":[\"-y\",\"@modelcontextprotocol/server-filesystem\".\"]"]")
+    lines.append("Interface: mcp_list_resources / mcp_list_tools / mcp_call_tool")
+    return "\n".join(lines)
+
+
+def mcp_list_tools() -> str:
+    """List tools that would be available from connected MCP servers (foundation)."""
+    cfg = _load_mcp_config()
+    servers = cfg.get("servers") or []
+    if not servers:
+        return (
+            "MCP tools discovery (v0.8.0 foundation).\n"
+            "No MCP servers configured yet.\n"
+            "When the full client is connected, external tools appear here.\n"
+            "Local tools remain available via list_tools."
+        )
+    names = [s.get("name") or s.get("command") or "?" for s in servers]
     return (
-        "MCP client status: enhanced stub (v0.7.1)\n"
-        "Planned for v0.8: real stdio + SSE/HTTP MCP client.\n"
-        "Current registered resources: none (no live server connected).\n"
-        "Interface preview:\n"
-        "  mcp_list_resources() → list resources\n"
-        "  mcp_list_tools()     → discover external tools\n"
-        "  mcp_call_tool(name, arguments) → invoke a remote tool\n"
-        "You can still call these tools to exercise the agent loop."
+        f"MCP tools discovery (v0.8.0 foundation) — {len(servers)} server(s) configured: "
+        + ", ".join(names)
+        + ".\nFull discovery lands with the real stdio/SSE client."
     )
 
 
 def mcp_call_tool(name: str, arguments: Optional[Dict[str, Any]] = None) -> str:
-    """Call an MCP tool by name (stub until full MCP client)."""
+    """Call an MCP tool by name (foundation until full MCP client)."""
+    cfg = _load_mcp_config()
+    servers = cfg.get("servers") or []
     return (
-        f"MCP tool call stub → name={name}, args={arguments or {}}.\n"
-        "Not connected to a live MCP server yet. "
-        "Full client lands in v0.8 (stdio + SSE)."
-    )
-
-
-def mcp_list_tools() -> str:
-    """List tools that would be available from connected MCP servers (stub)."""
-    return (
-        "MCP tools discovery stub (v0.7.1).\n"
-        "When a real MCP client is connected you will see external tools here.\n"
-        "Local tools remain available via the standard registry (see list_tools)."
+        f"MCP tool call foundation → name={name}, args={arguments or {}}.\n"
+        f"Configured servers: {len(servers)}. "
+        "Not yet connected to a live MCP process. Full client continues in 0.8.x."
     )
 
 
@@ -436,7 +482,7 @@ TOOL_SPECS: List[Dict[str, Any]] = [
         "type": "function",
         "function": {
             "name": "mcp_list_resources",
-            "description": "List available MCP resources (stub until full MCP client).",
+            "description": "List available MCP resources / configured servers (MCP foundation).",
             "parameters": {"type": "object", "properties": {}, "required": []},
         },
     },
@@ -444,7 +490,7 @@ TOOL_SPECS: List[Dict[str, Any]] = [
         "type": "function",
         "function": {
             "name": "mcp_list_tools",
-            "description": "List tools exposed by connected MCP servers (stub).",
+            "description": "List tools exposed by configured MCP servers (foundation).",
             "parameters": {"type": "object", "properties": {}, "required": []},
         },
     },
@@ -452,7 +498,7 @@ TOOL_SPECS: List[Dict[str, Any]] = [
         "type": "function",
         "function": {
             "name": "mcp_call_tool",
-            "description": "Call an MCP tool by name (stub until full MCP client).",
+            "description": "Call an MCP tool by name (foundation until full MCP client).",
             "parameters": {
                 "type": "object",
                 "properties": {

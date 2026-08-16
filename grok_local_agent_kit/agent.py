@@ -17,10 +17,11 @@ Be concise, accurate, and prefer using tools over guessing.
 Never invent file contents or search results — always call the tool.
 When a task is complete, give a clear final answer without unnecessary tool calls.
 If a tool fails, explain the error briefly and try an alternative when possible.
-Prefer small, focused tool calls. You can call multiple tools in sequence across turns."""
+Prefer small, focused tool calls. You can call multiple tools in sequence across turns.
+For file operations stay inside the current workspace. For code, prefer execute_python over shell when safe."""
 
-# Max characters of a tool result kept in the conversation context
-TOOL_RESULT_MAX_CHARS = 6000
+# Default max characters of a tool result kept in the conversation context
+DEFAULT_TOOL_RESULT_MAX_CHARS = 6000
 
 
 class Agent:
@@ -36,6 +37,7 @@ class Agent:
         verbose: bool = False,
         temperature: float = 0.3,
         stream: bool = False,
+        tool_result_max_chars: int = DEFAULT_TOOL_RESULT_MAX_CHARS,
     ):
         self.llm = LLMClient(
             model=model, provider=provider, base_url=base_url, temperature=temperature
@@ -44,6 +46,7 @@ class Agent:
         self.max_iterations = max_iterations
         self.verbose = verbose
         self.stream = stream
+        self.tool_result_max_chars = max(500, tool_result_max_chars)
 
         self.tool_schemas, self.tool_funcs = get_default_tools()
         self.history: List[Dict[str, Any]] = []
@@ -92,10 +95,10 @@ class Agent:
         return self.chat(prompt)
 
     def _truncate_tool_result(self, result: str) -> str:
-        if len(result) <= TOOL_RESULT_MAX_CHARS:
+        if len(result) <= self.tool_result_max_chars:
             return result
         return (
-            result[:TOOL_RESULT_MAX_CHARS]
+            result[: self.tool_result_max_chars]
             + f"\n\n... [truncated, original length {len(result)} chars]"
         )
 
@@ -133,9 +136,7 @@ class Agent:
                 # Final answer path. Optionally re-stream for live UX when stream=True.
                 if self.stream:
                     final_parts: List[str] = []
-                    # Re-call without tools so providers can stream tokens cleanly.
                     stream_resp = self.llm.stream_chat(messages, tools=None)
-                    # stream_chat is a generator that yields chunks then returns the full dict.
                     try:
                         while True:
                             chunk = next(stream_resp)
@@ -144,7 +145,6 @@ class Agent:
                                 if self.verbose:
                                     print(chunk, end="", flush=True)
                     except StopIteration as stop:
-                        # Generator return value (normalized response) is in stop.value
                         ret = stop.value if stop.value is not None else {}
                         if isinstance(ret, dict) and ret.get("content"):
                             final = ret["content"].strip()
@@ -224,7 +224,7 @@ class Agent:
             p = Path(path).expanduser().resolve()
             cwd = Path.cwd().resolve()
             p.relative_to(cwd)  # safety
-            data = {"history": self.history, "version": "0.7.5"}
+            data = {"history": self.history, "version": "0.8.0"}
             p.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
             return f"Saved {len(self.history)} messages to {p}"
         except Exception as e:

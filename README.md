@@ -3,31 +3,30 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
-[![Version](https://img.shields.io/badge/version-0.7.5-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
+[![Version](https://img.shields.io/badge/version-0.8.0-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
 [![GitHub stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers)
 
 **Open-source toolkit for building powerful local AI agents.**  
-Ollama + LM Studio • real tool calling • MCP-ready • offline-first.  
+Ollama + LM Studio • real tool calling • MCP foundation • offline-first.  
 Built autonomously by Grok.
 
 > Run capable agents on your machine. No cloud required. No API keys needed for local models.
 
 ---
 
-## ✨ Features (v0.7.5)
+## ✨ Features (v0.8.0)
 
 | Feature | Status |
 |---------|--------|
 | Multi-LLM (Ollama native + OpenAI-compatible / LM Studio) | ✅ |
 | ReAct-style tool calling loop | ✅ |
 | **Real streaming of final answers** (`stream=True` / CLI `--stream`) | ✅ |
-| 12 tools: web search, files (cwd-safe), shell, execute_python, calculator, datetime, **list_tools**, MCP stubs | ✅ |
+| 12 tools: web search, files (cwd-safe), shell, execute_python, calculator, datetime, list_tools, MCP foundation | ✅ |
+| MCP server config via env / JSON (foundation for full client) | ✅ |
 | Conversation history save/load (+ CLI `/save` `/load`) | ✅ |
 | Env defaults (`GROK_AGENT_MODEL`, `GROK_AGENT_PROVIDER`, `GROK_AGENT_BASE_URL`) | ✅ |
 | `register_tools()` batch helper + `get_history()` | ✅ |
-| Tool-result truncation & clearer LLM errors | ✅ |
-| Provider aliases (`lmstudio` → OpenAI-compat) | ✅ |
-| Enhanced MCP stub (list resources/tools + call) | ✅ |
+| Configurable tool-result truncation | ✅ |
 | CLI (`grok-agent chat / doctor`) with interactive helpers + `--stream` | ✅ |
 | Ready-to-run examples (chat, automation, research, code_assistant) | ✅ |
 | One-command install | ✅ |
@@ -41,7 +40,7 @@ Built autonomously by Grok.
 
 ```text
 $ grok-agent chat -v --stream
-Local Agent ready (v0.7.5). Type 'exit' or Ctrl-C to quit.
+Local Agent ready (v0.8.0). Type 'exit' or Ctrl-C to quit.
 Special: /save [file], /load [file], /reset, /tools
 
 You › List files and create a note saying hello
@@ -61,7 +60,7 @@ Available tools (12):
 
 ```text
 $ python examples/automation_agent.py
-🤖 Automation Agent (v0.7.5)
+🤖 Automation Agent (v0.8.0)
   → tool: write_file(...)
   → tool: list_files(...)
   → tool: calculator(...)
@@ -140,6 +139,8 @@ Environment defaults (optional):
 export GROK_AGENT_MODEL=llama3.2
 export GROK_AGENT_PROVIDER=ollama
 # export GROK_AGENT_BASE_URL=http://localhost:1234/v1
+# Optional MCP foundation:
+# export GROK_MCP_SERVERS='[{"name":"fs","command":"npx","args":["-y","@modelcontextprotocol/server-filesystem","."]}]'
 ```
 
 ---
@@ -156,7 +157,7 @@ export GROK_AGENT_PROVIDER=ollama
 | `calculator` | Math expressions |
 | `get_datetime` | Current UTC time |
 | `list_tools` | Introspect available tools |
-| `mcp_*` | MCP discovery & call stubs |
+| `mcp_*` | MCP discovery & call (foundation — full client next) |
 
 ---
 
@@ -175,7 +176,7 @@ All examples are ready-to-run once a local LLM is available.
 
 ## 🗺️ Roadmap
 
-See [ROADMAP.md](ROADMAP.md). Next major focus: **real MCP client** (v0.8).
+See [ROADMAP.md](ROADMAP.md). Current focus: **real MCP client** (stdio + SSE) in the 0.8.x series.
 
 ## 🤝 Contributing
 
