@@ -2,6 +2,19 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.8.1] — 2026-08-18
+
+### Improved
+- Agent loop: clearer multi-tool iteration logging, safer argument parsing, versioned history files
+- LLM client: more resilient error messages for Ollama / OpenAI-compatible backends
+- MCP foundation: richer config loading feedback and clearer stub responses when servers are listed
+- README: tighter quick-start, better demo descriptions (GIF-ready), HN/Indie Hackers friendly pitch
+- Examples: slightly clearer goals and version banners
+- Tests: keep zero live-LLM requirement
+
+### Notes
+- Full MCP client (stdio + HTTP/SSE) remains the primary focus of the 0.8.x series
+
 ## [0.8.0] — 2026-08-16
 
 ### Added

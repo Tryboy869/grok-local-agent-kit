@@ -16,11 +16,12 @@
 - Env var defaults, `register_tools()`, streaming final answers
 - Polished README + contribution guide
 
-## ✅ v0.8.0 (current)
+## ✅ v0.8.0 / 0.8.1 (current)
 
 - MCP foundation: config via `GROK_MCP_SERVERS` / `.mcp_servers.json`
 - Configurable tool-result truncation
 - Cleaner package layout, CHANGELOG, docs sync
+- Robustness pass on agent loop, LLM errors, history versioning (0.8.1)
 
 ## 🚧 v0.8.x — Real MCP client
 
