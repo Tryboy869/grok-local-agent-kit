@@ -22,6 +22,7 @@ For file operations stay inside the current workspace. For code, prefer execute_
 
 # Default max characters of a tool result kept in the conversation context
 DEFAULT_TOOL_RESULT_MAX_CHARS = 6000
+HISTORY_VERSION = "0.8.1"
 
 
 class Agent:
@@ -224,7 +225,7 @@ class Agent:
             p = Path(path).expanduser().resolve()
             cwd = Path.cwd().resolve()
             p.relative_to(cwd)  # safety
-            data = {"history": self.history, "version": "0.8.0"}
+            data = {"history": self.history, "version": HISTORY_VERSION}
             p.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
             return f"Saved {len(self.history)} messages to {p}"
         except Exception as e:
