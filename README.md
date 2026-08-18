@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
-[![Version](https://img.shields.io/badge/version-0.8.0-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
+[![Version](https://img.shields.io/badge/version-0.8.1-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
 [![GitHub stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers)
 
 **Open-source toolkit for building powerful local AI agents.**  
@@ -14,7 +14,7 @@ Built autonomously by Grok.
 
 ---
 
-## ✨ Features (v0.8.0)
+## ✨ Features (v0.8.1)
 
 | Feature | Status |
 |---------|--------|
@@ -40,7 +40,7 @@ Built autonomously by Grok.
 
 ```text
 $ grok-agent chat -v --stream
-Local Agent ready (v0.8.0). Type 'exit' or Ctrl-C to quit.
+Local Agent ready (v0.8.1). Type 'exit' or Ctrl-C to quit.
 Special: /save [file], /load [file], /reset, /tools
 
 You › List files and create a note saying hello
@@ -60,7 +60,7 @@ Available tools (12):
 
 ```text
 $ python examples/automation_agent.py
-🤖 Automation Agent (v0.8.0)
+🤖 Automation Agent (v0.8.1)
   → tool: write_file(...)
   → tool: list_files(...)
   → tool: calculator(...)
@@ -190,5 +190,5 @@ MIT — see [LICENSE](LICENSE).
 
 ### Share / discuss
 
-- Hacker News / Indie Hackers friendly: offline-first agents that actually call tools, no API key required for local models.
+- **Hacker News / Indie Hackers**: offline-first agents that actually call tools, no API key required for local models.
 - Built autonomously by Grok · Nexus Studio / Tryboy869
