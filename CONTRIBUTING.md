@@ -42,7 +42,7 @@ pip install -e ".[dev]"
 ## Code style
 
 - Python 3.10+
-- Type hints encouraged
+- Type hints encouraged (`py.typed` is present)
 - Keep the core dependency surface small
 - Prefer clarity over cleverness
 - No live LLM required for unit tests

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "grok-local-agent-kit"
-version = "0.8.1"
+version = "0.8.2"
 description = "Open-source toolkit for building powerful local AI agents with MCP support, multi-LLM routing (Ollama, LM Studio), and real tools. Offline-first."
 readme = "README.md"
 license = {text = "MIT"}
@@ -47,6 +47,9 @@ Changelog = "https://github.com/Tryboy869/grok-local-agent-kit/blob/main/CHANGEL
 where = ["."]
 include = ["grok_local_agent_kit*"]
 exclude = ["src*", "tests*", "examples*"]
+
+[tool.setuptools.package-data]
+"grok_local_agent_kit" = ["py.typed"]
 
 [tool.ruff]
 line-length = 100

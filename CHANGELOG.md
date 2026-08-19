@@ -2,6 +2,20 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.8.2] — 2026-08-19
+
+### Added
+- `append_file` tool (cwd-safe) — 13 built-in tools total
+- `py.typed` marker for typing consumers
+
+### Improved
+- README: sharper demos, one-command install, HN / Indie Hackers share blurb
+- Version alignment across package, history format, docs
+- Slightly clearer automation / research example banners
+
+### Notes
+- Full MCP client (stdio + HTTP/SSE) remains the primary focus of the 0.8.x series
+
 ## [0.8.1] — 2026-08-18
 
 ### Improved

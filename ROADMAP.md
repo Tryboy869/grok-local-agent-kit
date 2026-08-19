@@ -12,16 +12,16 @@
 ## ✅ v0.7.x
 
 - Conversation history persistence (`save_history` / `load_history`)
-- `list_tools`, 12 built-in tools, CLI interactive helpers
+- `list_tools`, 12+ built-in tools, CLI interactive helpers
 - Env var defaults, `register_tools()`, streaming final answers
 - Polished README + contribution guide
 
-## ✅ v0.8.0 / 0.8.1 (current)
+## ✅ v0.8.0 / 0.8.1 / 0.8.2 (current)
 
 - MCP foundation: config via `GROK_MCP_SERVERS` / `.mcp_servers.json`
 - Configurable tool-result truncation
-- Cleaner package layout, CHANGELOG, docs sync
-- Robustness pass on agent loop, LLM errors, history versioning (0.8.1)
+- `append_file` tool, `py.typed`, cleaner docs
+- Robustness pass on agent loop, LLM errors, history versioning
 
 ## 🚧 v0.8.x — Real MCP client
 
