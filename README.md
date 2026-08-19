@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
-[![Version](https://img.shields.io/badge/version-0.8.1-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
+[![Version](https://img.shields.io/badge/version-0.8.2-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
 [![GitHub stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers)
 
 **Open-source toolkit for building powerful local AI agents.**  
@@ -14,14 +14,14 @@ Built autonomously by Grok.
 
 ---
 
-## ✨ Features (v0.8.1)
+## ✨ Features (v0.8.2)
 
 | Feature | Status |
 |---------|--------|
 | Multi-LLM (Ollama native + OpenAI-compatible / LM Studio) | ✅ |
 | ReAct-style tool calling loop | ✅ |
 | **Real streaming of final answers** (`stream=True` / CLI `--stream`) | ✅ |
-| 12 tools: web search, files (cwd-safe), shell, execute_python, calculator, datetime, list_tools, MCP foundation | ✅ |
+| **13 tools**: web search, files (cwd-safe + append), shell, execute_python, calculator, datetime, list_tools, MCP foundation | ✅ |
 | MCP server config via env / JSON (foundation for full client) | ✅ |
 | Conversation history save/load (+ CLI `/save` `/load`) | ✅ |
 | Env defaults (`GROK_AGENT_MODEL`, `GROK_AGENT_PROVIDER`, `GROK_AGENT_BASE_URL`) | ✅ |
@@ -29,7 +29,7 @@ Built autonomously by Grok.
 | Configurable tool-result truncation | ✅ |
 | CLI (`grok-agent chat / doctor`) with interactive helpers + `--stream` | ✅ |
 | Ready-to-run examples (chat, automation, research, code_assistant) | ✅ |
-| One-command install | ✅ |
+| One-command install + `py.typed` | ✅ |
 | Unit tests (no live LLM required) | ✅ |
 
 ---
@@ -40,7 +40,7 @@ Built autonomously by Grok.
 
 ```text
 $ grok-agent chat -v --stream
-Local Agent ready (v0.8.1). Type 'exit' or Ctrl-C to quit.
+Local Agent ready (v0.8.2). Type 'exit' or Ctrl-C to quit.
 Special: /save [file], /load [file], /reset, /tools
 
 You › List files and create a note saying hello
@@ -51,7 +51,7 @@ You › List files and create a note saying hello
 Agent › Done. Created note.txt and listed the workspace.
 
 You › /tools
-Available tools (12):
+Available tools (13):
 - web_search: Search the web ...
 ...
 ```
@@ -60,7 +60,7 @@ Available tools (12):
 
 ```text
 $ python examples/automation_agent.py
-🤖 Automation Agent (v0.8.1)
+🤖 Automation Agent (v0.8.2)
   → tool: write_file(...)
   → tool: list_files(...)
   → tool: calculator(...)
@@ -151,7 +151,7 @@ export GROK_AGENT_PROVIDER=ollama
 |------|-------------|
 | `web_search` | DuckDuckGo search |
 | `list_files` | List files (cwd-safe) |
-| `read_file` / `write_file` | Read/write text files (cwd-safe) |
+| `read_file` / `write_file` / `append_file` | Read/write/append text files (cwd-safe) |
 | `run_shell` | Restricted shell commands |
 | `execute_python` | Safe Python snippet execution |
 | `calculator` | Math expressions |
@@ -188,7 +188,20 @@ MIT — see [LICENSE](LICENSE).
 
 ---
 
-### Share / discuss
+### Share / discuss (HN · Indie Hackers)
 
-- **Hacker News / Indie Hackers**: offline-first agents that actually call tools, no API key required for local models.
-- Built autonomously by Grok · Nexus Studio / Tryboy869
+**Offline-first AI agents that actually call tools — no API key required for local models.**
+
+- ReAct-style loop with 13 built-in tools (web, files, shell, code, math…)
+- Ollama + LM Studio (any OpenAI-compatible endpoint)
+- MCP foundation already wired; full client is next
+- One-command install, CLI + Python API, zero live-LLM unit tests
+
+```bash
+pip install git+https://github.com/Tryboy869/grok-local-agent-kit.git
+grok-agent doctor
+grok-agent chat -v --stream
+```
+
+Built autonomously by Grok · Nexus Studio / Tryboy869  
+Repo: https://github.com/Tryboy869/grok-local-agent-kit

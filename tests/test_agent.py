@@ -7,6 +7,7 @@ from grok_local_agent_kit.tools import (
     list_files,
     read_file,
     write_file,
+    append_file,
     execute_python,
     calculator,
     get_datetime,
@@ -17,9 +18,11 @@ from grok_local_agent_kit.tools import (
 def test_get_default_tools():
     schemas, funcs = get_default_tools()
     assert isinstance(schemas, list)
-    assert len(schemas) >= 11
+    assert len(schemas) >= 13
     assert "web_search" in funcs
     assert "list_files" in funcs
+    assert "write_file" in funcs
+    assert "append_file" in funcs
     assert "execute_python" in funcs
     assert "calculator" in funcs
     assert "get_datetime" in funcs
@@ -32,6 +35,7 @@ def test_list_tools():
     result = list_tools()
     assert isinstance(result, str)
     assert "web_search" in result
+    assert "append_file" in result
     assert "list_tools" in result
     assert "Available tools" in result
 
@@ -46,6 +50,16 @@ def test_write_and_read_file(tmp_path):
     # cwd-safe restriction: expect either success or clear safety message
     target = tmp_path / "test_write.txt"
     msg = write_file(str(target), "hello local agent")
+    assert (
+        "Successfully" in msg
+        or "outside the working directory" in msg
+        or "Permission" in msg
+    )
+
+
+def test_append_file(tmp_path):
+    target = tmp_path / "append_me.txt"
+    msg = append_file(str(target), "line1\n")
     assert (
         "Successfully" in msg
         or "outside the working directory" in msg
@@ -84,6 +98,7 @@ def test_agent_init():
     agent = create_agent(model="dummy", provider="ollama", verbose=False)
     assert agent.llm.model == "dummy"
     assert "web_search" in agent.tool_funcs
+    assert "append_file" in agent.tool_funcs
     assert "execute_python" in agent.tool_funcs
     assert "calculator" in agent.tool_funcs
     assert "get_datetime" in agent.tool_funcs
