@@ -103,6 +103,18 @@ def write_file(path: str, content: str) -> str:
         return f"write_file error: {e}"
 
 
+def append_file(path: str, content: str) -> str:
+    """Append text to a file (cwd-safe). Creates the file if missing."""
+    try:
+        p = _safe_path(path)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        with p.open("a", encoding="utf-8") as f:
+            f.write(content)
+        return f"Successfully appended {len(content)} chars to {p}"
+    except Exception as e:
+        return f"append_file error: {e}"
+
+
 def run_shell(command: str, timeout: int = 30) -> str:
     """Run a shell command with basic safety restrictions."""
     blocked = ["rm -rf", "mkfs", "dd if=", ":(){", "shutdown", "reboot", "passwd"]
@@ -256,7 +268,6 @@ def list_tools() -> str:
 
 def _load_mcp_config() -> Dict[str, Any]:
     """Load optional MCP server list from env or local config file (foundation for v0.8+)."""
-    # Env: GROK_MCP_SERVERS='[{"name":"filesystem","command":"npx","args":["-y","@modelcontextprotocol/server-filesystem","."]}]'
     raw = os.environ.get("GROK_MCP_SERVERS", "").strip()
     if raw:
         try:
@@ -265,7 +276,6 @@ def _load_mcp_config() -> Dict[str, Any]:
                 return {"servers": data}
         except json.JSONDecodeError:
             pass
-    # Optional local file
     for candidate in (".mcp_servers.json", "mcp_servers.json", ".grok/mcp.json"):
         p = Path(candidate)
         if p.is_file():
@@ -285,7 +295,7 @@ def mcp_list_resources() -> str:
     cfg = _load_mcp_config()
     servers = cfg.get("servers") or []
     lines = [
-        "MCP client status: foundation (v0.8.0)",
+        "MCP client status: foundation (v0.8.x)",
         "Real stdio + SSE/HTTP client is the next step.",
         f"Configured servers: {len(servers)}",
     ]
@@ -295,7 +305,9 @@ def mcp_list_resources() -> str:
         lines.append(f"  {i}. {name} ({transport})")
     if not servers:
         lines.append("No servers configured. Set GROK_MCP_SERVERS or create .mcp_servers.json.")
-        lines.append("Example: [{\"name\":\"fs\",\"command\":\"npx\",\"args\":[\"-y\",\"@modelcontextprotocol/server-filesystem\".\"]"]")
+        lines.append(
+            'Example: [{"name":"fs","command":"npx","args":["-y","@modelcontextprotocol/server-filesystem","."]}]'
+        )
     lines.append("Interface: mcp_list_resources / mcp_list_tools / mcp_call_tool")
     return "\n".join(lines)
 
@@ -306,14 +318,14 @@ def mcp_list_tools() -> str:
     servers = cfg.get("servers") or []
     if not servers:
         return (
-            "MCP tools discovery (v0.8.0 foundation).\n"
+            "MCP tools discovery (v0.8.x foundation).\n"
             "No MCP servers configured yet.\n"
             "When the full client is connected, external tools appear here.\n"
             "Local tools remain available via list_tools."
         )
     names = [s.get("name") or s.get("command") or "?" for s in servers]
     return (
-        f"MCP tools discovery (v0.8.0 foundation) — {len(servers)} server(s) configured: "
+        f"MCP tools discovery (v0.8.x foundation) — {len(servers)} server(s) configured: "
         + ", ".join(names)
         + ".\nFull discovery lands with the real stdio/SSE client."
     )
@@ -399,6 +411,21 @@ TOOL_SPECS: List[Dict[str, Any]] = [
                 "properties": {
                     "path": {"type": "string", "description": "File path"},
                     "content": {"type": "string", "description": "Content to write"},
+                },
+                "required": ["path", "content"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "append_file",
+            "description": "Append text to a file (cwd-safe). Creates the file if it does not exist.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "path": {"type": "string", "description": "File path"},
+                    "content": {"type": "string", "description": "Content to append"},
                 },
                 "required": ["path", "content"],
             },
@@ -516,6 +543,7 @@ TOOL_FUNCS: Dict[str, Callable[..., str]] = {
     "list_files": list_files,
     "read_file": read_file,
     "write_file": write_file,
+    "append_file": append_file,
     "run_shell": run_shell,
     "execute_python": execute_python,
     "calculator": calculator,
