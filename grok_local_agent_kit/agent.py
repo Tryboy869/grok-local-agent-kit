@@ -22,7 +22,7 @@ For file operations stay inside the current workspace. For code, prefer execute_
 
 # Default max characters of a tool result kept in the conversation context
 DEFAULT_TOOL_RESULT_MAX_CHARS = 6000
-HISTORY_VERSION = "0.8.1"
+HISTORY_VERSION = "0.8.2"
 
 
 class Agent:
