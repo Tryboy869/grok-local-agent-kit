@@ -1,4 +1,4 @@
-"""Built-in tools: web search, file ops (cwd-safe), shell, execute_python, calculator, MCP foundation."""
+"""Built-in tools: web search, file ops (cwd-safe), shell, execute_python, calculator, http_get, MCP foundation."""
 
 from __future__ import annotations
 
@@ -10,6 +10,8 @@ import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
+
+import httpx
 
 try:
     from duckduckgo_search import DDGS
@@ -53,6 +55,25 @@ def web_search(query: str, max_results: int = 5) -> str:
         return "\n\n".join(lines)
     except Exception as e:
         return f"Search error: {e}"
+
+
+def http_get(url: str, max_chars: int = 8000, timeout: float = 15.0) -> str:
+    """Fetch a URL with a simple GET request (text content only)."""
+    url = (url or "").strip()
+    if not url.startswith(("http://", "https://")):
+        return "Error: url must start with http:// or https://"
+    try:
+        with httpx.Client(timeout=timeout, follow_redirects=True) as client:
+            r = client.get(url, headers={"User-Agent": "grok-local-agent-kit/0.8.3"})
+            r.raise_for_status()
+            text = r.text or ""
+            if len(text) > max_chars:
+                return text[:max_chars] + f"\n\n... [truncated, {len(text) - max_chars} more chars]"
+            return text if text else "(empty response)"
+    except httpx.TimeoutException:
+        return f"http_get timed out after {timeout}s"
+    except Exception as e:
+        return f"http_get error: {e}"
 
 
 def list_files(path: str = ".", pattern: str = "*") -> str:
@@ -365,6 +386,28 @@ TOOL_SPECS: List[Dict[str, Any]] = [
     {
         "type": "function",
         "function": {
+            "name": "http_get",
+            "description": "Fetch a URL with a simple GET request and return text content.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "url": {"type": "string", "description": "Full URL (http/https)"},
+                    "max_chars": {
+                        "type": "integer",
+                        "description": "Max characters to return (default 8000)",
+                    },
+                    "timeout": {
+                        "type": "number",
+                        "description": "Timeout in seconds (default 15)",
+                    },
+                },
+                "required": ["url"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
             "name": "list_files",
             "description": "List files and directories in a path (restricted to workspace).",
             "parameters": {
@@ -540,6 +583,7 @@ TOOL_SPECS: List[Dict[str, Any]] = [
 
 TOOL_FUNCS: Dict[str, Callable[..., str]] = {
     "web_search": web_search,
+    "http_get": http_get,
     "list_files": list_files,
     "read_file": read_file,
     "write_file": write_file,

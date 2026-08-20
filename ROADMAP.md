@@ -16,12 +16,13 @@
 - Env var defaults, `register_tools()`, streaming final answers
 - Polished README + contribution guide
 
-## ✅ v0.8.0 / 0.8.1 / 0.8.2 (current)
+## ✅ v0.8.0 – 0.8.3 (current)
 
 - MCP foundation: config via `GROK_MCP_SERVERS` / `.mcp_servers.json`
 - Configurable tool-result truncation
-- `append_file` tool, `py.typed`, cleaner docs
+- `append_file`, `http_get`, `py.typed`, cleaner docs
 - Robustness pass on agent loop, LLM errors, history versioning
+- 14 built-in tools
 
 ## 🚧 v0.8.x — Real MCP client
 

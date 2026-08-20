@@ -12,14 +12,16 @@ from grok_local_agent_kit.tools import (
     calculator,
     get_datetime,
     list_tools,
+    http_get,
 )
 
 
 def test_get_default_tools():
     schemas, funcs = get_default_tools()
     assert isinstance(schemas, list)
-    assert len(schemas) >= 13
+    assert len(schemas) >= 14
     assert "web_search" in funcs
+    assert "http_get" in funcs
     assert "list_files" in funcs
     assert "write_file" in funcs
     assert "append_file" in funcs
@@ -35,6 +37,7 @@ def test_list_tools():
     result = list_tools()
     assert isinstance(result, str)
     assert "web_search" in result
+    assert "http_get" in result
     assert "append_file" in result
     assert "list_tools" in result
     assert "Available tools" in result
@@ -94,15 +97,22 @@ def test_get_datetime():
     assert len(result) > 10
 
 
+def test_http_get_invalid_url():
+    result = http_get("not-a-url")
+    assert "must start with http" in result.lower() or "error" in result.lower()
+
+
 def test_agent_init():
     agent = create_agent(model="dummy", provider="ollama", verbose=False)
     assert agent.llm.model == "dummy"
     assert "web_search" in agent.tool_funcs
+    assert "http_get" in agent.tool_funcs
     assert "append_file" in agent.tool_funcs
     assert "execute_python" in agent.tool_funcs
     assert "calculator" in agent.tool_funcs
     assert "get_datetime" in agent.tool_funcs
     assert "list_tools" in agent.tool_funcs
+    assert "http_get" in agent.list_registered_tools()
     agent.close()
 
 

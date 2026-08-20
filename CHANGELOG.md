@@ -2,6 +2,21 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.8.3] — 2026-08-20
+
+### Added
+- `http_get` tool — simple HTTP GET with timeout and truncation (14 built-in tools total)
+- `Agent.list_registered_tools()` helper
+
+### Improved
+- System prompt guidance for `http_get` vs `web_search`
+- README: clearer demos, tool table, HN / Indie Hackers share section
+- Examples banners and tool lists
+- Unit tests cover the new tool and helper
+
+### Notes
+- Full MCP client (stdio + HTTP/SSE) remains the primary focus of the 0.8.x series
+
 ## [0.8.2] — 2026-08-19
 
 ### Added

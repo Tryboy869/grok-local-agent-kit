@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
-[![Version](https://img.shields.io/badge/version-0.8.2-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
+[![Version](https://img.shields.io/badge/version-0.8.3-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
 [![GitHub stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers)
 
 **Open-source toolkit for building powerful local AI agents.**  
@@ -14,18 +14,18 @@ Built autonomously by Grok.
 
 ---
 
-## ✨ Features (v0.8.2)
+## ✨ Features (v0.8.3)
 
 | Feature | Status |
 |---------|--------|
 | Multi-LLM (Ollama native + OpenAI-compatible / LM Studio) | ✅ |
 | ReAct-style tool calling loop | ✅ |
 | **Real streaming of final answers** (`stream=True` / CLI `--stream`) | ✅ |
-| **13 tools**: web search, files (cwd-safe + append), shell, execute_python, calculator, datetime, list_tools, MCP foundation | ✅ |
+| **14 tools**: web search, http_get, files (cwd-safe + append), shell, execute_python, calculator, datetime, list_tools, MCP foundation | ✅ |
 | MCP server config via env / JSON (foundation for full client) | ✅ |
 | Conversation history save/load (+ CLI `/save` `/load`) | ✅ |
 | Env defaults (`GROK_AGENT_MODEL`, `GROK_AGENT_PROVIDER`, `GROK_AGENT_BASE_URL`) | ✅ |
-| `register_tools()` batch helper + `get_history()` | ✅ |
+| `register_tools()` batch helper + `get_history()` + `list_registered_tools()` | ✅ |
 | Configurable tool-result truncation | ✅ |
 | CLI (`grok-agent chat / doctor`) with interactive helpers + `--stream` | ✅ |
 | Ready-to-run examples (chat, automation, research, code_assistant) | ✅ |
@@ -40,7 +40,7 @@ Built autonomously by Grok.
 
 ```text
 $ grok-agent chat -v --stream
-Local Agent ready (v0.8.2). Type 'exit' or Ctrl-C to quit.
+Local Agent ready (v0.8.3). Type 'exit' or Ctrl-C to quit.
 Special: /save [file], /load [file], /reset, /tools
 
 You › List files and create a note saying hello
@@ -51,8 +51,9 @@ You › List files and create a note saying hello
 Agent › Done. Created note.txt and listed the workspace.
 
 You › /tools
-Available tools (13):
+Available tools (14):
 - web_search: Search the web ...
+- http_get: Fetch a URL ...
 ...
 ```
 
@@ -60,7 +61,7 @@ Available tools (13):
 
 ```text
 $ python examples/automation_agent.py
-🤖 Automation Agent (v0.8.2)
+🤖 Automation Agent (v0.8.3)
   → tool: write_file(...)
   → tool: list_files(...)
   → tool: calculator(...)
@@ -130,6 +131,7 @@ agent = create_agent(model="llama3.2", provider="ollama", verbose=True, stream=T
 print(agent.run("List files in the current directory and create a hello.txt"))
 agent.save_history("session.json")
 print(len(agent.get_history()), "messages")
+print(agent.list_registered_tools())
 agent.close()
 ```
 
@@ -150,6 +152,7 @@ export GROK_AGENT_PROVIDER=ollama
 | Tool | Description |
 |------|-------------|
 | `web_search` | DuckDuckGo search |
+| `http_get` | Simple HTTP GET (text content) |
 | `list_files` | List files (cwd-safe) |
 | `read_file` / `write_file` / `append_file` | Read/write/append text files (cwd-safe) |
 | `run_shell` | Restricted shell commands |
@@ -192,7 +195,7 @@ MIT — see [LICENSE](LICENSE).
 
 **Offline-first AI agents that actually call tools — no API key required for local models.**
 
-- ReAct-style loop with 13 built-in tools (web, files, shell, code, math…)
+- ReAct-style loop with 14 built-in tools (web, http_get, files, shell, code, math…)
 - Ollama + LM Studio (any OpenAI-compatible endpoint)
 - MCP foundation already wired; full client is next
 - One-command install, CLI + Python API, zero live-LLM unit tests

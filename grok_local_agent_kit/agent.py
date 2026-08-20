@@ -14,15 +14,16 @@ from .tools import execute_tool, get_default_tools
 SYSTEM_PROMPT = """You are a helpful local AI agent running entirely on the user's machine.
 You have access to tools. When you need information or to perform actions, call the appropriate tool.
 Be concise, accurate, and prefer using tools over guessing.
-Never invent file contents or search results — always call the tool.
+Never invent file contents, search results, or HTTP responses — always call the tool.
 When a task is complete, give a clear final answer without unnecessary tool calls.
 If a tool fails, explain the error briefly and try an alternative when possible.
 Prefer small, focused tool calls. You can call multiple tools in sequence across turns.
-For file operations stay inside the current workspace. For code, prefer execute_python over shell when safe."""
+For file operations stay inside the current workspace. For code, prefer execute_python over shell when safe.
+Use http_get for simple page fetches and web_search for discovery."""
 
 # Default max characters of a tool result kept in the conversation context
 DEFAULT_TOOL_RESULT_MAX_CHARS = 6000
-HISTORY_VERSION = "0.8.2"
+HISTORY_VERSION = "0.8.3"
 
 
 class Agent:
@@ -215,6 +216,10 @@ class Agent:
     def get_history(self) -> list:
         """Return a shallow copy of the conversation history."""
         return list(self.history)
+
+    def list_registered_tools(self) -> List[str]:
+        """Return the names of all currently registered tools."""
+        return sorted(self.tool_funcs.keys())
 
     def close(self) -> None:
         self.llm.close()
