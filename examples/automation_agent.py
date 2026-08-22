@@ -3,7 +3,7 @@
 Automation agent example — one-shot goal with tools.
 
 Creates a small Python script, lists files, runs a calculation,
-and searches the web.
+checks system info, and searches the web.
 
 Requires Ollama (or LM Studio) running.
 
@@ -26,7 +26,8 @@ def main() -> None:
         "'Hello from local agent!'. "
         "2. List the files in the current directory and confirm the new file exists. "
         "3. Use the calculator to compute sqrt(144) + 10. "
-        "4. Do a quick web search for 'local AI agents 2026' and give me the top 3 titles. "
+        "4. Call get_system_info and note the OS and Python version. "
+        "5. Do a quick web search for 'local AI agents 2026' and give me the top 3 titles. "
         "Finally summarize everything you did."
     )
 

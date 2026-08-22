@@ -11,6 +11,7 @@ from grok_local_agent_kit.tools import (
     execute_python,
     calculator,
     get_datetime,
+    get_system_info,
     list_tools,
     http_get,
 )
@@ -19,7 +20,7 @@ from grok_local_agent_kit.tools import (
 def test_get_default_tools():
     schemas, funcs = get_default_tools()
     assert isinstance(schemas, list)
-    assert len(schemas) >= 14
+    assert len(schemas) >= 15
     assert "web_search" in funcs
     assert "http_get" in funcs
     assert "list_files" in funcs
@@ -28,6 +29,7 @@ def test_get_default_tools():
     assert "execute_python" in funcs
     assert "calculator" in funcs
     assert "get_datetime" in funcs
+    assert "get_system_info" in funcs
     assert "list_tools" in funcs
     assert "mcp_list_resources" in funcs
     assert "mcp_list_tools" in funcs
@@ -39,6 +41,7 @@ def test_list_tools():
     assert "web_search" in result
     assert "http_get" in result
     assert "append_file" in result
+    assert "get_system_info" in result
     assert "list_tools" in result
     assert "Available tools" in result
 
@@ -97,6 +100,14 @@ def test_get_datetime():
     assert len(result) > 10
 
 
+def test_get_system_info():
+    result = get_system_info()
+    assert isinstance(result, str)
+    assert "OS:" in result
+    assert "Python:" in result
+    assert "CWD:" in result
+
+
 def test_http_get_invalid_url():
     result = http_get("not-a-url")
     assert "must start with http" in result.lower() or "error" in result.lower()
@@ -108,11 +119,13 @@ def test_agent_init():
     assert "web_search" in agent.tool_funcs
     assert "http_get" in agent.tool_funcs
     assert "append_file" in agent.tool_funcs
+    assert "get_system_info" in agent.tool_funcs
     assert "execute_python" in agent.tool_funcs
     assert "calculator" in agent.tool_funcs
     assert "get_datetime" in agent.tool_funcs
     assert "list_tools" in agent.tool_funcs
     assert "http_get" in agent.list_registered_tools()
+    assert "get_system_info" in agent.list_registered_tools()
     agent.close()
 
 

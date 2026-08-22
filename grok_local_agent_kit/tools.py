@@ -1,4 +1,4 @@
-"""Built-in tools: web search, file ops (cwd-safe), shell, execute_python, calculator, http_get, MCP foundation."""
+"""Built-in tools: web search, file ops (cwd-safe), shell, execute_python, calculator, http_get, system info, MCP foundation."""
 
 from __future__ import annotations
 
@@ -6,7 +6,9 @@ import ast
 import json
 import math
 import os
+import platform
 import subprocess
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
@@ -64,7 +66,7 @@ def http_get(url: str, max_chars: int = 8000, timeout: float = 15.0) -> str:
         return "Error: url must start with http:// or https://"
     try:
         with httpx.Client(timeout=timeout, follow_redirects=True) as client:
-            r = client.get(url, headers={"User-Agent": "grok-local-agent-kit/0.8.3"})
+            r = client.get(url, headers={"User-Agent": "grok-local-agent-kit/0.8.4"})
             r.raise_for_status()
             text = r.text or ""
             if len(text) > max_chars:
@@ -276,6 +278,21 @@ def get_datetime(timezone_name: str = "UTC") -> str:
     return now.strftime("%Y-%m-%d %H:%M:%S UTC") + f" (requested: {timezone_name})"
 
 
+def get_system_info() -> str:
+    """Return basic system information useful for local agents (OS, Python, cwd)."""
+    try:
+        lines = [
+            f"OS: {platform.system()} {platform.release()} ({platform.machine()})",
+            f"Python: {sys.version.split()[0]} ({platform.python_implementation()})",
+            f"CWD: {Path.cwd()}",
+            f"Platform: {platform.platform()}",
+            f"CPU count: {os.cpu_count() or '?'}",
+        ]
+        return "\n".join(lines)
+    except Exception as e:
+        return f"get_system_info error: {e}"
+
+
 def list_tools() -> str:
     """Return the list of currently registered tools and short descriptions."""
     lines = []
@@ -295,8 +312,10 @@ def _load_mcp_config() -> Dict[str, Any]:
             data = json.loads(raw)
             if isinstance(data, list):
                 return {"servers": data}
-        except json.JSONDecodeError:
-            pass
+            if isinstance(data, dict) and "servers" in data:
+                return data
+        except json.JSONDecodeError as e:
+            return {"servers": [], "error": f"Invalid GROK_MCP_SERVERS JSON: {e}"}
     for candidate in (".mcp_servers.json", "mcp_servers.json", ".grok/mcp.json"):
         p = Path(candidate)
         if p.is_file():
@@ -306,8 +325,8 @@ def _load_mcp_config() -> Dict[str, Any]:
                     return data
                 if isinstance(data, list):
                     return {"servers": data}
-            except Exception:
-                continue
+            except Exception as e:
+                return {"servers": [], "error": f"Failed to parse {candidate}: {e}"}
     return {"servers": []}
 
 
@@ -315,12 +334,18 @@ def mcp_list_resources() -> str:
     """List available MCP resources (foundation — real stdio/SSE client in progress)."""
     cfg = _load_mcp_config()
     servers = cfg.get("servers") or []
+    err = cfg.get("error")
     lines = [
         "MCP client status: foundation (v0.8.x)",
         "Real stdio + SSE/HTTP client is the next step.",
         f"Configured servers: {len(servers)}",
     ]
+    if err:
+        lines.append(f"Config note: {err}")
     for i, s in enumerate(servers[:10], 1):
+        if not isinstance(s, dict):
+            lines.append(f"  {i}. (invalid entry: {type(s).__name__})")
+            continue
         name = s.get("name") or s.get("command") or f"server_{i}"
         transport = s.get("transport") or ("stdio" if s.get("command") else "unknown")
         lines.append(f"  {i}. {name} ({transport})")
@@ -344,7 +369,12 @@ def mcp_list_tools() -> str:
             "When the full client is connected, external tools appear here.\n"
             "Local tools remain available via list_tools."
         )
-    names = [s.get("name") or s.get("command") or "?" for s in servers]
+    names = []
+    for s in servers:
+        if isinstance(s, dict):
+            names.append(s.get("name") or s.get("command") or "?")
+        else:
+            names.append("?")
     return (
         f"MCP tools discovery (v0.8.x foundation) — {len(servers)} server(s) configured: "
         + ", ".join(names)
@@ -543,6 +573,14 @@ TOOL_SPECS: List[Dict[str, Any]] = [
     {
         "type": "function",
         "function": {
+            "name": "get_system_info",
+            "description": "Get basic system information (OS, Python version, cwd, CPU count).",
+            "parameters": {"type": "object", "properties": {}, "required": []},
+        },
+    },
+    {
+        "type": "function",
+        "function": {
             "name": "list_tools",
             "description": "List all currently registered tools and their short descriptions.",
             "parameters": {"type": "object", "properties": {}, "required": []},
@@ -592,6 +630,7 @@ TOOL_FUNCS: Dict[str, Callable[..., str]] = {
     "execute_python": execute_python,
     "calculator": calculator,
     "get_datetime": get_datetime,
+    "get_system_info": get_system_info,
     "list_tools": list_tools,
     "mcp_list_resources": mcp_list_resources,
     "mcp_list_tools": mcp_list_tools,

@@ -19,11 +19,12 @@ When a task is complete, give a clear final answer without unnecessary tool call
 If a tool fails, explain the error briefly and try an alternative when possible.
 Prefer small, focused tool calls. You can call multiple tools in sequence across turns.
 For file operations stay inside the current workspace. For code, prefer execute_python over shell when safe.
-Use http_get for simple page fetches and web_search for discovery."""
+Use http_get for simple page fetches and web_search for discovery.
+Use get_system_info when you need OS / Python / cwd context."""
 
 # Default max characters of a tool result kept in the conversation context
 DEFAULT_TOOL_RESULT_MAX_CHARS = 6000
-HISTORY_VERSION = "0.8.3"
+HISTORY_VERSION = "0.8.4"
 
 
 class Agent:

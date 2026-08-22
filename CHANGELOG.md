@@ -2,6 +2,22 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.8.4] — 2026-08-22
+
+### Added
+- `get_system_info` tool — OS, Python version, cwd, CPU count (15 built-in tools total)
+- `examples/custom_tools_agent.py` — ready-to-run demo of `register_tools()` with domain tools
+
+### Improved
+- MCP foundation: clearer config error messages, safer server entry handling
+- System prompt guidance for `get_system_info`
+- Examples (chat / automation) updated for the new tool
+- Unit tests cover `get_system_info` and 15-tool registry
+- README + ROADMAP + version alignment
+
+### Notes
+- Full MCP client (stdio + HTTP/SSE) remains the primary focus of the 0.8.x series
+
 ## [0.8.3] — 2026-08-20
 
 ### Added
