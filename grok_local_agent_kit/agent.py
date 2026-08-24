@@ -20,11 +20,12 @@ If a tool fails, explain the error briefly and try an alternative when possible.
 Prefer small, focused tool calls. You can call multiple tools in sequence across turns.
 For file operations stay inside the current workspace. For code, prefer execute_python over shell when safe.
 Use http_get for simple page fetches and web_search for discovery.
-Use get_system_info when you need OS / Python / cwd context."""
+Use get_system_info when you need OS / Python / cwd context.
+Use delete_file only when the user explicitly asks to remove a file."""
 
 # Default max characters of a tool result kept in the conversation context
 DEFAULT_TOOL_RESULT_MAX_CHARS = 6000
-HISTORY_VERSION = "0.8.4"
+HISTORY_VERSION = "0.8.5"
 
 
 class Agent:
@@ -136,8 +137,10 @@ class Agent:
             tool_calls = response.get("tool_calls")
 
             if not tool_calls:
-                # Final answer path. Optionally re-stream for live UX when stream=True.
-                if self.stream:
+                # Final answer path.
+                # Prefer already-returned content; only re-stream when stream=True
+                # and we have no usable content yet (avoids a second full LLM call).
+                if self.stream and not (content and str(content).strip()):
                     final_parts: List[str] = []
                     stream_resp = self.llm.stream_chat(messages, tools=None)
                     try:
@@ -152,9 +155,16 @@ class Agent:
                         if isinstance(ret, dict) and ret.get("content"):
                             final = ret["content"].strip()
                         else:
-                            final = ("".join(final_parts) or content or "(no response)").strip()
+                            final = (
+                                "".join(final_parts) or content or "(no response)"
+                            ).strip()
                     if self.verbose and final_parts:
                         print()  # newline after live tokens
+                elif self.stream and content and self.verbose:
+                    # Content already present: print it for live UX without re-calling LLM
+                    print(content, end="", flush=True)
+                    print()
+                    final = str(content).strip()
                 else:
                     final = (content or "(no response)").strip()
 

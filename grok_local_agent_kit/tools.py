@@ -66,7 +66,7 @@ def http_get(url: str, max_chars: int = 8000, timeout: float = 15.0) -> str:
         return "Error: url must start with http:// or https://"
     try:
         with httpx.Client(timeout=timeout, follow_redirects=True) as client:
-            r = client.get(url, headers={"User-Agent": "grok-local-agent-kit/0.8.4"})
+            r = client.get(url, headers={"User-Agent": "grok-local-agent-kit/0.8.5"})
             r.raise_for_status()
             text = r.text or ""
             if len(text) > max_chars:
@@ -136,6 +136,20 @@ def append_file(path: str, content: str) -> str:
         return f"Successfully appended {len(content)} chars to {p}"
     except Exception as e:
         return f"append_file error: {e}"
+
+
+def delete_file(path: str) -> str:
+    """Delete a single file (cwd-safe). Directories are refused."""
+    try:
+        p = _safe_path(path)
+        if not p.exists():
+            return f"File not found: {p}"
+        if not p.is_file():
+            return f"Refused: '{p}' is not a regular file (directories are not deleted)."
+        p.unlink()
+        return f"Successfully deleted {p}"
+    except Exception as e:
+        return f"delete_file error: {e}"
 
 
 def run_shell(command: str, timeout: int = 30) -> str:
@@ -336,8 +350,7 @@ def mcp_list_resources() -> str:
     servers = cfg.get("servers") or []
     err = cfg.get("error")
     lines = [
-        "MCP client status: foundation (v0.8.x)",
-        "Real stdio + SSE/HTTP client is the next step.",
+        "MCP client status: foundation (v0.8.x) — full stdio + SSE client is next",
         f"Configured servers: {len(servers)}",
     ]
     if err:
@@ -507,6 +520,20 @@ TOOL_SPECS: List[Dict[str, Any]] = [
     {
         "type": "function",
         "function": {
+            "name": "delete_file",
+            "description": "Delete a single file (cwd-safe). Refuses directories.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "path": {"type": "string", "description": "File path to delete"},
+                },
+                "required": ["path"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
             "name": "run_shell",
             "description": "Run a shell command with safety restrictions.",
             "parameters": {
@@ -626,6 +653,7 @@ TOOL_FUNCS: Dict[str, Callable[..., str]] = {
     "read_file": read_file,
     "write_file": write_file,
     "append_file": append_file,
+    "delete_file": delete_file,
     "run_shell": run_shell,
     "execute_python": execute_python,
     "calculator": calculator,

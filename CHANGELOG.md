@@ -2,6 +2,22 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.8.5] — 2026-08-24
+
+### Added
+- `delete_file` tool — cwd-safe single-file deletion (refuses directories); **16 built-in tools**
+
+### Improved
+- Agent loop: avoid redundant second LLM call when `stream=True` and final content is already available
+- System prompt guidance for `delete_file`
+- MCP foundation status strings slightly clearer
+- README demos, tool table, HN / Indie Hackers share block
+- Unit tests cover `delete_file` and 16-tool registry
+- Version alignment across package, history format, docs
+
+### Notes
+- Full MCP client (stdio + HTTP/SSE) remains the primary focus of the 0.8.x series
+
 ## [0.8.4] — 2026-08-22
 
 ### Added
