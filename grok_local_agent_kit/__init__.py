@@ -4,7 +4,7 @@ from .agent import Agent, create_agent
 from .llm import LLMClient
 from .tools import get_default_tools, execute_tool
 
-__version__ = "0.8.5"
+__version__ = "0.8.6"
 __all__ = [
     "Agent",
     "create_agent",

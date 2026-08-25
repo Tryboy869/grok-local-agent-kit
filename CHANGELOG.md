@@ -2,6 +2,19 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.8.6] — 2026-08-25
+
+### Improved
+- Agent system prompt: clearer routing guidance (list before write, prefer calculator / execute_python, careful shell)
+- `run_shell` safety: expanded blocklist (rm -r, curl|sh, wget|sh, chmod 777, etc.)
+- Version alignment (package, history format, User-Agent, docs)
+- README demos, HN / Indie Hackers pitch, and example banners
+- CONTRIBUTING + ROADMAP touch-ups for public MVP
+
+### Notes
+- Full MCP client (stdio + HTTP/SSE) remains the primary focus of the 0.8.x series
+- 16 built-in tools unchanged; foundation for external MCP tools is ready for the real client
+
 ## [0.8.5] — 2026-08-24
 
 ### Added

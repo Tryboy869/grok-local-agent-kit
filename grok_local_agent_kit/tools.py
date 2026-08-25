@@ -66,7 +66,7 @@ def http_get(url: str, max_chars: int = 8000, timeout: float = 15.0) -> str:
         return "Error: url must start with http:// or https://"
     try:
         with httpx.Client(timeout=timeout, follow_redirects=True) as client:
-            r = client.get(url, headers={"User-Agent": "grok-local-agent-kit/0.8.5"})
+            r = client.get(url, headers={"User-Agent": "grok-local-agent-kit/0.8.6"})
             r.raise_for_status()
             text = r.text or ""
             if len(text) > max_chars:
@@ -154,7 +154,23 @@ def delete_file(path: str) -> str:
 
 def run_shell(command: str, timeout: int = 30) -> str:
     """Run a shell command with basic safety restrictions."""
-    blocked = ["rm -rf", "mkfs", "dd if=", ":(){", "shutdown", "reboot", "passwd"]
+    blocked = [
+        "rm -rf",
+        "rm -r",
+        "mkfs",
+        "dd if=",
+        ":(){",
+        "shutdown",
+        "reboot",
+        "passwd",
+        "chmod 777",
+        "chown",
+        "> /dev/",
+        "curl | sh",
+        "wget | sh",
+        "| bash",
+        "| sh",
+    ]
     lower = command.lower()
     for b in blocked:
         if b in lower:

@@ -21,11 +21,12 @@ Prefer small, focused tool calls. You can call multiple tools in sequence across
 For file operations stay inside the current workspace. For code, prefer execute_python over shell when safe.
 Use http_get for simple page fetches and web_search for discovery.
 Use get_system_info when you need OS / Python / cwd context.
-Use delete_file only when the user explicitly asks to remove a file."""
+Use delete_file only when the user explicitly asks to remove a file.
+Route carefully: list_files before write/read when unsure of paths; calculator for pure math; run_shell only for safe, non-destructive commands."""
 
 # Default max characters of a tool result kept in the conversation context
 DEFAULT_TOOL_RESULT_MAX_CHARS = 6000
-HISTORY_VERSION = "0.8.5"
+HISTORY_VERSION = "0.8.6"
 
 
 class Agent:
