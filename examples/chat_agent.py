@@ -43,8 +43,8 @@ def main() -> None:
 
     print(f"🚀 Local Chat Agent ready (v{__version__})")
     print(
-        "   Tools: web_search, http_get, files (cwd-safe + delete), shell, execute_python, "
-        "calculator, get_system_info, list_tools, MCP foundation"
+        "   Tools: web_search, http_get, files (cwd-safe + delete + search_files), shell, "
+        "execute_python, calculator, get_system_info, list_tools, MCP foundation"
     )
     print("   Type 'exit' / 'quit' / Ctrl-C to leave.\n")
 

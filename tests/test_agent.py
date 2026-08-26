@@ -5,6 +5,7 @@ from grok_local_agent_kit.tools import (
     execute_tool,
     get_default_tools,
     list_files,
+    search_files,
     read_file,
     write_file,
     append_file,
@@ -21,10 +22,11 @@ from grok_local_agent_kit.tools import (
 def test_get_default_tools():
     schemas, funcs = get_default_tools()
     assert isinstance(schemas, list)
-    assert len(schemas) >= 16
+    assert len(schemas) >= 17
     assert "web_search" in funcs
     assert "http_get" in funcs
     assert "list_files" in funcs
+    assert "search_files" in funcs
     assert "write_file" in funcs
     assert "append_file" in funcs
     assert "delete_file" in funcs
@@ -42,6 +44,7 @@ def test_list_tools():
     assert isinstance(result, str)
     assert "web_search" in result
     assert "http_get" in result
+    assert "search_files" in result
     assert "append_file" in result
     assert "delete_file" in result
     assert "get_system_info" in result
@@ -53,6 +56,13 @@ def test_list_files():
     result = list_files(".")
     assert isinstance(result, str)
     assert len(result) > 0
+
+
+def test_search_files():
+    result = search_files("def ", path=".", pattern="*.py", max_matches=5)
+    assert isinstance(result, str)
+    # Either matches found or a clear no-match message
+    assert "match" in result.lower() or "No matches" in result or "error" in result.lower()
 
 
 def test_write_and_read_file(tmp_path):
@@ -133,6 +143,7 @@ def test_agent_init():
     assert agent.llm.model == "dummy"
     assert "web_search" in agent.tool_funcs
     assert "http_get" in agent.tool_funcs
+    assert "search_files" in agent.tool_funcs
     assert "append_file" in agent.tool_funcs
     assert "delete_file" in agent.tool_funcs
     assert "get_system_info" in agent.tool_funcs
@@ -141,6 +152,7 @@ def test_agent_init():
     assert "get_datetime" in agent.tool_funcs
     assert "list_tools" in agent.tool_funcs
     assert "http_get" in agent.list_registered_tools()
+    assert "search_files" in agent.list_registered_tools()
     assert "delete_file" in agent.list_registered_tools()
     assert "get_system_info" in agent.list_registered_tools()
     agent.close()
