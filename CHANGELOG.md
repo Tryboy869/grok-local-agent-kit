@@ -2,6 +2,21 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.8.7] — 2026-08-26
+
+### Added
+- `search_files` tool — cwd-safe text search in file contents (glob + query, with short snippets). **17 built-in tools**
+
+### Improved
+- Agent system prompt: guidance for `search_files` (find code / notes before reading)
+- Version alignment (package, history format, User-Agent, docs)
+- README demos, tool table, HN / Indie Hackers pitch
+- Unit tests cover `search_files` and 17-tool registry
+- Examples (chat / automation) mention the new tool
+
+### Notes
+- Full MCP client (stdio + HTTP/SSE) remains the primary focus of the 0.8.x series
+
 ## [0.8.6] — 2026-08-25
 
 ### Improved
