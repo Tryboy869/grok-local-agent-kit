@@ -69,7 +69,7 @@ def chat(
         provider=provider,
         base_url=base_url,
         verbose=verbose,
-        stream=stream or verbose,  # verbose implies live token feedback when streaming
+        stream=stream or verbose,
     )
 
     if prompt:
@@ -83,7 +83,7 @@ def chat(
     console.print(
         f"[bold green]Local Agent ready (v{__version__}).[/] "
         "Type 'exit' or Ctrl-C to quit.\n"
-        "Special: /save [file], /load [file], /reset, /tools\n"
+        "Special: /save [file], /load [file], /reset, /tools, /mcp, /ping\n"
     )
     try:
         while True:
@@ -94,7 +94,6 @@ def chat(
             if not stripped:
                 continue
 
-            # Lightweight interactive commands
             if stripped.startswith("/save"):
                 parts = stripped.split(maxsplit=1)
                 path = parts[1] if len(parts) > 1 else "agent_history.json"
@@ -113,6 +112,14 @@ def chat(
                 from .tools import list_tools as _lt
 
                 console.print(_lt())
+                continue
+            if stripped in {"/mcp", "/mcp_status"}:
+                from .mcp import get_manager
+
+                console.print(get_manager().describe())
+                continue
+            if stripped in {"/ping"}:
+                console.print(agent.llm.ping())
                 continue
 
             result = agent.chat(user)
