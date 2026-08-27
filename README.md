@@ -3,93 +3,66 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
-[![Version](https://img.shields.io/badge/version-0.8.7-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
+[![Version](https://img.shields.io/badge/version-0.9.0-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
 [![GitHub stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers)
 
 **Open-source toolkit for building powerful local AI agents.**  
-Ollama + LM Studio • real tool calling • MCP foundation • offline-first.  
+Ollama + LM Studio • ReAct tool loop • **real MCP stdio client** • offline-first.  
 Built autonomously by Grok.
 
 > Run capable agents on your machine. No cloud required. No API keys needed for local models.
 
 ---
 
-## ✨ Features (v0.8.7)
+## ✨ Features (v0.9.0)
 
 | Feature | Status |
 |---------|--------|
 | Multi-LLM (Ollama native + OpenAI-compatible / LM Studio) | ✅ |
-| ReAct-style tool calling loop with clear routing guidance | ✅ |
-| **Real streaming of final answers** (`stream=True` / CLI `--stream`) | ✅ |
-| **17 tools**: web search, http_get, files (cwd-safe + append + delete + **search_files**), shell (hardened), execute_python, calculator, datetime, system info, list_tools, MCP foundation | ✅ |
-| MCP server config via env / JSON (foundation for full client) | ✅ |
-| Conversation history save/load (+ CLI `/save` `/load`) | ✅ |
-| Env defaults (`GROK_AGENT_MODEL`, `GROK_AGENT_PROVIDER`, `GROK_AGENT_BASE_URL`) | ✅ |
-| `register_tools()` batch helper + `get_history()` + `list_registered_tools()` | ✅ |
-| Configurable tool-result truncation | ✅ |
-| CLI (`grok-agent chat / doctor`) with interactive helpers + `--stream` | ✅ |
-| Ready-to-run examples (chat, automation, research, code_assistant, **custom_tools**) | ✅ |
-| One-command install + `py.typed` | ✅ |
-| Unit tests (no live LLM required) | ✅ |
+| ReAct-style tool calling loop with routing guidance | ✅ |
+| Real streaming of final answers (`stream=True` / CLI `--stream`) | ✅ |
+| **20 tools**: web, HTTP, files (cwd-safe + search + mkdir + copy + stat + delete), shell, Python, calculator, datetime, system info, list_tools, **live MCP** | ✅ |
+| **MCP stdio JSON-RPC client** (initialize, tools/list, tools/call, resources/list) | ✅ |
+| Bundled echo MCP server for tests and demos | ✅ |
+| Conversation history save/load (+ CLI `/save` `/load` `/mcp` `/ping`) | ✅ |
+| Env defaults (`GROK_AGENT_*`, `GROK_MCP_SERVERS`) | ✅ |
+| CLI + ready-to-run examples + unit tests (no live LLM) | ✅ |
 
 ---
 
 ## 🎬 Demo (what it looks like)
 
-**Interactive chat** — *suggested GIF / asciinema: `grok-agent chat -v --stream` creating a file + web search + search_files*
+*Suggested recordings (GIF / [asciinema](https://asciinema.org)): `grok-agent chat -v --stream`, `python examples/automation_agent.py`, `python examples/mcp_agent.py --no-llm`.*
+
+**Interactive chat**
 
 ```text
 $ grok-agent chat -v --stream
-Local Agent ready (v0.8.7). Type 'exit' or Ctrl-C to quit.
-Special: /save [file], /load [file], /reset, /tools
+Local Agent ready (v0.9.0). Type 'exit' or Ctrl-C to quit.
+Special: /save [file], /load [file], /reset, /tools, /mcp, /ping
 
-You › List files and create a note saying hello
-  → tool: list_files({'path': '.'})
-  ← FILE  README.md ...
-  → tool: write_file({'path': 'note.txt', 'content': 'hello'})
-  ← Successfully wrote ...
-Agent › Done. Created note.txt and listed the workspace.
+You › List files and create notes/hello.txt
+  → tool: mkdir({'path': 'notes'})
+  → tool: write_file({'path': 'notes/hello.txt', 'content': 'hello'})
+  → tool: file_stat({'path': 'notes/hello.txt'})
+Agent › Created notes/hello.txt (FILE, N bytes).
 
-You › /tools
-Available tools (17):
-- web_search: Search the web ...
-- http_get: Fetch a URL ...
-- search_files: Search file contents ...
-- get_system_info: Get basic system information ...
-- delete_file: Delete a single file ...
-...
+You › /mcp
+MCP client: stdio JSON-RPC (v0.9.0)
+Configured servers: 0
 ```
 
-**Automation agent** — *suggested GIF: full one-shot goal with tool trace*
+**MCP without an LLM**
 
 ```text
-$ python examples/automation_agent.py
-🤖 Automation Agent (v0.8.7)
-  → tool: write_file(...)
-  → tool: list_files(...)
-  → tool: calculator(...)
-  → tool: get_system_info(...)
-  → tool: search_files(...)
-  → tool: web_search(...)
-=== Final answer ===
-I created hello_from_agent.py, confirmed it, computed 22.0, reported OS/Python, found matching code, and ...
+$ python examples/mcp_agent.py --no-llm
+MCP client: stdio JSON-RPC (v0.9.0)
+Configured servers: 1
+  1. echo (stdio) python
+
+--- tools/call echo ---
+hello from mcp_agent
 ```
-
-**Custom tools** — *register domain tools in 5 lines*
-
-```text
-$ python examples/custom_tools_agent.py
-🧩 Custom Tools Agent (v0.8.7)
-   Registered tools: [..., 'greet', 'word_count']
-  → tool: greet({'name': 'Local Agent'})
-  → tool: word_count(...)
-  → tool: get_system_info(...)
-=== Final answer ===
-...
-```
-
-*(Replace the text demos above with real terminal GIFs / asciinema when available.  
-Suggested recordings: `grok-agent chat -v --stream`, automation example, custom_tools example.)*
 
 ---
 
@@ -104,39 +77,26 @@ Or from source:
 ```bash
 git clone https://github.com/Tryboy869/grok-local-agent-kit.git
 cd grok-local-agent-kit
-pip install -e .
+pip install -e ".[dev]"
+pytest -q
 ```
 
 ### Prerequisites
 
-1. **Ollama** (recommended)  
+1. **Ollama** (recommended)
    ```bash
-   # install from https://ollama.com then:
+   # https://ollama.com
    ollama pull llama3.2
    ```
-
-2. **Or LM Studio**  
-   Start the local server (default `http://localhost:1234`).
+2. **Or LM Studio** — start the local server (`http://localhost:1234`).
 
 ### Run
 
 ```bash
-# Interactive chat
 grok-agent chat
-
-# One-shot
 grok-agent chat "Search the web for local AI agents and summarize"
-
-# With LM Studio
 grok-agent chat --provider lmstudio --model your-model-name
-
-# Stream final answer tokens + show tool trace
 grok-agent chat -v --stream
-
-# Save history on exit
-grok-agent chat --save-history session.json
-
-# Health check
 grok-agent doctor
 ```
 
@@ -146,22 +106,21 @@ grok-agent doctor
 from grok_local_agent_kit import create_agent
 
 agent = create_agent(model="llama3.2", provider="ollama", verbose=True, stream=True)
-print(agent.run("List files in the current directory and create a hello.txt"))
-agent.save_history("session.json")
-print(len(agent.get_history()), "messages")
+print(agent.run("List files and create hello.txt"))
 print(agent.list_registered_tools())
 agent.close()
 ```
 
-Environment defaults (optional):
+### MCP (stdio)
 
 ```bash
-export GROK_AGENT_MODEL=llama3.2
-export GROK_AGENT_PROVIDER=ollama
-# export GROK_AGENT_BASE_URL=http://localhost:1234/v1
-# Optional MCP foundation:
-# export GROK_MCP_SERVERS='[{"name":"fs","command":"npx","args":["-y","@modelcontextprotocol/server-filesystem","."]}]'
+export GROK_MCP_SERVERS='[{"name":"echo","command":"python","args":["-m","grok_local_agent_kit.mcp_echo_server"]}]'
+python examples/mcp_agent.py --no-llm
 ```
+
+Copy `examples/.mcp_servers.example.json` to `.mcp_servers.json` in your workspace if you prefer a file over the env var.
+
+HTTP/SSE transport is recognized in config but not implemented yet.
 
 ---
 
@@ -170,17 +129,15 @@ export GROK_AGENT_PROVIDER=ollama
 | Tool | Description |
 |------|-------------|
 | `web_search` | DuckDuckGo search |
-| `http_get` | Simple HTTP GET (text content) |
-| `list_files` | List files (cwd-safe) |
-| `search_files` | Search file contents for a text query (cwd-safe, with snippets) |
-| `read_file` / `write_file` / `append_file` / `delete_file` | Read/write/append/delete text files (cwd-safe) |
-| `run_shell` | Restricted shell commands (hardened blocklist) |
-| `execute_python` | Safe Python snippet execution |
-| `calculator` | Math expressions |
-| `get_datetime` | Current UTC time |
-| `get_system_info` | OS, Python, cwd, CPU count |
-| `list_tools` | Introspect available tools |
-| `mcp_*` | MCP discovery & call (foundation — full client next) |
+| `http_get` | HTTP GET (text) |
+| `list_files` / `search_files` | Workspace listing & content search |
+| `read_file` / `write_file` / `append_file` / `delete_file` | Text files (cwd-safe) |
+| `mkdir` / `copy_file` / `file_stat` | Directories, copy, metadata |
+| `run_shell` | Restricted shell |
+| `execute_python` | Safe snippet execution |
+| `calculator` | Math |
+| `get_datetime` / `get_system_info` / `list_tools` | Context & introspection |
+| `mcp_list_resources` / `mcp_list_tools` / `mcp_call_tool` | Live MCP stdio client |
 
 ---
 
@@ -192,19 +149,18 @@ python examples/automation_agent.py
 python examples/research_agent.py
 python examples/code_assistant.py
 python examples/custom_tools_agent.py
+python examples/mcp_agent.py --no-llm
 ```
-
-All examples are ready-to-run once a local LLM is available.
 
 ---
 
 ## 🗺️ Roadmap
 
-See [ROADMAP.md](ROADMAP.md). Current focus: **real MCP client** (stdio + SSE) in the 0.8.x series.
+See [ROADMAP.md](ROADMAP.md). Next: MCP HTTP/SSE, multi-agent memory.
 
 ## 🤝 Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Highest priority: full MCP stdio/SSE client.
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## 📄 License
 
@@ -214,18 +170,15 @@ MIT — see [LICENSE](LICENSE).
 
 ### Share / discuss (HN · Indie Hackers)
 
-**Offline-first AI agents that actually call tools — no API key required for local models.**
+Draft post: [docs/HN_INDIE_HACKERS.md](docs/HN_INDIE_HACKERS.md)
 
-- ReAct-style loop with **17 built-in tools** (web, http_get, files + search + delete, hardened shell, code, math, system info…)
-- Ollama + LM Studio (any OpenAI-compatible endpoint)
-- MCP foundation already wired; full client is next
-- One-command install, CLI + Python API, zero live-LLM unit tests
-- Easy custom tools via `register_tools()`
+**Offline-first AI agents that actually call tools — including a real MCP stdio client. No API key for local models.**
 
 ```bash
 pip install git+https://github.com/Tryboy869/grok-local-agent-kit.git
 grok-agent doctor
 grok-agent chat -v --stream
+python examples/mcp_agent.py --no-llm
 ```
 
 Built autonomously by Grok · Nexus Studio / Tryboy869  
