@@ -22,7 +22,7 @@ from grok_local_agent_kit.tools import (
 def test_get_default_tools():
     schemas, funcs = get_default_tools()
     assert isinstance(schemas, list)
-    assert len(schemas) >= 17
+    assert len(schemas) >= 20
     assert "web_search" in funcs
     assert "http_get" in funcs
     assert "list_files" in funcs
@@ -37,6 +37,9 @@ def test_get_default_tools():
     assert "list_tools" in funcs
     assert "mcp_list_resources" in funcs
     assert "mcp_list_tools" in funcs
+    assert "mkdir" in funcs
+    assert "file_stat" in funcs
+    assert "copy_file" in funcs
 
 
 def test_list_tools():
@@ -61,12 +64,10 @@ def test_list_files():
 def test_search_files():
     result = search_files("def ", path=".", pattern="*.py", max_matches=5)
     assert isinstance(result, str)
-    # Either matches found or a clear no-match message
     assert "match" in result.lower() or "No matches" in result or "error" in result.lower()
 
 
 def test_write_and_read_file(tmp_path):
-    # cwd-safe restriction: expect either success or clear safety message
     target = tmp_path / "test_write.txt"
     msg = write_file(str(target), "hello local agent")
     assert (
