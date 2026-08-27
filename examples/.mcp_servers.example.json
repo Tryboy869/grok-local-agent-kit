@@ -1,0 +1,9 @@
+{
+  "servers": [
+    {
+      "name": "echo",
+      "command": "python",
+      "args": ["-m", "grok_local_agent_kit.mcp_echo_server"]
+    }
+  ]
+}

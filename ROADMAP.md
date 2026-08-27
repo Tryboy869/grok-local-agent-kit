@@ -11,50 +11,45 @@
 
 ## ✅ v0.7.x
 
-- Conversation history persistence (`save_history` / `load_history`)
-- `list_tools`, 12+ built-in tools, CLI interactive helpers
+- Conversation history persistence
 - Env var defaults, `register_tools()`, streaming final answers
 - Polished README + contribution guide
 
-## ✅ v0.8.0 – 0.8.7 (current)
+## ✅ v0.8.x
 
-- MCP foundation: config via `GROK_MCP_SERVERS` / `.mcp_servers.json`
-- Configurable tool-result truncation
-- `append_file`, `http_get`, `get_system_info`, `delete_file`, `search_files`, `py.typed`
-- Robustness pass on agent loop (smarter streaming, history versioning, routing guidance)
-- Stronger shell safety blocklist
-- **17 built-in tools** + custom-tools example
+- MCP *foundation* (config + stub tools)
+- `append_file`, `http_get`, `get_system_info`, `delete_file`, `search_files`
+- 17 tools, stronger shell blocklist
 
-## 🚧 v0.8.x — Real MCP client
+## ✅ v0.9.0 (current)
 
-- Full MCP client (stdio + HTTP/SSE)
-- Discover & call tools from external MCP servers
-- Resource & prompt support
-- Optional `mcp` extra dependency
-- Wire configured servers into the live tool registry
+- **Real MCP stdio JSON-RPC client** (`StdioMCPClient` + `MCPManager`)
+- Bundled echo MCP server + `examples/mcp_agent.py`
+- File tools: `mkdir`, `copy_file`, `file_stat` (20 tools)
+- CLI `/mcp` and `/ping`
+- Public launch note for HN / Indie Hackers
 
-## 📋 v0.9 — Multi-agent & memory
+## 🚧 v0.9.x
 
-- Agent-to-agent messaging
-- Simple orchestrator / swarm patterns
-- Shared tool registry
-- Vector memory (local embeddings)
-- Session management beyond basic JSON history
+- MCP HTTP/SSE transport
+- Auto-register discovered MCP tools into the live tool registry
+- Prompts + resource reads (`resources/read`)
+- Session directory + named histories
 
 ## 📋 v1.0 — Production ready
 
+- Agent-to-agent / simple orchestrator
+- Local vector memory
 - Vision / multimodal models
-- Skill marketplace format
 - Stronger sandboxed code execution
-- Official docs site
 - PyPI release with stable API
-- Full streaming throughout the tool loop
+- Streaming throughout the tool loop
+- Official docs site
 
 ## Ideas / later
 
 - Browser automation (Playwright)
 - Optional GUI
-- Distributed agents over local network
 - Evaluation harness
 - Windows/macOS packaging notes
 

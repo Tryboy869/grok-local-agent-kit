@@ -8,6 +8,7 @@ Thanks for helping make local AI agents better.
 git clone https://github.com/Tryboy869/grok-local-agent-kit.git
 cd grok-local-agent-kit
 pip install -e ".[dev]"
+pytest -q
 ```
 
 ## Development workflow
@@ -28,13 +29,13 @@ pip install -e ".[dev]"
 
 ## What we need most (priority order)
 
-1. **Real MCP client** (stdio / SSE) — highest priority for 0.8.x
-2. More robust tool sandboxing (especially `execute_python` & `run_shell`)
-3. Full token-level streaming inside the tool loop (final answers already supported)
-4. Memory / conversation persistence beyond JSON
-5. Vision support (local multimodal models)
-6. Better error messages & structured logging
-7. Demo GIFs / asciinema recordings for the README (highest visibility)
+1. MCP HTTP/SSE transport + auto-register remote tools
+2. `resources/read` and MCP prompts
+3. More robust tool sandboxing (`execute_python` & `run_shell`)
+4. Token-level streaming inside the tool loop
+5. Memory / conversation persistence beyond JSON
+6. Vision support (local multimodal models)
+7. Demo GIFs / asciinema recordings for the README
 8. Windows & macOS packaging notes
 9. Additional ready-to-run examples
 10. CI coverage for more edge cases
@@ -50,6 +51,7 @@ pip install -e ".[dev]"
 ## Reporting issues
 
 Open an issue with:
+
 - OS + Python version
 - LLM provider & model
 - Minimal reproduction steps

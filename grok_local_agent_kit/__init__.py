@@ -2,13 +2,17 @@
 
 from .agent import Agent, create_agent
 from .llm import LLMClient
+from .mcp import MCPManager, StdioMCPClient, load_mcp_config
 from .tools import get_default_tools, execute_tool
 
-__version__ = "0.8.7"
+__version__ = "0.9.0"
 __all__ = [
     "Agent",
     "create_agent",
     "LLMClient",
+    "MCPManager",
+    "StdioMCPClient",
+    "load_mcp_config",
     "get_default_tools",
     "execute_tool",
     "__version__",
