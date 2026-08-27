@@ -1,4 +1,4 @@
-"""Built-in tools: web search, file ops (cwd-safe), shell, execute_python, calculator, http_get, system info, search_files, MCP foundation."""
+"""Built-in tools: web search, file ops (cwd-safe), shell, execute_python, calculator, http_get, system info, search_files, MCP stdio client."""
 
 from __future__ import annotations
 
@@ -7,6 +7,7 @@ import json
 import math
 import os
 import platform
+import shutil
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -60,7 +61,7 @@ def http_get(url: str, max_chars: int = 8000, timeout: float = 15.0) -> str:
         return "Error: url must start with http:// or https://"
     try:
         with httpx.Client(timeout=timeout, follow_redirects=True) as client:
-            r = client.get(url, headers={"User-Agent": "grok-local-agent-kit/0.8.7"})
+            r = client.get(url, headers={"User-Agent": "grok-local-agent-kit/0.9.0"})
             r.raise_for_status()
             text = r.text or ""
             if len(text) > max_chars:
@@ -167,6 +168,45 @@ def append_file(path: str, content: str) -> str:
         return f"append_file error: {e}"
 
 
+def mkdir(path: str) -> str:
+    try:
+        p = _safe_path(path)
+        p.mkdir(parents=True, exist_ok=True)
+        return f"Successfully created directory {p}"
+    except Exception as e:
+        return f"mkdir error: {e}"
+
+
+def file_stat(path: str) -> str:
+    try:
+        p = _safe_path(path)
+        if not p.exists():
+            return f"Path does not exist: {p}"
+        st = p.stat()
+        kind = "DIR" if p.is_dir() else "FILE"
+        return (
+            f"{kind} {p}\n"
+            f"size: {st.st_size} B\n"
+            f"mtime: {datetime.fromtimestamp(st.st_mtime, tz=timezone.utc).isoformat()}\n"
+            f"mode: {oct(st.st_mode)}"
+        )
+    except Exception as e:
+        return f"file_stat error: {e}"
+
+
+def copy_file(src: str, dest: str) -> str:
+    try:
+        s = _safe_path(src)
+        d = _safe_path(dest)
+        if not s.exists() or not s.is_file():
+            return f"Source is not a file: {s}"
+        d.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(s, d)
+        return f"Successfully copied {s} → {d}"
+    except Exception as e:
+        return f"copy_file error: {e}"
+
+
 def delete_file(path: str) -> str:
     try:
         p = _safe_path(path)
@@ -270,95 +310,48 @@ def list_tools() -> str:
     return f"Available tools ({len(lines)}):\n" + "\n".join(lines)
 
 
-def _load_mcp_config() -> Dict[str, Any]:
-    raw = os.environ.get("GROK_MCP_SERVERS", "").strip()
-    if raw:
-        try:
-            data = json.loads(raw)
-            if isinstance(data, list):
-                return {"servers": data}
-            if isinstance(data, dict) and "servers" in data:
-                return data
-        except json.JSONDecodeError as e:
-            return {"servers": [], "error": f"Invalid GROK_MCP_SERVERS JSON: {e}"}
-    for candidate in (".mcp_servers.json", "mcp_servers.json", ".grok/mcp.json"):
-        p = Path(candidate)
-        if p.is_file():
-            try:
-                data = json.loads(p.read_text(encoding="utf-8"))
-                if isinstance(data, dict) and "servers" in data:
-                    return data
-                if isinstance(data, list):
-                    return {"servers": data}
-            except Exception as e:
-                return {"servers": [], "error": f"Failed to parse {candidate}: {e}"}
-    return {"servers": []}
-
-
 def mcp_list_resources() -> str:
-    cfg = _load_mcp_config()
-    servers = cfg.get("servers") or []
-    err = cfg.get("error")
-    lines = ["MCP client status: foundation (v0.8.x) — full stdio + SSE client is next", f"Configured servers: {len(servers)}"]
-    if err:
-        lines.append(f"Config note: {err}")
-    for i, s in enumerate(servers[:10], 1):
-        if not isinstance(s, dict):
-            lines.append(f"  {i}. (invalid entry: {type(s).__name__})")
-            continue
-        name = s.get("name") or s.get("command") or f"server_{i}"
-        transport = s.get("transport") or ("stdio" if s.get("command") else "unknown")
-        lines.append(f"  {i}. {name} ({transport})")
-    if not servers:
-        lines.append("No servers configured. Set GROK_MCP_SERVERS or create .mcp_servers.json.")
-        lines.append('Example: [{"name":"fs","command":"npx","args":["-y","@modelcontextprotocol/server-filesystem","."]}]')
-    lines.append("Interface: mcp_list_resources / mcp_list_tools / mcp_call_tool")
-    return "\n".join(lines)
+    from .mcp import get_manager
+    return get_manager().list_resources()
 
 
 def mcp_list_tools() -> str:
-    cfg = _load_mcp_config()
-    servers = cfg.get("servers") or []
-    if not servers:
-        return "MCP tools discovery (v0.8.x foundation).\nNo MCP servers configured yet.\nWhen the full client is connected, external tools appear here.\nLocal tools remain available via list_tools."
-    names = []
-    for s in servers:
-        if isinstance(s, dict):
-            names.append(s.get("name") or s.get("command") or "?")
-        else:
-            names.append("?")
-    return f"MCP tools discovery (v0.8.x foundation) — {len(servers)} server(s) configured: " + ", ".join(names) + ".\nFull discovery lands with the real stdio/SSE client."
+    from .mcp import get_manager
+    return get_manager().list_tools()
 
 
 def mcp_call_tool(name: str, arguments: Optional[Dict[str, Any]] = None) -> str:
-    cfg = _load_mcp_config()
-    servers = cfg.get("servers") or []
-    return f"MCP tool call foundation → name={name}, args={arguments or {}}.\nConfigured servers: {len(servers)}. Not yet connected to a live MCP process. Full client continues in 0.8.x."
+    from .mcp import get_manager
+    return get_manager().call_tool(name, arguments)
 
 
 TOOL_SPECS: List[Dict[str, Any]] = [
     {"type": "function", "function": {"name": "web_search", "description": "Search the web for up-to-date information.", "parameters": {"type": "object", "properties": {"query": {"type": "string"}, "max_results": {"type": "integer"}}, "required": ["query"]}}},
     {"type": "function", "function": {"name": "http_get", "description": "Fetch a URL with a simple GET request and return text content.", "parameters": {"type": "object", "properties": {"url": {"type": "string"}, "max_chars": {"type": "integer"}, "timeout": {"type": "number"}}, "required": ["url"]}}},
     {"type": "function", "function": {"name": "list_files", "description": "List files and directories in a path (restricted to workspace).", "parameters": {"type": "object", "properties": {"path": {"type": "string"}, "pattern": {"type": "string"}}, "required": []}}},
-    {"type": "function", "function": {"name": "search_files", "description": "Search file contents under a path for a text query (cwd-safe). Useful to find code or notes matching a string.", "parameters": {"type": "object", "properties": {"query": {"type": "string"}, "path": {"type": "string"}, "pattern": {"type": "string"}, "max_matches": {"type": "integer"}}, "required": ["query"]}}},
+    {"type": "function", "function": {"name": "search_files", "description": "Search file contents under a path for a text query (cwd-safe).", "parameters": {"type": "object", "properties": {"query": {"type": "string"}, "path": {"type": "string"}, "pattern": {"type": "string"}, "max_matches": {"type": "integer"}}, "required": ["query"]}}},
     {"type": "function", "function": {"name": "read_file", "description": "Read a text file (cwd-safe).", "parameters": {"type": "object", "properties": {"path": {"type": "string"}, "max_chars": {"type": "integer"}}, "required": ["path"]}}},
     {"type": "function", "function": {"name": "write_file", "description": "Write text to a file (cwd-safe).", "parameters": {"type": "object", "properties": {"path": {"type": "string"}, "content": {"type": "string"}}, "required": ["path", "content"]}}},
-    {"type": "function", "function": {"name": "append_file", "description": "Append text to a file (cwd-safe). Creates the file if it does not exist.", "parameters": {"type": "object", "properties": {"path": {"type": "string"}, "content": {"type": "string"}}, "required": ["path", "content"]}}},
+    {"type": "function", "function": {"name": "append_file", "description": "Append text to a file (cwd-safe).", "parameters": {"type": "object", "properties": {"path": {"type": "string"}, "content": {"type": "string"}}, "required": ["path", "content"]}}},
     {"type": "function", "function": {"name": "delete_file", "description": "Delete a single file (cwd-safe). Refuses directories.", "parameters": {"type": "object", "properties": {"path": {"type": "string"}}, "required": ["path"]}}},
+    {"type": "function", "function": {"name": "mkdir", "description": "Create a directory (cwd-safe, parents allowed).", "parameters": {"type": "object", "properties": {"path": {"type": "string"}}, "required": ["path"]}}},
+    {"type": "function", "function": {"name": "file_stat", "description": "Get size, mtime and type of a path (cwd-safe).", "parameters": {"type": "object", "properties": {"path": {"type": "string"}}, "required": ["path"]}}},
+    {"type": "function", "function": {"name": "copy_file", "description": "Copy a file within the workspace (cwd-safe).", "parameters": {"type": "object", "properties": {"src": {"type": "string"}, "dest": {"type": "string"}}, "required": ["src", "dest"]}}},
     {"type": "function", "function": {"name": "run_shell", "description": "Run a shell command with safety restrictions.", "parameters": {"type": "object", "properties": {"command": {"type": "string"}, "timeout": {"type": "integer"}}, "required": ["command"]}}},
     {"type": "function", "function": {"name": "execute_python", "description": "Execute a short Python snippet safely.", "parameters": {"type": "object", "properties": {"code": {"type": "string"}}, "required": ["code"]}}},
-    {"type": "function", "function": {"name": "calculator", "description": "Safely evaluate a mathematical expression (e.g. '2+2', 'sqrt(16)+pi').", "parameters": {"type": "object", "properties": {"expression": {"type": "string"}}, "required": ["expression"]}}},
+    {"type": "function", "function": {"name": "calculator", "description": "Safely evaluate a mathematical expression.", "parameters": {"type": "object", "properties": {"expression": {"type": "string"}}, "required": ["expression"]}}},
     {"type": "function", "function": {"name": "get_datetime", "description": "Get the current date and time (UTC).", "parameters": {"type": "object", "properties": {"timezone_name": {"type": "string"}}, "required": []}}},
     {"type": "function", "function": {"name": "get_system_info", "description": "Get basic system information (OS, Python version, cwd, CPU count).", "parameters": {"type": "object", "properties": {}, "required": []}}},
     {"type": "function", "function": {"name": "list_tools", "description": "List all currently registered tools and their short descriptions.", "parameters": {"type": "object", "properties": {}, "required": []}}},
-    {"type": "function", "function": {"name": "mcp_list_resources", "description": "List available MCP resources / configured servers (MCP foundation).", "parameters": {"type": "object", "properties": {}, "required": []}}},
-    {"type": "function", "function": {"name": "mcp_list_tools", "description": "List tools exposed by configured MCP servers (foundation).", "parameters": {"type": "object", "properties": {}, "required": []}}},
-    {"type": "function", "function": {"name": "mcp_call_tool", "description": "Call an MCP tool by name (foundation until full MCP client).", "parameters": {"type": "object", "properties": {"name": {"type": "string"}, "arguments": {"type": "object"}}, "required": ["name"]}}},
+    {"type": "function", "function": {"name": "mcp_list_resources", "description": "List MCP resources and configured servers (live stdio client).", "parameters": {"type": "object", "properties": {}, "required": []}}},
+    {"type": "function", "function": {"name": "mcp_list_tools", "description": "Discover tools from configured MCP stdio servers.", "parameters": {"type": "object", "properties": {}, "required": []}}},
+    {"type": "function", "function": {"name": "mcp_call_tool", "description": "Call a tool on a configured MCP stdio server.", "parameters": {"type": "object", "properties": {"name": {"type": "string"}, "arguments": {"type": "object"}}, "required": ["name"]}}},
 ]
 
 TOOL_FUNCS: Dict[str, Callable[..., str]] = {
     "web_search": web_search, "http_get": http_get, "list_files": list_files, "search_files": search_files,
     "read_file": read_file, "write_file": write_file, "append_file": append_file, "delete_file": delete_file,
+    "mkdir": mkdir, "file_stat": file_stat, "copy_file": copy_file,
     "run_shell": run_shell, "execute_python": execute_python, "calculator": calculator, "get_datetime": get_datetime,
     "get_system_info": get_system_info, "list_tools": list_tools, "mcp_list_resources": mcp_list_resources,
     "mcp_list_tools": mcp_list_tools, "mcp_call_tool": mcp_call_tool,
