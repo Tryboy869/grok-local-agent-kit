@@ -69,7 +69,8 @@ def main() -> None:
                                 "required": ["a", "b"],
                             },
                         },
-                    ]n                },
+                    ]
+                },
             )
         elif method == "resources/list":
             _respond(
