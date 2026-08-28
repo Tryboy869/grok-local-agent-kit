@@ -1,7 +1,7 @@
 """Tiny MCP stdio echo server used by tests and as a config example.
 
 Speaks newline-delimited JSON-RPC 2.0 on stdin/stdout.
-Tools: echo, add.
+Tools: echo, add. Resource: echo://about
 """
 
 from __future__ import annotations
@@ -43,7 +43,7 @@ def main() -> None:
                 {
                     "protocolVersion": "2024-11-05",
                     "capabilities": {"tools": {}, "resources": {}},
-                    "serverInfo": {"name": "grok-echo", "version": "0.9.0"},
+                    "serverInfo": {"name": "grok-echo", "version": "0.9.1"},
                 },
             )
         elif method == "tools/list":
@@ -69,8 +69,7 @@ def main() -> None:
                                 "required": ["a", "b"],
                             },
                         },
-                    ]
-                },
+                    ]n                },
             )
         elif method == "resources/list":
             _respond(
@@ -81,6 +80,23 @@ def main() -> None:
                     ]
                 },
             )
+        elif method == "resources/read":
+            uri = params.get("uri")
+            if uri == "echo://about":
+                _respond(
+                    msg_id,
+                    {
+                        "contents": [
+                            {
+                                "uri": uri,
+                                "mimeType": "text/plain",
+                                "text": "grok-echo MCP server v0.9.1",
+                            }
+                        ]
+                    },
+                )
+            else:
+                _error(msg_id, f"unknown resource: {uri}")
         elif method == "tools/call":
             name = params.get("name")
             args: Dict[str, Any] = params.get("arguments") or {}
