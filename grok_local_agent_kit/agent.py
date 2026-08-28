@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
 from .llm import LLMClient
+from .mcp_tools import extend_default_tools
 from .session import HISTORY_VERSION, list_sessions, load_session, save_session
 from .tools import execute_tool, get_default_tools
 
@@ -58,7 +59,7 @@ class Agent:
         self.tool_result_max_chars = max(500, tool_result_max_chars)
         self.session_name = session_name or "default"
 
-        self.tool_schemas, self.tool_funcs = get_default_tools()
+        self.tool_schemas, self.tool_funcs = extend_default_tools(*get_default_tools())
         self.history: List[Dict[str, Any]] = []
         if attach_mcp:
             self.attach_mcp_tools()
