@@ -3,9 +3,10 @@
 from .agent import Agent, create_agent
 from .llm import LLMClient
 from .mcp import MCPManager, StdioMCPClient, load_mcp_config
+from .session import list_sessions, load_session, save_session
 from .tools import get_default_tools, execute_tool
 
-__version__ = "0.9.0"
+__version__ = "0.9.1"
 __all__ = [
     "Agent",
     "create_agent",
@@ -13,6 +14,9 @@ __all__ = [
     "MCPManager",
     "StdioMCPClient",
     "load_mcp_config",
+    "list_sessions",
+    "load_session",
+    "save_session",
     "get_default_tools",
     "execute_tool",
     "__version__",
