@@ -3,7 +3,8 @@
 Implements enough of the Model Context Protocol to:
   - load server configs from GROK_MCP_SERVERS / .mcp_servers.json / .grok/mcp.json
   - spawn a stdio server
-  - initialize, list tools/resources, call tools
+  - initialize, list tools/resources, call tools, read resources
+  - discover tools for auto-registration on the Agent
 
 HTTP/SSE transport remains a stub that reports configured endpoints.
 """
@@ -12,6 +13,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import threading
 import time
@@ -20,6 +22,8 @@ from typing import Any, Dict, List, Optional
 
 
 PROTOCOL_VERSION = "2024-11-05"
+CLIENT_VERSION = "0.9.1"
+_SAFE = re.compile(r"[^a-zA-Z0-9_]+")
 
 
 def load_mcp_config() -> Dict[str, Any]:
@@ -50,7 +54,13 @@ def load_mcp_config() -> Dict[str, Any]:
 class StdioMCPClient:
     """JSON-RPC client talking to one MCP server over stdin/stdout."""
 
-    def __init__(self, command: str, args: Optional[List[str]] = None, env: Optional[Dict[str, str]] = None, timeout: float = 20.0):
+    def __init__(
+        self,
+        command: str,
+        args: Optional[List[str]] = None,
+        env: Optional[Dict[str, str]] = None,
+        timeout: float = 20.0,
+    ):
         self.command = command
         self.args = args or []
         self.env = env
@@ -147,7 +157,7 @@ class StdioMCPClient:
             {
                 "protocolVersion": PROTOCOL_VERSION,
                 "capabilities": {},
-                "clientInfo": {"name": "grok-local-agent-kit", "version": "0.9.0"},
+                "clientInfo": {"name": "grok-local-agent-kit", "version": CLIENT_VERSION},
             },
         )
         if "error" not in result:
@@ -158,25 +168,36 @@ class StdioMCPClient:
             self._initialized = True
         return result
 
+    def _ensure_init(self) -> Optional[Dict[str, Any]]:
+        if self._initialized:
+            return None
+        init = self.initialize()
+        if "error" in init and "result" not in init:
+            return init
+        return None
+
     def list_tools(self) -> Dict[str, Any]:
-        if not self._initialized:
-            init = self.initialize()
-            if "error" in init and "result" not in init:
-                return init
+        err = self._ensure_init()
+        if err is not None:
+            return err
         return self.request("tools/list")
 
     def list_resources(self) -> Dict[str, Any]:
-        if not self._initialized:
-            init = self.initialize()
-            if "error" in init and "result" not in init:
-                return init
+        err = self._ensure_init()
+        if err is not None:
+            return err
         return self.request("resources/list")
 
+    def read_resource(self, uri: str) -> Dict[str, Any]:
+        err = self._ensure_init()
+        if err is not None:
+            return err
+        return self.request("resources/read", {"uri": uri})
+
     def call_tool(self, name: str, arguments: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
-        if not self._initialized:
-            init = self.initialize()
-            if "error" in init and "result" not in init:
-                return init
+        err = self._ensure_init()
+        if err is not None:
+            return err
         return self.request("tools/call", {"name": name, "arguments": arguments or {}})
 
 
@@ -191,6 +212,12 @@ def _format_rpc(resp: Dict[str, Any]) -> str:
         return json.dumps(result, indent=2, ensure_ascii=False)
     except TypeError:
         return str(result)
+
+
+def _qualify(server: str, tool: str) -> str:
+    s = _SAFE.sub("_", server).strip("_") or "server"
+    t = _SAFE.sub("_", tool).strip("_") or "tool"
+    return f"mcp_{s}_{t}"
 
 
 class MCPManager:
@@ -216,11 +243,16 @@ class MCPManager:
             self._clients[key] = client
         return self._clients[key]
 
+    def _stdio_servers(self) -> List[tuple[int, Dict[str, Any]]]:
+        cfg = load_mcp_config()
+        servers = [s for s in (cfg.get("servers") or []) if isinstance(s, dict)]
+        return list(enumerate(servers, 1))
+
     def describe(self) -> str:
         cfg = load_mcp_config()
         servers = cfg.get("servers") or []
         lines = [
-            "MCP client: stdio JSON-RPC (v0.9.0)",
+            f"MCP client: stdio JSON-RPC (v{CLIENT_VERSION})",
             f"Configured servers: {len(servers)}",
         ]
         if cfg.get("error"):
@@ -230,7 +262,9 @@ class MCPManager:
                 lines.append(f"  {i}. (invalid {type(s).__name__})")
                 continue
             name = s.get("name") or s.get("command") or f"server_{i}"
-            transport = s.get("transport") or ("stdio" if s.get("command") else s.get("url") and "http" or "unknown")
+            transport = s.get("transport") or (
+                "stdio" if s.get("command") else s.get("url") and "http" or "unknown"
+            )
             extra = s.get("command") or s.get("url") or ""
             lines.append(f"  {i}. {name} ({transport}) {extra}".rstrip())
         if not servers:
@@ -241,15 +275,14 @@ class MCPManager:
         return "\n".join(lines)
 
     def list_tools(self) -> str:
-        cfg = load_mcp_config()
-        servers = [s for s in (cfg.get("servers") or []) if isinstance(s, dict)]
-        if not servers:
+        pairs = self._stdio_servers()
+        if not pairs:
             return (
                 "No MCP servers configured.\n"
                 "Set GROK_MCP_SERVERS or add .mcp_servers.json, then retry mcp_list_tools."
             )
         chunks: List[str] = []
-        for i, s in enumerate(servers, 1):
+        for i, s in pairs:
             name = self._server_key(s, i)
             transport = s.get("transport") or ("stdio" if s.get("command") else "http")
             if transport != "stdio" and not s.get("command"):
@@ -263,14 +296,44 @@ class MCPManager:
                 chunks.append(f"[{name}] failed: {e}")
         return "\n\n".join(chunks) if chunks else "No tools discovered."
 
+    def discover_tools(self) -> List[Dict[str, Any]]:
+        """Return structured MCP tools for Agent.attach_mcp_tools()."""
+        found: List[Dict[str, Any]] = []
+        for i, s in self._stdio_servers():
+            if not s.get("command"):
+                continue
+            key = self._server_key(s, i)
+            try:
+                client = self._ensure_stdio(s, i)
+                resp = client.list_tools()
+                tools = ((resp.get("result") or {}).get("tools") or [])
+                for t in tools:
+                    if not isinstance(t, dict) or not t.get("name"):
+                        continue
+                    params = t.get("inputSchema") or t.get("parameters") or {
+                        "type": "object",
+                        "properties": {},
+                    }
+                    found.append(
+                        {
+                            "server": key,
+                            "name": t["name"],
+                            "qualified_name": _qualify(key, str(t["name"])),
+                            "description": t.get("description") or f"MCP {key}/{t['name']}",
+                            "parameters": params,
+                        }
+                    )
+            except Exception:
+                continue
+        return found
+
     def list_resources(self) -> str:
-        cfg = load_mcp_config()
-        servers = [s for s in (cfg.get("servers") or []) if isinstance(s, dict)]
+        pairs = self._stdio_servers()
         header = self.describe()
-        if not servers:
+        if not pairs:
             return header
         chunks = [header]
-        for i, s in enumerate(servers, 1):
+        for i, s in pairs:
             name = self._server_key(s, i)
             if not s.get("command"):
                 chunks.append(f"[{name}] skip (no stdio command)")
@@ -283,23 +346,48 @@ class MCPManager:
                 chunks.append(f"[{name}] failed: {e}")
         return "\n\n".join(chunks)
 
-    def call_tool(self, name: str, arguments: Optional[Dict[str, Any]] = None) -> str:
-        cfg = load_mcp_config()
-        servers = [s for s in (cfg.get("servers") or []) if isinstance(s, dict)]
-        if not servers:
-            return f"Cannot call '{name}': no MCP servers configured."
+    def read_resource(self, uri: str) -> str:
+        uri = (uri or "").strip()
+        if not uri:
+            return "Error: uri is required"
         last_err = "no stdio server available"
-        for i, s in enumerate(servers, 1):
+        for i, s in self._stdio_servers():
             if not s.get("command"):
                 continue
             key = self._server_key(s, i)
             try:
                 client = self._ensure_stdio(s, i)
-                resp = client.call_tool(name, arguments or {})
+                resp = client.read_resource(uri)
                 if "error" in resp and "result" not in resp:
                     last_err = _format_rpc(resp)
                     continue
-                return f"[{key}] tools/call {name}:\n{_format_rpc(resp)}"
+                return f"[{key}] resources/read {uri}:\n{_format_rpc(resp)}"
+            except Exception as e:
+                last_err = str(e)
+        return f"MCP resources/read '{uri}' failed: {last_err}"
+
+    def call_tool(self, name: str, arguments: Optional[Dict[str, Any]] = None) -> str:
+        pairs = self._stdio_servers()
+        if not pairs:
+            return f"Cannot call '{name}': no MCP servers configured."
+        last_err = "no stdio server available"
+        # Allow calling via qualified name mcp_server_tool
+        raw_name = name
+        if name.startswith("mcp_"):
+            parts = name.split("_", 2)
+            if len(parts) == 3:
+                raw_name = parts[2] or name
+        for i, s in pairs:
+            if not s.get("command"):
+                continue
+            key = self._server_key(s, i)
+            try:
+                client = self._ensure_stdio(s, i)
+                resp = client.call_tool(raw_name, arguments or {})
+                if "error" in resp and "result" not in resp:
+                    last_err = _format_rpc(resp)
+                    continue
+                return f"[{key}] tools/call {raw_name}:\n{_format_rpc(resp)}"
             except Exception as e:
                 last_err = str(e)
         return f"MCP call '{name}' failed: {last_err}"
