@@ -54,6 +54,8 @@ def cli() -> None:
     default=None,
     help="Save conversation history to this JSON file on exit",
 )
+@click.option("--session", default=None, help="Named session under .grok/sessions/")
+@click.option("--attach-mcp", is_flag=True, help="Auto-register discovered MCP tools")
 def chat(
     prompt: str | None,
     model: str,
@@ -62,6 +64,8 @@ def chat(
     verbose: bool,
     stream: bool,
     save_history: str | None,
+    session: str | None,
+    attach_mcp: bool,
 ) -> None:
     """Interactive chat or one-shot prompt."""
     agent = create_agent(
@@ -70,20 +74,28 @@ def chat(
         base_url=base_url,
         verbose=verbose,
         stream=stream or verbose,
+        session_name=session or "default",
+        attach_mcp=attach_mcp,
     )
+    if session:
+        loaded = agent.load_named_session(session)
+        if verbose:
+            console.print(f"[dim]{loaded}[/]")
 
     if prompt:
-        result = agent.run(prompt)
+        result = agent.chat(prompt) if session else agent.run(prompt)
         console.print(Markdown(result))
         if save_history:
             console.print(agent.save_history(save_history))
+        if session:
+            console.print(agent.save_named_session(session))
         agent.close()
         return
 
     console.print(
         f"[bold green]Local Agent ready (v{__version__}).[/] "
         "Type 'exit' or Ctrl-C to quit.\n"
-        "Special: /save [file], /load [file], /reset, /tools, /mcp, /ping\n"
+        "Special: /save [file], /load [file], /session [name], /sessions, /reset, /tools, /mcp, /ping, /attach-mcp\n"
     )
     try:
         while True:
@@ -121,6 +133,21 @@ def chat(
             if stripped in {"/ping"}:
                 console.print(agent.llm.ping())
                 continue
+            if stripped.startswith("/session"):
+                parts = stripped.split(maxsplit=1)
+                if len(parts) == 1:
+                    console.print(agent.list_named_sessions())
+                    console.print(f"current: {agent.session_name}")
+                else:
+                    console.print(agent.load_named_session(parts[1]))
+                continue
+            if stripped in {"/sessions"}:
+                console.print(agent.list_named_sessions())
+                continue
+            if stripped in {"/attach-mcp", "/attach_mcp"}:
+                added = agent.attach_mcp_tools()
+                console.print(f"Attached: {added or '(none)'}")
+                continue
 
             result = agent.chat(user)
             console.print()
@@ -131,6 +158,8 @@ def chat(
     finally:
         if save_history:
             console.print(agent.save_history(save_history))
+        if session:
+            console.print(agent.save_named_session(session))
         agent.close()
 
 
