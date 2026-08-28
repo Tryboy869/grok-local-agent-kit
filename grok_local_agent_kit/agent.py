@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
 from .llm import LLMClient
+from .session import HISTORY_VERSION, list_sessions, load_session, save_session
 from .tools import execute_tool, get_default_tools
 
 
@@ -23,11 +24,11 @@ Use http_get for simple page fetches and web_search for discovery.
 Use search_files to find files whose content matches a query (text search in workspace).
 Use get_system_info when you need OS / Python / cwd context.
 Use delete_file only when the user explicitly asks to remove a file.
+Use mcp_read_resource to fetch MCP resource URIs after mcp_list_resources.
+Discovered MCP tools may appear as mcp_<server>_<tool> after attach_mcp_tools().
 Route carefully: list_files or search_files before write/read when unsure of paths; calculator for pure math; run_shell only for safe, non-destructive commands."""
 
-# Default max characters of a tool result kept in the conversation context
 DEFAULT_TOOL_RESULT_MAX_CHARS = 6000
-HISTORY_VERSION = "0.8.7"
 
 
 class Agent:
@@ -44,6 +45,8 @@ class Agent:
         temperature: float = 0.3,
         stream: bool = False,
         tool_result_max_chars: int = DEFAULT_TOOL_RESULT_MAX_CHARS,
+        session_name: Optional[str] = None,
+        attach_mcp: bool = False,
     ):
         self.llm = LLMClient(
             model=model, provider=provider, base_url=base_url, temperature=temperature
@@ -53,9 +56,12 @@ class Agent:
         self.verbose = verbose
         self.stream = stream
         self.tool_result_max_chars = max(500, tool_result_max_chars)
+        self.session_name = session_name or "default"
 
         self.tool_schemas, self.tool_funcs = get_default_tools()
         self.history: List[Dict[str, Any]] = []
+        if attach_mcp:
+            self.attach_mcp_tools()
 
     def register_tool(
         self,
@@ -64,7 +70,6 @@ class Agent:
         description: str,
         parameters: Dict[str, Any],
     ) -> None:
-        """Register a custom tool at runtime."""
         self.tool_funcs[name] = func
         self.tool_schemas.append(
             {
@@ -78,10 +83,6 @@ class Agent:
         )
 
     def register_tools(self, tools: List[Dict[str, Any]]) -> None:
-        """
-        Register multiple tools at once.
-        Each item: {\"name\": str, \"func\": callable, \"description\": str, \"parameters\": dict}
-        """
         for t in tools:
             self.register_tool(
                 name=t["name"],
@@ -90,13 +91,41 @@ class Agent:
                 parameters=t.get("parameters", {"type": "object", "properties": {}}),
             )
 
+    def attach_mcp_tools(self) -> List[str]:
+        """Discover MCP stdio tools and register them as mcp_<server>_<tool>."""
+        from .mcp import get_manager
+
+        added: List[str] = []
+        for item in get_manager().discover_tools():
+            qname = item["qualified_name"]
+            if qname in self.tool_funcs:
+                continue
+            remote_name = item["name"]
+
+            def _make(tool_name: str) -> Callable[..., str]:
+                def _call(**kwargs: Any) -> str:
+                    from .mcp import get_manager as _gm
+
+                    return _gm().call_tool(tool_name, kwargs)
+
+                return _call
+
+            self.register_tool(
+                qname,
+                _make(remote_name),
+                item.get("description") or f"MCP tool {remote_name}",
+                item.get("parameters") or {"type": "object", "properties": {}},
+            )
+            added.append(qname)
+        if self.verbose:
+            print(f"  attached MCP tools: {added or '(none)'}")
+        return added
+
     def chat(self, user_message: str) -> str:
-        """Single-turn or multi-turn chat with automatic tool use."""
         self.history.append({"role": "user", "content": user_message})
         return self._run_loop()
 
     def run(self, prompt: str) -> str:
-        """One-shot task (fresh history)."""
         self.history = []
         return self.chat(prompt)
 
@@ -132,16 +161,12 @@ class Agent:
             if self.verbose:
                 print(f"\n[iteration {iteration + 1}/{self.max_iterations}]")
 
-            # Non-streaming call first so we can reliably detect tool_calls.
             response = self.llm.chat(messages, tools=self.tool_schemas)
 
             content = response.get("content")
             tool_calls = response.get("tool_calls")
 
             if not tool_calls:
-                # Final answer path.
-                # Prefer already-returned content; only re-stream when stream=True
-                # and we have no usable content yet (avoids a second full LLM call).
                 if self.stream and not (content and str(content).strip()):
                     final_parts: List[str] = []
                     stream_resp = self.llm.stream_chat(messages, tools=None)
@@ -161,9 +186,8 @@ class Agent:
                                 "".join(final_parts) or content or "(no response)"
                             ).strip()
                     if self.verbose and final_parts:
-                        print()  # newline after live tokens
+                        print()
                 elif self.stream and content and self.verbose:
-                    # Content already present: print it for live UX without re-calling LLM
                     print(content, end="", flush=True)
                     print()
                     final = str(content).strip()
@@ -173,7 +197,6 @@ class Agent:
                 self.history.append({"role": "assistant", "content": final})
                 return final
 
-            # Assistant message compatible with Ollama & OpenAI-compatible
             assistant_msg: Dict[str, Any] = {
                 "role": "assistant",
                 "content": content or "",
@@ -223,26 +246,28 @@ class Agent:
         return fallback
 
     def reset(self) -> None:
-        """Clear conversation history."""
         self.history = []
 
     def get_history(self) -> list:
-        """Return a shallow copy of the conversation history."""
         return list(self.history)
 
     def list_registered_tools(self) -> List[str]:
-        """Return the names of all currently registered tools."""
         return sorted(self.tool_funcs.keys())
 
     def close(self) -> None:
         self.llm.close()
+        try:
+            from .mcp import get_manager
+
+            get_manager().close()
+        except Exception:
+            pass
 
     def save_history(self, path: str = "agent_history.json") -> str:
-        """Persist conversation history to a JSON file (cwd-safe)."""
         try:
             p = Path(path).expanduser().resolve()
             cwd = Path.cwd().resolve()
-            p.relative_to(cwd)  # safety
+            p.relative_to(cwd)
             data = {"history": self.history, "version": HISTORY_VERSION}
             p.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
             return f"Saved {len(self.history)} messages to {p}"
@@ -250,7 +275,6 @@ class Agent:
             return f"save_history error: {e}"
 
     def load_history(self, path: str = "agent_history.json") -> str:
-        """Load conversation history from a JSON file (cwd-safe)."""
         try:
             p = Path(path).expanduser().resolve()
             cwd = Path.cwd().resolve()
@@ -261,6 +285,29 @@ class Agent:
         except Exception as e:
             return f"load_history error: {e}"
 
+    def save_named_session(self, name: Optional[str] = None) -> str:
+        try:
+            target = name or self.session_name
+            self.session_name = target
+            return save_session(target, self.history)
+        except Exception as e:
+            return f"save_session error: {e}"
+
+    def load_named_session(self, name: str) -> str:
+        try:
+            data = load_session(name)
+            self.history = data.get("history", [])
+            self.session_name = name
+            return f"Loaded session '{name}' ({len(self.history)} messages)"
+        except Exception as e:
+            return f"load_session error: {e}"
+
+    def list_named_sessions(self) -> str:
+        names = list_sessions()
+        if not names:
+            return "No named sessions in .grok/sessions/"
+        return "Sessions:\n" + "\n".join(f"- {n}" for n in names)
+
 
 def create_agent(
     model: Optional[str] = None,
@@ -268,12 +315,6 @@ def create_agent(
     base_url: Optional[str] = None,
     **kwargs: Any,
 ) -> Agent:
-    """
-    Factory helper. Accepts provider aliases: ollama | lmstudio | openai.
-
-    Environment variables (used as defaults when args omitted):
-      GROK_AGENT_MODEL, GROK_AGENT_PROVIDER, GROK_AGENT_BASE_URL
-    """
     model = model or os.environ.get("GROK_AGENT_MODEL", "llama3.2")
     provider = (provider or os.environ.get("GROK_AGENT_PROVIDER", "ollama")).lower().strip()
     base_url = base_url or os.environ.get("GROK_AGENT_BASE_URL")
