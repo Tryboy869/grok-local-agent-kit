@@ -1,6 +1,7 @@
 """Grok Local Agent Kit — local-first AI agents with tools & multi-LLM support."""
 
-from .agent import Agent, create_agent
+from .agent import Agent
+from .factory import create_agent
 from .llm import LLMClient
 from .mcp import MCPManager, StdioMCPClient, load_mcp_config
 from .memory import forget, recall, remember

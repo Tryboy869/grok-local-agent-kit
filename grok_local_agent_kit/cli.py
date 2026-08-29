@@ -9,7 +9,7 @@ from rich.console import Console
 from rich.markdown import Markdown
 
 from . import __version__
-from .agent import create_agent
+from .factory import create_agent
 
 console = Console()
 
@@ -27,46 +27,16 @@ def cli() -> None:
 
 @cli.command()
 @click.argument("prompt", required=False)
-@click.option(
-    "--model",
-    "-m",
-    default=lambda: _env_default("GROK_AGENT_MODEL", "llama3.2"),
-    show_default="llama3.2 or $GROK_AGENT_MODEL",
-    help="Model name",
-)
-@click.option(
-    "--provider",
-    "-p",
-    default=lambda: _env_default("GROK_AGENT_PROVIDER", "ollama"),
-    type=click.Choice(["ollama", "lmstudio", "openai"]),
-    show_default="ollama or $GROK_AGENT_PROVIDER",
-    help="LLM provider",
-)
-@click.option(
-    "--base-url",
-    default=lambda: os.environ.get("GROK_AGENT_BASE_URL"),
-    help="Custom base URL (or $GROK_AGENT_BASE_URL)",
-)
+@click.option("-m", "--model", default=lambda: _env_default("GROK_AGENT_MODEL", "llama3.2"), help="Model name")
+@click.option("-p", "--provider", default=lambda: _env_default("GROK_AGENT_PROVIDER", "ollama"), type=click.Choice(["ollama", "lmstudio", "openai"]), help="LLM provider")
+@click.option("--base-url", default=lambda: os.environ.get("GROK_AGENT_BASE_URL"), help="Custom base URL")
 @click.option("--verbose", "-v", is_flag=True, help="Show tool calls and stream tokens")
-@click.option("--stream", is_flag=True, help="Stream final answer tokens (when no tools needed)")
-@click.option(
-    "--save-history",
-    default=None,
-    help="Save conversation history to this JSON file on exit",
-)
+@click.option("--stream", is_flag=True, help="Stream final answer tokens")
+@click.option("--save-history", default=None, help="Save conversation history JSON on exit")
 @click.option("--session", default=None, help="Named session under .grok/sessions/")
 @click.option("--attach-mcp", is_flag=True, help="Auto-register discovered MCP tools")
-def chat(
-    prompt: str | None,
-    model: str,
-    provider: str,
-    base_url: str | None,
-    verbose: bool,
-    stream: bool,
-    save_history: str | None,
-    session: str | None,
-    attach_mcp: bool,
-) -> None:
+@click.option("--router", is_flag=True, help="Enable MultiLLMRouter fallback")
+def chat(prompt, model, provider, base_url, verbose, stream, save_history, session, attach_mcp, router):
     """Interactive chat or one-shot prompt."""
     agent = create_agent(
         model=model,
@@ -76,12 +46,12 @@ def chat(
         stream=stream or verbose,
         session_name=session or "default",
         attach_mcp=attach_mcp,
+        use_router=router,
     )
     if session:
         loaded = agent.load_named_session(session)
         if verbose:
             console.print(f"[dim]{loaded}[/]")
-
     if prompt:
         result = agent.chat(prompt) if session else agent.run(prompt)
         console.print(Markdown(result))
@@ -91,11 +61,9 @@ def chat(
             console.print(agent.save_named_session(session))
         agent.close()
         return
-
     console.print(
-        f"[bold green]Local Agent ready (v{__version__}).[/] "
-        "Type 'exit' or Ctrl-C to quit.\n"
-        "Special: /save [file], /load [file], /session [name], /sessions, /reset, /tools, /mcp, /ping, /attach-mcp\n"
+        f"[bold green]Local Agent ready (v{__version__}).[/] Type 'exit' or Ctrl-C to quit.\n"
+        "Special: /save /load /session /sessions /reset /tools /mcp /ping /attach-mcp\n"
     )
     try:
         while True:
@@ -105,16 +73,13 @@ def chat(
                 break
             if not stripped:
                 continue
-
             if stripped.startswith("/save"):
                 parts = stripped.split(maxsplit=1)
-                path = parts[1] if len(parts) > 1 else "agent_history.json"
-                console.print(agent.save_history(path))
+                console.print(agent.save_history(parts[1] if len(parts) > 1 else "agent_history.json"))
                 continue
             if stripped.startswith("/load"):
                 parts = stripped.split(maxsplit=1)
-                path = parts[1] if len(parts) > 1 else "agent_history.json"
-                console.print(agent.load_history(path))
+                console.print(agent.load_history(parts[1] if len(parts) > 1 else "agent_history.json"))
                 continue
             if stripped in {"/reset", "/clear"}:
                 agent.reset()
@@ -122,12 +87,10 @@ def chat(
                 continue
             if stripped in {"/tools", "/list_tools"}:
                 from .tools import list_tools as _lt
-
                 console.print(_lt())
                 continue
             if stripped in {"/mcp", "/mcp_status"}:
                 from .mcp import get_manager
-
                 console.print(get_manager().describe())
                 continue
             if stripped in {"/ping"}:
@@ -145,10 +108,8 @@ def chat(
                 console.print(agent.list_named_sessions())
                 continue
             if stripped in {"/attach-mcp", "/attach_mcp"}:
-                added = agent.attach_mcp_tools()
-                console.print(f"Attached: {added or '(none)'}")
+                console.print(f"Attached: {agent.attach_mcp_tools() or '(none)'}")
                 continue
-
             result = agent.chat(user)
             console.print()
             console.print(Markdown(result))
@@ -164,19 +125,10 @@ def chat(
 
 
 @cli.command()
-@click.option(
-    "--model",
-    "-m",
-    default=lambda: _env_default("GROK_AGENT_MODEL", "llama3.2"),
-)
-@click.option(
-    "--provider",
-    "-p",
-    default=lambda: _env_default("GROK_AGENT_PROVIDER", "ollama"),
-    type=click.Choice(["ollama", "lmstudio", "openai"]),
-)
+@click.option("-m", "--model", default=lambda: _env_default("GROK_AGENT_MODEL", "llama3.2"))
+@click.option("-p", "--provider", default=lambda: _env_default("GROK_AGENT_PROVIDER", "ollama"), type=click.Choice(["ollama", "lmstudio", "openai"]))
 @click.option("--base-url", default=lambda: os.environ.get("GROK_AGENT_BASE_URL"))
-def doctor(model: str, provider: str, base_url: str | None) -> None:
+def doctor(model, provider, base_url):
     """Check connectivity to local LLM and list available tools."""
     console.print(f"[bold]Checking {provider} / {model} ...[/]")
     agent = create_agent(model=model, provider=provider, base_url=base_url)
@@ -186,7 +138,6 @@ def doctor(model: str, provider: str, base_url: str | None) -> None:
             console.print(f"[green]✓ LLM reachable:[/] {status}")
         else:
             console.print(f"[yellow]⚠ LLM status:[/] {status}")
-
         reply = agent.run("Reply with exactly: OK")
         console.print(f"[green]✓ LLM responded:[/] {reply[:120]}")
         tools = ", ".join(sorted(agent.tool_funcs.keys()))
@@ -196,6 +147,37 @@ def doctor(model: str, provider: str, base_url: str | None) -> None:
         console.print(f"[red]✗ Failed:[/] {e}")
     finally:
         agent.close()
+
+
+@cli.command()
+def route():
+    """Probe Ollama then LM Studio and print the fallback chain."""
+    from .router import MultiLLMRouter, format_probe
+
+    router = MultiLLMRouter()
+    try:
+        console.print(format_probe(router.probe()))
+        ep, _ = router.pick()
+        console.print(f"[green]active:[/] {ep.name} / {ep.provider} / {ep.model}")
+    finally:
+        router.close()
+
+
+@cli.command()
+@click.argument("action", type=click.Choice(["remember", "recall", "forget", "stats"]))
+@click.argument("text", required=False, default="")
+def memory(action, text):
+    """Local JSONL memory helpers (.grok/memory/notes.jsonl)."""
+    from . import memory as mem
+
+    if action == "remember":
+        console.print(mem.remember(text))
+    elif action == "recall":
+        console.print(mem.recall(text))
+    elif action == "forget":
+        console.print(mem.forget(text))
+    else:
+        console.print(mem.memory_stats())
 
 
 if __name__ == "__main__":
