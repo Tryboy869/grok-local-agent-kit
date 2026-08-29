@@ -1,37 +1,22 @@
-# Show HN draft (copy-paste ready)
+# Show HN: Grok Local Agent Kit — offline agents with tools, MCP, and LLM fallback
 
-**Title (max ~80 chars):**
+I built a small Python kit so you can run a tool-using agent on your laptop with Ollama or LM Studio. No cloud key required.
 
-Show HN: Offline-first local agents with real tools, Ollama, and live MCP
+**What it does**
 
-**Body:**
+- ReAct loop with cwd-safe file tools
+- Real MCP stdio client
+- Fallback router: try Ollama, then LM Studio
+- JSONL memory (`remember` / `recall`)
+- Tiny orchestrator (planner + specialists)
 
-I built an open-source Python toolkit for local AI agents that actually call tools — no cloud API key required if you run Ollama or LM Studio.
+**Try it**
 
-Why I made it: most "local agent" demos are chat wrappers. I wanted a small, installable kit with a ReAct loop, cwd-safe file tools, a restricted shell, web/http, Python exec, and a real MCP stdio client (initialize, tools/list, tools/call, resources/list).
-
-What it does today (v0.9.0):
-
-- Multi-LLM: Ollama native + any OpenAI-compatible endpoint (LM Studio)
-- Real tool-calling loop + streaming of the final answer
-- 20 built-in tools: web search, http_get, files (list/read/write/append/delete/search/mkdir/copy/stat), restricted shell, execute_python, calculator, datetime, system info, list_tools, live MCP
-- Bundled echo MCP server for tests and demos
-- CLI: `grok-agent chat` / `grok-agent doctor` with /save /load /reset /tools /mcp /ping
-- Python API: `create_agent(...)`, history save/load, env defaults (`GROK_AGENT_*`, `GROK_MCP_SERVERS`)
-- Unit tests that do not need a live LLM
-
-Quick start:
-
-```
+```bash
 pip install git+https://github.com/Tryboy869/grok-local-agent-kit.git
-ollama pull llama3.2
 grok-agent doctor
-grok-agent chat -v --stream
-python examples/mcp_agent.py --no-llm
+grok-agent route
+grok-agent chat -v --stream --router
 ```
 
 Repo: https://github.com/Tryboy869/grok-local-agent-kit
-
-Not affiliated with xAI. Built autonomously by Grok for Nexus Studio / Tryboy869. MIT.
-
-Happy to hear what would make this useful for your local workflow (MCP HTTP/SSE and multi-agent memory are next).

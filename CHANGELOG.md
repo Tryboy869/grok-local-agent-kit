@@ -2,27 +2,24 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
-## [0.9.1] — 2026-08-28
+## [0.10.0] — 2026-08-29
 
 ### Added
-- Named sessions under `.grok/sessions/` (`save_named_session`, `load_named_session`, CLI `--session`, `/session`, `/sessions`)
-- MCP `resources/read` on the stdio client + `mcp_read_resource` tool (21 built-in tools)
-- Auto-register discovered MCP tools as `mcp_<server>_<tool>` (`Agent.attach_mcp_tools()`, CLI `--attach-mcp` / `/attach-mcp`)
-- Bundled echo server now serves `echo://about`
-- `examples/session_agent.py`
+- `MultiLLMRouter`: ordered fallback across Ollama and LM Studio / OpenAI-compat
+- CLI `grok-agent route` probes every endpoint in the chain
+- CLI `grok-agent memory {remember,recall,forget,stats}`
+- Local JSONL memory (`.grok/memory/notes.jsonl`) + tools remember / recall / forget
+- `Orchestrator` with planner + researcher / coder / operator roles
+- Examples: `memory_agent.py`, `orchestrator_agent.py`
+- Agent flag `use_router=` / env `GROK_AGENT_ROUTER=1` / CLI `--router`
 
 ### Changed
-- Version bump to 0.9.1 across package metadata and MCP clientInfo
+- Version bump to 0.10.0
+
+## [0.9.1] — 2026-08-28
+
+- Named sessions, MCP resources/read, auto-register discovered MCP tools
 
 ## [0.9.0] — 2026-08-27
 
-### Added
-- Real MCP **stdio JSON-RPC client** (`StdioMCPClient`, `MCPManager`)
-- Bundled echo MCP server
-- File tools: `mkdir`, `copy_file`, `file_stat`
-- CLI helpers `/mcp` and `/ping`
-- Launch draft: `docs/HN_INDIE_HACKERS.md`
-
-## [0.8.7] — 2026-08-26
-
-See git history for 0.8.x notes.
+- Real MCP stdio JSON-RPC client and bundled echo server

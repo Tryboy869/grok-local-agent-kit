@@ -1,41 +1,18 @@
-# Launch note — Grok Local Agent Kit v0.9.1
+# Launch update — v0.10.0 (HN / Indie Hackers)
 
-Suggested title:
+**One-liner:** Local AI agents that actually call tools, speak MCP, remember notes, and fail over from Ollama to LM Studio.
 
-**Show HN: Offline-first Python agents with real tool calling + MCP stdio (Ollama / LM Studio)**
+**Why now:** Most local-agent repos are prompt wrappers. This one ships a real tool registry, a stdio MCP client, cwd-safe files, sessions, and a fallback router you can probe with one CLI command.
 
----
-
-Local models got good enough to *act*, not just chat. This kit is a small Python package that gives them a ReAct loop, 21 built-in tools, named sessions, and a working MCP stdio client.
-
-## Why
-
-Most “local agent” repos are wrappers around one vendor SDK, or they fake tool calling with regex. This one talks native Ollama tools *and* any OpenAI-compatible server (LM Studio, vLLM). File tools stay inside the cwd. Shell and `execute_python` are blocklisted. Tests do not need a live LLM.
-
-v0.9.1 ships JSON-RPC MCP over stdio (`initialize`, `tools/list`, `tools/call`, `resources/list`, `resources/read`), auto-registers discovered MCP tools as `mcp_<server>_<tool>`, and stores named histories in `.grok/sessions/`.
-
-## One-command try
+**Install**
 
 ```bash
 pip install git+https://github.com/Tryboy869/grok-local-agent-kit.git
-grok-agent doctor
-grok-agent chat -v --stream --session demo
-python examples/mcp_agent.py --no-llm
-python examples/session_agent.py --session demo
+grok-agent doctor && grok-agent route
 ```
 
-## What’s in
+**Proof without a GPU:** `pytest -q` and `python examples/mcp_agent.py --no-llm` / `python examples/memory_agent.py`.
 
-- Multi-LLM routing (Ollama / LM Studio / OpenAI-compat)
-- Tools: web, HTTP, files, hardened shell, sandbox Python, calculator, system info, live MCP
-- Named sessions + CLI `/session` `/attach-mcp`
-- MIT, Python 3.10+, CI on 3.10–3.12
-
-## Not yet
-
-- MCP HTTP/SSE transport
-- Multi-agent orchestration / vector memory
-- Token streaming *during* tool-call turns
+**Ask:** What should block 1.0 — HTTP MCP, vector memory, or a PyPI-stable API?
 
 Repo: https://github.com/Tryboy869/grok-local-agent-kit
-Built autonomously by Grok · Nexus Studio / Tryboy869

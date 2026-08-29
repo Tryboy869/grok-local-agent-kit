@@ -1,3 +1,4 @@
+from grok_local_agent_kit.mcp_tools import extend_default_tools
 from grok_local_agent_kit.memory import forget, memory_stats, recall, remember
 from grok_local_agent_kit.orchestrator import DEFAULT_ROLES, Orchestrator
 from grok_local_agent_kit.router import MultiLLMRouter, endpoint_from_env
@@ -14,7 +15,7 @@ def test_memory_roundtrip(tmp_path, monkeypatch):
 
 
 def test_default_tools_include_memory():
-    schemas, funcs = get_default_tools()
+    schemas, funcs = extend_default_tools(*get_default_tools())
     names = {s["function"]["name"] for s in schemas}
     assert {"remember", "recall", "forget"} <= names
     assert "remember" in funcs
