@@ -3,28 +3,31 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
-[![Version](https://img.shields.io/badge/version-0.9.0-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
+[![Version](https://img.shields.io/badge/version-0.9.1-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
 [![GitHub stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/Tryboy869/grok-local-agent-kit)](https://github.com/Tryboy869/grok-local-agent-kit/issues)
 
 **Open-source toolkit for building powerful local AI agents.**  
-Ollama + LM Studio • ReAct tool loop • **real MCP stdio client** • offline-first.  
+Ollama + LM Studio • ReAct tool loop • **real MCP stdio client** • named sessions • offline-first.  
 Built autonomously by Grok.
 
 > Run capable agents on your machine. No cloud required. No API keys needed for local models.
 
 ---
 
-## ✨ Features (v0.9.0)
+## ✨ Features (v0.9.1)
 
 | Feature | Status |
 |---------|--------|
 | Multi-LLM (Ollama native + OpenAI-compatible / LM Studio) | ✅ |
 | ReAct-style tool calling loop with routing guidance | ✅ |
 | Real streaming of final answers (`stream=True` / CLI `--stream`) | ✅ |
-| **20 tools**: web, HTTP, files (cwd-safe + search + mkdir + copy + stat + delete), shell, Python, calculator, datetime, system info, list_tools, **live MCP** | ✅ |
-| **MCP stdio JSON-RPC client** (initialize, tools/list, tools/call, resources/list) | ✅ |
+| **21 tools**: web, HTTP, files (cwd-safe + search + mkdir + copy + stat + delete), shell, Python, calculator, datetime, system info, list_tools, **live MCP** (incl. `resources/read`) | ✅ |
+| **MCP stdio JSON-RPC client** (initialize, tools/list, tools/call, resources/list, resources/read) | ✅ |
+| Auto-register discovered MCP tools as `mcp_<server>_<tool>` | ✅ |
+| Named sessions under `.grok/sessions/` (`--session`, `/session`) | ✅ |
 | Bundled echo MCP server for tests and demos | ✅ |
-| Conversation history save/load (+ CLI `/save` `/load` `/mcp` `/ping`) | ✅ |
+| Conversation history save/load (+ CLI `/save` `/load` `/mcp` `/ping` `/attach-mcp`) | ✅ |
 | Env defaults (`GROK_AGENT_*`, `GROK_MCP_SERVERS`) | ✅ |
 | CLI + ready-to-run examples + unit tests (no live LLM) | ✅ |
 
@@ -38,8 +41,8 @@ Built autonomously by Grok.
 
 ```text
 $ grok-agent chat -v --stream
-Local Agent ready (v0.9.0). Type 'exit' or Ctrl-C to quit.
-Special: /save [file], /load [file], /reset, /tools, /mcp, /ping
+Local Agent ready (v0.9.1). Type 'exit' or Ctrl-C to quit.
+Special: /save [file], /load [file], /reset, /tools, /mcp, /ping, /session, /attach-mcp
 
 You › List files and create notes/hello.txt
   → tool: mkdir({'path': 'notes'})
@@ -48,7 +51,7 @@ You › List files and create notes/hello.txt
 Agent › Created notes/hello.txt (FILE, N bytes).
 
 You › /mcp
-MCP client: stdio JSON-RPC (v0.9.0)
+MCP client: stdio JSON-RPC (v0.9.1)
 Configured servers: 0
 ```
 
@@ -56,7 +59,7 @@ Configured servers: 0
 
 ```text
 $ python examples/mcp_agent.py --no-llm
-MCP client: stdio JSON-RPC (v0.9.0)
+MCP client: stdio JSON-RPC (v0.9.1)
 Configured servers: 1
   1. echo (stdio) python
 
@@ -97,6 +100,7 @@ grok-agent chat
 grok-agent chat "Search the web for local AI agents and summarize"
 grok-agent chat --provider lmstudio --model your-model-name
 grok-agent chat -v --stream
+grok-agent chat --session demo --attach-mcp
 grok-agent doctor
 ```
 
@@ -137,7 +141,7 @@ HTTP/SSE transport is recognized in config but not implemented yet.
 | `execute_python` | Safe snippet execution |
 | `calculator` | Math |
 | `get_datetime` / `get_system_info` / `list_tools` | Context & introspection |
-| `mcp_list_resources` / `mcp_list_tools` / `mcp_call_tool` | Live MCP stdio client |
+| `mcp_list_resources` / `mcp_list_tools` / `mcp_call_tool` / `mcp_read_resource` | Live MCP stdio client |
 
 ---
 
@@ -150,17 +154,18 @@ python examples/research_agent.py
 python examples/code_assistant.py
 python examples/custom_tools_agent.py
 python examples/mcp_agent.py --no-llm
+python examples/session_agent.py
 ```
 
 ---
 
 ## 🗺️ Roadmap
 
-See [ROADMAP.md](ROADMAP.md). Next: MCP HTTP/SSE, multi-agent memory.
+See [ROADMAP.md](ROADMAP.md). Next: MCP HTTP/SSE, multi-agent memory, PyPI release.
 
 ## 🤝 Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md). Good first issues are labeled on GitHub.
 
 ## 📄 License
 
@@ -170,7 +175,7 @@ MIT — see [LICENSE](LICENSE).
 
 ### Share / discuss (HN · Indie Hackers)
 
-Draft post: [docs/HN_INDIE_HACKERS.md](docs/HN_INDIE_HACKERS.md)
+Draft post: [SHOW_HN.md](SHOW_HN.md) · [docs/HN_INDIE_HACKERS.md](docs/HN_INDIE_HACKERS.md)
 
 **Offline-first AI agents that actually call tools — including a real MCP stdio client. No API key for local models.**
 
