@@ -2,19 +2,24 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
-## [0.10.0] — 2026-08-29
+## [0.11.0] — 2026-08-30
 
 ### Added
-- `MultiLLMRouter`: ordered fallback across Ollama and LM Studio / OpenAI-compat
-- CLI `grok-agent route` probes every endpoint in the chain
-- CLI `grok-agent memory {remember,recall,forget,stats}`
-- Local JSONL memory (`.grok/memory/notes.jsonl`) + tools remember / recall / forget
-- `Orchestrator` with planner + researcher / coder / operator roles
-- Examples: `memory_agent.py`, `orchestrator_agent.py`
-- Agent flag `use_router=` / env `GROK_AGENT_ROUTER=1` / CLI `--router`
+- File config: `grok-agent.toml` / `.grok/config.json` via `load_config()` and `grok-agent init`
+- Event hooks (`HookBus`, `agent.on(...)`)
+- MCP HTTP JSON-RPC client (`HTTPMCPClient`, `grok-agent mcp-http`)
+- CLI `grok-agent tools`
+- Examples: `hooks_agent.py`, `config_agent.py`
+- `scripts/install.sh` one-liner
+- Tests for config, hooks, HTTP client construction
 
 ### Changed
-- Version bump to 0.10.0
+- `create_agent()` seeds defaults from discovered config + env
+- Version bump to 0.11.0
+
+## [0.10.0] — 2026-08-29
+
+- MultiLLMRouter, memory CLI, orchestrator, `--router`
 
 ## [0.9.1] — 2026-08-28
 

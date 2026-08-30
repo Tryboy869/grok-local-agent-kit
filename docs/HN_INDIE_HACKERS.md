@@ -1,18 +1,25 @@
-# Launch update — v0.10.0 (HN / Indie Hackers)
+# Launch update — v0.11.0 (HN / Indie Hackers)
 
-**One-liner:** Local AI agents that actually call tools, speak MCP, remember notes, and fail over from Ollama to LM Studio.
+**One-liner:** Local AI agents that call tools, speak MCP (stdio + HTTP), remember notes, fail over from Ollama to LM Studio, and expose hooks you can log or audit.
 
-**Why now:** Most local-agent repos are prompt wrappers. This one ships a real tool registry, a stdio MCP client, cwd-safe files, sessions, and a fallback router you can probe with one CLI command.
+**What's new since v0.10**
+
+- `grok-agent.toml` / JSON config (`grok-agent init`)
+- Event hooks: `before_tool`, `after_tool`, `on_final`
+- `HTTPMCPClient` + `grok-agent mcp-http <url>`
+- One-line install script
+
+**Why now:** Most local-agent repos are prompt wrappers. This one ships a real tool registry, two MCP transports, cwd-safe files, sessions, a fallback router, and an observability hook bus.
 
 **Install**
 
 ```bash
-pip install git+https://github.com/Tryboy869/grok-local-agent-kit.git
+curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
 grok-agent doctor && grok-agent route
 ```
 
-**Proof without a GPU:** `pytest -q` and `python examples/mcp_agent.py --no-llm` / `python examples/memory_agent.py`.
+**Proof without a GPU:** `pytest -q`, `python examples/hooks_agent.py`, `python examples/mcp_agent.py --no-llm`.
 
-**Ask:** What should block 1.0 — HTTP MCP, vector memory, or a PyPI-stable API?
+**Ask:** What should block 1.0 — full SSE MCP, vector memory, or a PyPI-stable API?
 
 Repo: https://github.com/Tryboy869/grok-local-agent-kit

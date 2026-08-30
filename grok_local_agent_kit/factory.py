@@ -8,6 +8,18 @@ from typing import Any, Optional
 from .agent import Agent
 from .agent import create_agent as _create_agent_plain
 from .config import load_config
+from .hooks import HookBus
+
+
+def _ensure_hooks(agent: Agent, hooks: Any = None) -> Agent:
+    if getattr(agent, "hooks", None) is None:
+        agent.hooks = hooks if hooks is not None else HookBus()
+
+    def on(event: str, fn):
+        return agent.hooks.on(event, fn)
+
+    agent.on = on  # type: ignore[method-assign]
+    return agent
 
 
 def create_agent(
@@ -15,6 +27,7 @@ def create_agent(
     provider: Optional[str] = None,
     base_url: Optional[str] = None,
     use_router: Optional[bool] = None,
+    hooks: Any = None,
     **kwargs: Any,
 ) -> Agent:
     cfg = load_config()
@@ -30,7 +43,9 @@ def create_agent(
             continue
         kwargs.setdefault(key, value)
     kwargs.pop("use_router", None)
+    kwargs.pop("hooks", None)
     agent = _create_agent_plain(model=model, provider=provider, base_url=base_url, **kwargs)
+    _ensure_hooks(agent, hooks)
     agent.use_router = bool(use_router)
     agent.router = None
     agent.routed_via = getattr(agent.llm, "provider", provider or "ollama")
