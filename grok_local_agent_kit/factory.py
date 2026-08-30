@@ -1,4 +1,4 @@
-"""Agent factory with optional MultiLLMRouter fallback."""
+"""Agent factory with optional MultiLLMRouter fallback and file config."""
 
 from __future__ import annotations
 
@@ -7,6 +7,7 @@ from typing import Any, Optional
 
 from .agent import Agent
 from .agent import create_agent as _create_agent_plain
+from .config import load_config
 
 
 def create_agent(
@@ -16,8 +17,18 @@ def create_agent(
     use_router: Optional[bool] = None,
     **kwargs: Any,
 ) -> Agent:
+    cfg = load_config()
+    model = model or cfg.model
+    provider = provider or cfg.provider
+    base_url = base_url if base_url is not None else cfg.base_url
     if use_router is None:
-        use_router = os.environ.get("GROK_AGENT_ROUTER", "").strip().lower() in {"1", "true", "yes"}
+        use_router = cfg.use_router or (
+            os.environ.get("GROK_AGENT_ROUTER", "").strip().lower() in {"1", "true", "yes"}
+        )
+    for key, value in cfg.to_agent_kwargs().items():
+        if key in {"model", "provider", "base_url", "use_router"}:
+            continue
+        kwargs.setdefault(key, value)
     kwargs.pop("use_router", None)
     agent = _create_agent_plain(model=model, provider=provider, base_url=base_url, **kwargs)
     agent.use_router = bool(use_router)
