@@ -29,13 +29,13 @@ pytest -q
 
 ## What we need most (priority order)
 
-1. MCP HTTP/SSE transport + auto-register remote tools
-2. `resources/read` and MCP prompts
-3. More robust tool sandboxing (`execute_python` & `run_shell`)
+1. Full MCP Streamable HTTP + SSE reconnection
+2. MCP prompts + richer resource templates
+3. Stronger tool sandboxing (`execute_python` & `run_shell`)
 4. Token-level streaming inside the tool loop
-5. Memory / conversation persistence beyond JSON
+5. Optional vector memory (sqlite-vec)
 6. Vision support (local multimodal models)
-7. Demo GIFs / asciinema recordings for the README
+7. Demo GIFs / asciinema recordings for the README (`docs/gifs/`)
 8. Windows & macOS packaging notes
 9. Additional ready-to-run examples
 10. CI coverage for more edge cases

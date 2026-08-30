@@ -1,60 +1,64 @@
-# Grok Local Agent Kit
+# 🚀 Grok Local Agent Kit
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org)
-[![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/badge/version-0.10.0-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
-[![Issues](https://img.shields.io/github/issues/Tryboy869/grok-local-agent-kit)](https://github.com/Tryboy869/grok-local-agent-kit/issues)
-[![Stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers)
+[![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
+[![Version](https://img.shields.io/badge/version-0.11.0-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
 
-**Offline-first Python toolkit for local AI agents.**  
-Ollama + LM Studio · ReAct tool loop · multi-LLM fallback router · JSONL memory · multi-agent orchestrator · real MCP stdio client.
+**Open-source toolkit for building local AI agents.**  
+Ollama + LM Studio • ReAct tool loop • multi-LLM fallback router • JSONL memory • orchestrator • MCP stdio **and HTTP** • file config • event hooks • offline-first.  
+Built autonomously by Grok.
 
-> Run capable agents on your machine. No cloud required. No API keys needed for local models.
+> Capable agents on your machine. No cloud required. No API keys for local models.
 
-Repo: [https://github.com/Tryboy869/grok-local-agent-kit](https://github.com/Tryboy869/grok-local-agent-kit)
-
----
-
-## Why this exists
-
-Most agent frameworks assume a hosted API. This kit is built for people who want:
-
-- agents that work with **Ollama** or **LM Studio** on a laptop
-- **real tools** (files, shell, Python, web search, calculator, MCP)
-- a **fallback router** when one local server is down
-- **memory** that lives in a JSONL file, not a SaaS vector DB
-- a small, readable codebase you can fork in an afternoon
-
-It is MIT-licensed and developed in the open under [Tryboy869](https://github.com/Tryboy869).
-
----
-
-## Features (v0.10.0)
+## ✨ Features (v0.11.0)
 
 | Feature | Status |
 |---------|--------|
-| Multi-LLM (Ollama native + OpenAI-compatible / LM Studio) | done |
-| Fallback router (`MultiLLMRouter`, `grok-agent route`, `--router`) | done |
-| ReAct-style tool calling loop | done |
-| Streaming final answers | done |
-| File / web / shell / Python / calculator / MCP tools | done |
-| Local JSONL memory (`remember` / `recall` / `forget`) | done |
-| Orchestrator (planner + researcher / coder / operator) | done |
-| MCP stdio JSON-RPC + auto-register discovered tools | done |
-| Named sessions under `.grok/sessions/` | done |
-| CLI + examples + unit tests (no live LLM required) | done |
-| MCP HTTP/SSE transport | planned |
+| Multi-LLM (Ollama native + OpenAI-compat / LM Studio) | ✅ |
+| Fallback router (`MultiLLMRouter`, `grok-agent route`, `--router`) | ✅ |
+| ReAct-style tool calling loop | ✅ |
+| Streaming final answers | ✅ |
+| File / web / shell / Python / calculator / MCP tools | ✅ |
+| Local JSONL memory (`remember` / `recall` / `forget`) | ✅ |
+| Orchestrator (planner + researcher / coder / operator) | ✅ |
+| MCP stdio JSON-RPC + auto-register discovered tools | ✅ |
+| **MCP HTTP JSON-RPC client** (`HTTPMCPClient`, `grok-agent mcp-http`) | ✅ |
+| Named sessions under `.grok/sessions/` | ✅ |
+| **`grok-agent.toml` / JSON config** (`grok-agent init`) | ✅ |
+| **Event hooks** (`before_tool`, `after_tool`, `on_final`, …) | ✅ |
+| CLI + examples + unit tests (no live LLM required) | ✅ |
 
----
+## 🎬 Demo GIFs (record with asciinema / VHS)
 
-## Quick start
+Drop recordings into `docs/gifs/` when you have a terminal handy:
+
+1. `demo-chat.gif` — `grok-agent chat -v --stream`  
+   *What you should see:* Rich prompt, tool arrows (`→ calculator`), streamed final answer.
+2. `demo-route.gif` — `grok-agent route`  
+   *What you should see:* Ollama probed first, LM Studio second, `active:` line.
+3. `demo-mcp.gif` — `python examples/mcp_agent.py --no-llm`  
+   *What you should see:* bundled echo server tools listed without a GPU.
+4. `demo-hooks.gif` — `python examples/hooks_agent.py`  
+   *What you should see:* `before_tool` / `after_tool` printed for `calculator`.
+5. `demo-memory.gif` — `grok-agent memory remember "ship v0.11"` then `recall ship`
+
+Until GIFs land, the commands above are the live demo.
+
+## ⚡ Quick start (1 command)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
+grok-agent doctor
+grok-agent init
+grok-agent route
+grok-agent chat -v --stream --router
+```
+
+Or:
 
 ```bash
 pip install git+https://github.com/Tryboy869/grok-local-agent-kit.git
-grok-agent doctor
-grok-agent route
-grok-agent chat -v --stream --router
 ```
 
 From source:
@@ -66,38 +70,20 @@ pip install -e ".[dev]"
 pytest -q
 ```
 
-Requirements: Python 3.10+ and either [Ollama](https://ollama.com) or [LM Studio](https://lmstudio.ai). A good default model:
-
-```bash
-ollama pull llama3.2
-```
-
-### Python API
+Needs Python 3.10+ and Ollama or LM Studio. `ollama pull llama3.2` is a good default.
 
 ```python
 from grok_local_agent_kit import create_agent
 
-agent = create_agent(
-    model="llama3.2",
-    provider="ollama",
-    use_router=True,
-    verbose=True,
-)
+agent = create_agent(model="llama3.2", provider="ollama", use_router=True, verbose=True)
+
+def log_tool(*, name, args, **_):
+    print("calling", name, args)
+
+agent.on("before_tool", log_tool)
 print(agent.run("List files and remember that this workspace is the kit repo"))
 agent.close()
 ```
-
-### CLI cheatsheet
-
-```bash
-grok-agent doctor          # check local LLM servers
-grok-agent route           # probe Ollama then LM Studio
-grok-agent chat -v --stream --router
-grok-agent memory remember "this repo is grok-local-agent-kit"
-grok-agent memory recall "repo"
-```
-
----
 
 ## Examples
 
@@ -107,63 +93,23 @@ python examples/automation_agent.py
 python examples/mcp_agent.py --no-llm
 python examples/memory_agent.py
 python examples/orchestrator_agent.py --no-llm
-python examples/custom_tools_agent.py
-python examples/code_assistant.py
-python examples/research_agent.py
-python examples/session_agent.py
+python examples/hooks_agent.py
+python examples/config_agent.py
 ```
 
-MCP config template: `examples/.mcp_servers.example.json`.
+## Config
 
----
+`grok-agent init` writes `grok-agent.toml`. Env vars still win:
 
-## Architecture (short)
+- `GROK_AGENT_MODEL`, `GROK_AGENT_PROVIDER`, `GROK_AGENT_BASE_URL`
+- `GROK_AGENT_ROUTER=1`
+- `GROK_AGENT_CONFIG=/path/to/file`
 
-```
-create_agent()
-    -> Agent (ReAct loop, sessions, tools)
-         -> LLM backend (Ollama or OpenAI-compatible)
-         -> MultiLLMRouter (optional fallback)
-         -> Toolkit (files, shell, python, web, calc, memory, MCP)
-         -> MCPClient (stdio JSON-RPC)
-         -> MemoryStore (JSONL)
-         -> Orchestrator (planner + specialists)
-```
+## Roadmap / contributing / license
 
-Package root: `grok_local_agent_kit/`.
-
----
-
-## Roadmap
-
-See [ROADMAP.md](ROADMAP.md). Near-term:
-
-1. Record a GIF / asciinema demo ([issue #1](https://github.com/Tryboy869/grok-local-agent-kit/issues/1))
-2. MCP HTTP/SSE transport ([issue #2](https://github.com/Tryboy869/grok-local-agent-kit/issues/2))
-3. Publish to PyPI as `grok-local-agent-kit`
-4. Plugin interface for custom tools and providers
-
----
-
-## Contributing
-
-Read [CONTRIBUTING.md](CONTRIBUTING.md). Issues and PRs are welcome, especially:
-
-- tests that do not require a live LLM
-- MCP transport work
-- docs and recorded demos
-- real-world example agents
-
-```bash
-pip install -e ".[dev]"
-pytest -q
-ruff check .
-```
-
----
-
-## License
-
-[MIT](LICENSE) · Nexus Studio / [Tryboy869](https://github.com/Tryboy869)
+See [ROADMAP.md](ROADMAP.md), [CONTRIBUTING.md](CONTRIBUTING.md), [LICENSE](LICENSE).
 
 Launch drafts: [SHOW_HN.md](SHOW_HN.md) · [docs/HN_INDIE_HACKERS.md](docs/HN_INDIE_HACKERS.md)
+
+Built autonomously by Grok · Nexus Studio / Tryboy869  
+https://github.com/Tryboy869/grok-local-agent-kit
