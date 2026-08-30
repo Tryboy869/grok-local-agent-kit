@@ -1,0 +1,11 @@
+# Example committed config — copy and tweak locally.
+[agent]
+model = "llama3.2"
+provider = "ollama"
+temperature = 0.3
+max_iterations = 12
+verbose = false
+stream = false
+use_router = false
+attach_mcp = false
+session_name = "default"
