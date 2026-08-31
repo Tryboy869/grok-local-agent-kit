@@ -1,4 +1,4 @@
-"""Core Agent with routing, tool calling (ReAct-style loop), multi-LLM."""
+"""Core Agent with routing, tool calling (ReAct-style loop), multi-LLM, hooks."""
 
 from __future__ import annotations
 
@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
+from .hooks import HookBus
 from .llm import LLMClient
 from .mcp_tools import extend_default_tools
 from .session import HISTORY_VERSION, list_sessions, load_session, save_session
@@ -25,6 +26,7 @@ Use http_get for simple page fetches and web_search for discovery.
 Use search_files to find files whose content matches a query (text search in workspace).
 Use get_system_info when you need OS / Python / cwd context.
 Use delete_file only when the user explicitly asks to remove a file.
+Use remember / recall / forget for durable local notes.
 Use mcp_read_resource to fetch MCP resource URIs after mcp_list_resources.
 Discovered MCP tools may appear as mcp_<server>_<tool> after attach_mcp_tools().
 Route carefully: list_files or search_files before write/read when unsure of paths; calculator for pure math; run_shell only for safe, non-destructive commands."""
@@ -48,6 +50,7 @@ class Agent:
         tool_result_max_chars: int = DEFAULT_TOOL_RESULT_MAX_CHARS,
         session_name: Optional[str] = None,
         attach_mcp: bool = False,
+        hooks: Optional[HookBus] = None,
     ):
         self.llm = LLMClient(
             model=model, provider=provider, base_url=base_url, temperature=temperature
@@ -58,11 +61,16 @@ class Agent:
         self.stream = stream
         self.tool_result_max_chars = max(500, tool_result_max_chars)
         self.session_name = session_name or "default"
+        self.hooks = hooks if hooks is not None else HookBus()
+        self.last_trace: List[Dict[str, Any]] = []
 
         self.tool_schemas, self.tool_funcs = extend_default_tools(*get_default_tools())
         self.history: List[Dict[str, Any]] = []
         if attach_mcp:
             self.attach_mcp_tools()
+
+    def on(self, event: str, fn: Callable[..., None]) -> Callable[..., None]:
+        return self.hooks.on(event, fn)
 
     def register_tool(
         self,
@@ -122,6 +130,12 @@ class Agent:
             print(f"  attached MCP tools: {added or '(none)'}")
         return added
 
+    def load_skills(self, directory: Optional[str] = None) -> List[str]:
+        """Load extra tools from .grok/skills/*.json skill manifests."""
+        from .skills import load_skills
+
+        return load_skills(self, directory)
+
     def chat(self, user_message: str) -> str:
         self.history.append({"role": "user", "content": user_message})
         return self._run_loop()
@@ -157,12 +171,17 @@ class Agent:
             {"role": "system", "content": self.system_prompt},
             *self.history,
         ]
+        self.last_trace = []
+        self.hooks.emit("on_start", agent=self, messages=messages)
 
         for iteration in range(self.max_iterations):
             if self.verbose:
                 print(f"\n[iteration {iteration + 1}/{self.max_iterations}]")
+            self.hooks.emit("on_iteration", agent=self, iteration=iteration)
+            self.hooks.emit("before_llm", agent=self, messages=messages, iteration=iteration)
 
             response = self.llm.chat(messages, tools=self.tool_schemas)
+            self.hooks.emit("after_llm", agent=self, response=response, iteration=iteration)
 
             content = response.get("content")
             tool_calls = response.get("tool_calls")
@@ -196,6 +215,8 @@ class Agent:
                     final = (content or "(no response)").strip()
 
                 self.history.append({"role": "assistant", "content": final})
+                self.last_trace.append({"type": "final", "text": final})
+                self.hooks.emit("on_final", agent=self, text=final)
                 return final
 
             assistant_msg: Dict[str, Any] = {
@@ -224,8 +245,15 @@ class Agent:
                 if self.verbose:
                     print(f"  → tool: {name}({args})")
 
+                self.hooks.emit("before_tool", agent=self, name=name, args=args)
                 result = execute_tool(name, args, self.tool_funcs)
                 result = self._truncate_tool_result(result)
+                self.hooks.emit(
+                    "after_tool", agent=self, name=name, args=args, result=result
+                )
+                self.last_trace.append(
+                    {"type": "tool", "name": name, "args": args, "result": result[:500]}
+                )
 
                 if self.verbose:
                     preview = result[:300] + ("..." if len(result) > 300 else "")
@@ -244,10 +272,13 @@ class Agent:
             "Partial results may be incomplete — try a more focused prompt."
         )
         self.history.append({"role": "assistant", "content": fallback})
+        self.last_trace.append({"type": "final", "text": fallback, "reason": "max_iterations"})
+        self.hooks.emit("on_final", agent=self, text=fallback)
         return fallback
 
     def reset(self) -> None:
         self.history = []
+        self.last_trace = []
 
     def get_history(self) -> list:
         return list(self.history)
