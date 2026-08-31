@@ -3,15 +3,15 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
-[![Version](https://img.shields.io/badge/version-0.11.0-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
+[![Version](https://img.shields.io/badge/version-0.12.0-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
 
 **Open-source toolkit for building local AI agents.**  
-Ollama + LM Studio • ReAct tool loop • multi-LLM fallback router • JSONL memory • orchestrator • MCP stdio **and HTTP** • file config • event hooks • offline-first.  
+Ollama + LM Studio • ReAct tool loop • multi-LLM fallback router • JSONL memory tools • skill packs • orchestrator • MCP stdio **and HTTP** • file config • **hooks fired inside the loop** • offline-first.  
 Built autonomously by Grok.
 
 > Capable agents on your machine. No cloud required. No API keys for local models.
 
-## ✨ Features (v0.11.0)
+## ✨ Features (v0.12.0)
 
 | Feature | Status |
 |---------|--------|
@@ -20,28 +20,26 @@ Built autonomously by Grok.
 | ReAct-style tool calling loop | ✅ |
 | Streaming final answers | ✅ |
 | File / web / shell / Python / calculator / MCP tools | ✅ |
-| Local JSONL memory (`remember` / `recall` / `forget`) | ✅ |
+| Memory tools (`remember` / `recall` / `forget`) + CLI | ✅ |
+| Skill packs (`.grok/skills/*.json`) | ✅ |
+| Hook bus wired into the live ReAct loop + `last_trace` | ✅ |
 | Orchestrator (planner + researcher / coder / operator) | ✅ |
 | MCP stdio JSON-RPC + auto-register discovered tools | ✅ |
-| **MCP HTTP JSON-RPC client** (`HTTPMCPClient`, `grok-agent mcp-http`) | ✅ |
+| MCP HTTP JSON-RPC client (`HTTPMCPClient`, `grok-agent mcp-http`) | ✅ |
 | Named sessions under `.grok/sessions/` | ✅ |
-| **`grok-agent.toml` / JSON config** (`grok-agent init`) | ✅ |
-| **Event hooks** (`before_tool`, `after_tool`, `on_final`, …) | ✅ |
+| `grok-agent.toml` / JSON config (`grok-agent init`) | ✅ |
 | CLI + examples + unit tests (no live LLM required) | ✅ |
 
 ## 🎬 Demo GIFs (record with asciinema / VHS)
 
 Drop recordings into `docs/gifs/` when you have a terminal handy:
 
-1. `demo-chat.gif` — `grok-agent chat -v --stream`  
-   *What you should see:* Rich prompt, tool arrows (`→ calculator`), streamed final answer.
-2. `demo-route.gif` — `grok-agent route`  
-   *What you should see:* Ollama probed first, LM Studio second, `active:` line.
-3. `demo-mcp.gif` — `python examples/mcp_agent.py --no-llm`  
-   *What you should see:* bundled echo server tools listed without a GPU.
-4. `demo-hooks.gif` — `python examples/hooks_agent.py`  
-   *What you should see:* `before_tool` / `after_tool` printed for `calculator`.
-5. `demo-memory.gif` — `grok-agent memory remember "ship v0.11"` then `recall ship`
+1. `demo-chat.gif` — `grok-agent chat -v --stream`
+2. `demo-route.gif` — `grok-agent route`
+3. `demo-mcp.gif` — `python examples/mcp_agent.py --no-llm`
+4. `demo-hooks.gif` — `python examples/hooks_agent.py`
+5. `demo-memory.gif` — `grok-agent memory remember "ship v0.12"` then `recall ship`
+6. `demo-skills.gif` — `python examples/skills_agent.py`
 
 Until GIFs land, the commands above are the live demo.
 
@@ -81,7 +79,9 @@ def log_tool(*, name, args, **_):
     print("calling", name, args)
 
 agent.on("before_tool", log_tool)
+agent.load_skills()
 print(agent.run("List files and remember that this workspace is the kit repo"))
+print(agent.last_trace)
 agent.close()
 ```
 
@@ -95,6 +95,7 @@ python examples/memory_agent.py
 python examples/orchestrator_agent.py --no-llm
 python examples/hooks_agent.py
 python examples/config_agent.py
+python examples/skills_agent.py
 ```
 
 ## Config

@@ -11,13 +11,14 @@ from .memory import forget, recall, remember
 from .orchestrator import Orchestrator
 from .router import MultiLLMRouter, format_probe
 from .session import list_sessions, load_session, save_session
+from .skills import load_skills
 from .tools import execute_tool, get_default_tools
 from . import cli as _cli_mod
 from .cli_ext import register as _register_cli_ext
 
 _register_cli_ext(_cli_mod.cli)
 
-__version__ = "0.11.0"
+__version__ = "0.12.0"
 __all__ = [
     "Agent",
     "create_agent",
@@ -40,6 +41,7 @@ __all__ = [
     "remember",
     "recall",
     "forget",
+    "load_skills",
     "format_probe",
     "get_default_tools",
     "execute_tool",

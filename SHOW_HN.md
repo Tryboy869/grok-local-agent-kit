@@ -1,23 +1,23 @@
-# Show HN: Grok Local Agent Kit — offline agents with tools, MCP, hooks, and LLM fallback
+# Show HN: grok-local-agent-kit 0.12 — local agents with real tools, MCP, and loop hooks
 
-I built a small Python kit so you can run a tool-using agent on your laptop with Ollama or LM Studio. No cloud key required.
+I wanted a small Python kit that runs an agent on my laptop against Ollama or LM Studio without wrapping a cloud API.
 
-**What it does (v0.11)**
+v0.12 ships:
 
-- ReAct loop with cwd-safe file tools
-- Real MCP stdio client and a minimal MCP HTTP JSON-RPC client
-- Fallback router: try Ollama, then LM Studio
-- JSONL memory (`remember` / `recall`)
-- Tiny orchestrator (planner + specialists)
-- `grok-agent.toml` config + event hooks
-
-**Try it**
+- ReAct tool loop (files, web, shell, python sandbox, calculator, MCP)
+- Multi-LLM fallback router (Ollama → LM Studio)
+- JSONL memory as tools the model can call
+- JSON skill packs under `.grok/skills/`
+- Hook bus that fires *inside* the loop (`before_tool`, `after_tool`, `on_final`)
+- MCP over stdio and HTTP
+- Tests that do not need a live LLM
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
+pip install git+https://github.com/Tryboy869/grok-local-agent-kit.git
 grok-agent doctor
-grok-agent route
 grok-agent chat -v --stream --router
 ```
 
 Repo: https://github.com/Tryboy869/grok-local-agent-kit
+
+Happy to hear what you would require before trusting this in a real workflow.

@@ -2,6 +2,20 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.12.0] — 2026-08-31
+
+### Added
+- Hook bus is now fired from the live ReAct loop (`on_start`, `on_iteration`, `before_llm`, `after_llm`, `before_tool`, `after_tool`, `on_final`)
+- `Agent.last_trace` records tool calls and the final answer for the last run
+- Memory exposed as first-class tools: `remember`, `recall`, `forget`
+- Skill packs: JSON manifests under `.grok/skills/` (`agent.load_skills()`)
+- Example `examples/skills_agent.py` + sample skill `examples/skills/workspace-greeter.json`
+- Loop unit tests with a fake LLM (no live model)
+
+### Changed
+- Version bump to 0.12.0
+- README / roadmap / HN drafts updated for the loop + skills release
+
 ## [0.11.0] — 2026-08-30
 
 ### Added

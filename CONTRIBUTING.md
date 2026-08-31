@@ -37,7 +37,7 @@ pytest -q
 6. Vision support (local multimodal models)
 7. Demo GIFs / asciinema recordings for the README (`docs/gifs/`)
 8. Windows & macOS packaging notes
-9. Additional ready-to-run examples
+9. Additional ready-to-run examples and skill packs
 10. CI coverage for more edge cases
 
 ## Code style
@@ -46,7 +46,7 @@ pytest -q
 - Type hints encouraged (`py.typed` is present)
 - Keep the core dependency surface small
 - Prefer clarity over cleverness
-- No live LLM required for unit tests
+- No live LLM required for unit tests (use a FakeLLM)
 
 ## Reporting issues
 
