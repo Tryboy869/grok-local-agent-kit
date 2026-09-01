@@ -6,6 +6,7 @@ from .factory import create_agent
 from .hooks import HookBus, default_verbose_hooks
 from .llm import LLMClient
 from .mcp import MCPManager, StdioMCPClient, load_mcp_config
+from . import mcp_ext as _mcp_ext  # noqa: F401  — patches prompts onto MCP classes
 from .mcp_http import HTTPMCPClient, probe_http_mcp
 from .mcp_sse import SSEMCPClient, probe_sse_mcp
 from .memory import forget, recall, remember

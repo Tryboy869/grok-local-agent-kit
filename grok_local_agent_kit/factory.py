@@ -9,6 +9,7 @@ from .agent import Agent
 from .agent import create_agent as _create_agent_plain
 from .config import load_config
 from .hooks import HookBus
+from .usage import UsageStats
 
 
 def _ensure_hooks(agent: Agent, hooks: Any = None) -> Agent:
@@ -20,6 +21,34 @@ def _ensure_hooks(agent: Agent, hooks: Any = None) -> Agent:
 
     agent.on = on  # type: ignore[method-assign]
     return agent
+
+
+def _attach_usage(agent: Agent) -> None:
+    if getattr(agent, "_usage_attached", False):
+        return
+    agent.usage = UsageStats()
+
+    def _start(**_):
+        agent.usage = UsageStats()
+
+    def _before_llm(*, messages=None, **_):
+        agent.usage.record_prompt(messages or [])
+
+    def _after_tool(**_):
+        agent.usage.record_tool()
+
+    def _on_final(*, text="", **_):
+        agent.usage.record_completion(text or "")
+        try:
+            agent.hooks.emit("on_token", agent=agent, text=text or "")
+        except Exception:
+            pass
+
+    agent.hooks.on("on_start", _start)
+    agent.hooks.on("before_llm", _before_llm)
+    agent.hooks.on("after_tool", _after_tool)
+    agent.hooks.on("on_final", _on_final)
+    agent._usage_attached = True
 
 
 def create_agent(
@@ -46,6 +75,7 @@ def create_agent(
     kwargs.pop("hooks", None)
     agent = _create_agent_plain(model=model, provider=provider, base_url=base_url, **kwargs)
     _ensure_hooks(agent, hooks)
+    _attach_usage(agent)
     agent.use_router = bool(use_router)
     agent.router = None
     agent.routed_via = getattr(agent.llm, "provider", provider or "ollama")
