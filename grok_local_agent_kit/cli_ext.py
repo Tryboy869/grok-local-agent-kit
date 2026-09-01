@@ -36,4 +36,28 @@ def register(cli) -> None:
 
         console.print(probe_http_mcp(url))
 
+    @cli.command("mcp-sse")
+    @click.argument("url")
+    def mcp_sse_cmd(url):
+        """Probe an MCP Streamable HTTP / SSE endpoint with retries."""
+        from .mcp_sse import probe_sse_mcp
+
+        console.print(probe_sse_mcp(url))
+
+    @cli.command("vmemory")
+    @click.argument("action", type=click.Choice(["remember", "recall", "forget", "stats"]))
+    @click.argument("text", required=False, default="")
+    def vmemory_cmd(action, text):
+        """SQLite vector memory helpers (.grok/memory/vectors.db)."""
+        from . import vector_memory as vm
+
+        if action == "remember":
+            console.print(vm.vremember(text))
+        elif action == "recall":
+            console.print(vm.vrecall(text))
+        elif action == "forget":
+            console.print(vm.vforget(text))
+        else:
+            console.print(vm.vstats())
+
     cli._grok_ext = True
