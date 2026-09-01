@@ -2,34 +2,34 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.13.0] — 2026-09-01
+
+### Added
+- SQLite bag-of-words vector memory (`vremember` / `vrecall` / `vforget`) — no extra deps
+- Tools `vremember` and `vrecall` registered on the default agent
+- MCP Streamable HTTP / SSE client with exponential backoff (`SSEMCPClient`, `grok-agent mcp-sse`)
+- MCP prompts: `prompts/list` and `prompts/get` on stdio client + manager
+- Usage tracker (`UsageStats`, `agent.usage.summary()`)
+- `on_token` hook fired when the final answer is produced / streamed
+- Example `examples/vector_memory_agent.py` (no live LLM)
+- Tests for vector ranking, usage, and SSE parsing
+
+### Changed
+- Version bump to 0.13.0
+- README / roadmap / HN drafts updated for vector memory + SSE + prompts
+
 ## [0.12.0] — 2026-08-31
 
 ### Added
-- Hook bus is now fired from the live ReAct loop (`on_start`, `on_iteration`, `before_llm`, `after_llm`, `before_tool`, `after_tool`, `on_final`)
+- Hook bus is now fired from the live ReAct loop
 - `Agent.last_trace` records tool calls and the final answer for the last run
 - Memory exposed as first-class tools: `remember`, `recall`, `forget`
-- Skill packs: JSON manifests under `.grok/skills/` (`agent.load_skills()`)
-- Example `examples/skills_agent.py` + sample skill `examples/skills/workspace-greeter.json`
+- Skill packs under `.grok/skills/`
 - Loop unit tests with a fake LLM (no live model)
-
-### Changed
-- Version bump to 0.12.0
-- README / roadmap / HN drafts updated for the loop + skills release
 
 ## [0.11.0] — 2026-08-30
 
-### Added
-- File config: `grok-agent.toml` / `.grok/config.json` via `load_config()` and `grok-agent init`
-- Event hooks (`HookBus`, `agent.on(...)`)
-- MCP HTTP JSON-RPC client (`HTTPMCPClient`, `grok-agent mcp-http`)
-- CLI `grok-agent tools`
-- Examples: `hooks_agent.py`, `config_agent.py`
-- `scripts/install.sh` one-liner
-- Tests for config, hooks, HTTP client construction
-
-### Changed
-- `create_agent()` seeds defaults from discovered config + env
-- Version bump to 0.11.0
+- File config, hooks, MCP HTTP, CLI tools, install.sh
 
 ## [0.10.0] — 2026-08-29
 

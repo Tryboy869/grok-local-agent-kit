@@ -29,22 +29,22 @@ pytest -q
 
 ## What we need most (priority order)
 
-1. Full MCP Streamable HTTP + SSE reconnection
-2. MCP prompts + richer resource templates
+1. Real embedding backends (Ollama embeddings / sqlite-vec) behind the vector memory API
+2. Full MCP Streamable HTTP session ids + cancellation
 3. Stronger tool sandboxing (`execute_python` & `run_shell`)
-4. Token-level streaming inside the tool loop
-5. Optional vector memory (sqlite-vec)
-6. Vision support (local multimodal models)
-7. Demo GIFs / asciinema recordings for the README (`docs/gifs/`)
-8. Windows & macOS packaging notes
-9. Additional ready-to-run examples and skill packs
-10. CI coverage for more edge cases
+4. Token-level streaming *inside* tool-thought turns
+5. Vision support (local multimodal models)
+6. Demo GIFs / asciinema recordings for the README (`docs/gifs/`)
+7. Windows & macOS packaging notes
+8. Additional ready-to-run examples and skill packs
+9. CI coverage for more edge cases
+10. PyPI-stable 1.0 API freeze
 
 ## Code style
 
 - Python 3.10+
 - Type hints encouraged (`py.typed` is present)
-- Keep the core dependency surface small
+- Keep the core dependency surface small (stdlib first)
 - Prefer clarity over cleverness
 - No live LLM required for unit tests (use a FakeLLM)
 
