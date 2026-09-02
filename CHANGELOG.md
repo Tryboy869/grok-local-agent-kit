@@ -2,6 +2,20 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.14.0] — 2026-09-02
+
+### Added
+- Optional Ollama embeddings (`GROK_EMBED_BACKEND=ollama`, `GROK_EMBED_MODEL`) with hash fallback
+- `on_thought` hook + thought entries in `Agent.last_trace` during the ReAct loop
+- Stronger `execute_python` sandbox: more blocked imports/calls, dunder guard, wall-clock timeout
+- `examples/embed_agent.py` and `examples/sandbox_agent.py` (no live LLM required)
+- Demo storyboard under `docs/gifs/README.md`
+
+### Changed
+- Vector memory uses the shared `embeddings` module (stable MD5-hashed bag-of-words)
+- Usage tracker records thought tokens via `on_thought`
+- README / roadmap / HN drafts updated for v0.14.0
+
 ## [0.13.0] — 2026-09-01
 
 ### Added
