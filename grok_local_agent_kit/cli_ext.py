@@ -60,4 +60,13 @@ def register(cli) -> None:
         else:
             console.print(vm.vstats())
 
+    @cli.command("embed-probe")
+    @click.argument("text", required=False, default="local agent kit")
+    def embed_probe_cmd(text):
+        """Show embedding backend + vector length (no LLM)."""
+        from .embeddings import backend_name, embed
+
+        vec = embed(text)
+        console.print(f"backend={backend_name()} dim={len(vec)} sample={vec[:4]}")
+
     cli._grok_ext = True

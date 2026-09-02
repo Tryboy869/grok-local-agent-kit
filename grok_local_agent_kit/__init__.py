@@ -1,5 +1,7 @@
 """Grok Local Agent Kit — local-first AI agents with tools & multi-LLM support."""
 
+__version__ = "0.14.0"
+
 from .agent import Agent
 from .config import KitConfig, load_config, write_example_config
 from .factory import create_agent
@@ -16,13 +18,13 @@ from .session import list_sessions, load_session, save_session
 from .skills import load_skills
 from .tools import execute_tool, get_default_tools
 from .usage import UsageStats, estimate_tokens
+from .embeddings import embed, hash_embed, ollama_embed
 from .vector_memory import vforget, vrecall, vremember
 from . import cli as _cli_mod
 from .cli_ext import register as _register_cli_ext
 
 _register_cli_ext(_cli_mod.cli)
 
-__version__ = "0.13.0"
 __all__ = [
     "Agent",
     "create_agent",
@@ -51,6 +53,9 @@ __all__ = [
     "forget",
     "vremember",
     "vrecall",
+    "embed",
+    "hash_embed",
+    "ollama_embed",
     "vforget",
     "load_skills",
     "format_probe",

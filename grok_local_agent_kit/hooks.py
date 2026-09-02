@@ -37,6 +37,8 @@ EVENTS = (
     "on_iteration",
     "before_llm",
     "after_llm",
+    "on_thought",
+    "on_token",
     "before_tool",
     "after_tool",
     "on_final",
@@ -59,7 +61,12 @@ def default_verbose_hooks(print_fn: Optional[Callable[[str], None]] = None) -> H
     def _on_final(*, text: str, **_: Any) -> None:
         out(f"  ✓ hook on_final ({len(text)} chars)")
 
+    def _on_thought(*, text: str, **_: Any) -> None:
+        preview = text[:160] + ("..." if len(text) > 160 else "")
+        out(f"  · hook on_thought: {preview}")
+
     bus.on("before_tool", _before_tool)
     bus.on("after_tool", _after_tool)
     bus.on("on_final", _on_final)
+    bus.on("on_thought", _on_thought)
     return bus
