@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any, Callable, Dict, List
 
 from .memory import forget, recall, remember
+from .sandbox import execute_python as sandboxed_execute_python
 from .vector_memory import vrecall, vremember
 
 
@@ -164,4 +165,5 @@ def extend_default_tools(
         if name not in funcs:
             funcs[name] = MEMORY_FUNCS[name]
             schemas.append(spec)
+    funcs["execute_python"] = sandboxed_execute_python
     return schemas, funcs
