@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Demonstrate the restricted execute_python sandbox (no LLM required)."""
 
-from grok_local_agent_kit.tools import execute_python
+from grok_local_agent_kit.sandbox import execute_python
 
 SNIPPETS = [
     "print(sum(range(10)))",

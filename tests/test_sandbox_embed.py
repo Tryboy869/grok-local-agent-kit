@@ -3,7 +3,7 @@
 import os
 
 from grok_local_agent_kit.embeddings import backend_name, embed, hash_embed
-from grok_local_agent_kit.tools import execute_python
+from grok_local_agent_kit.sandbox import execute_python
 from grok_local_agent_kit.vector_memory import cosine
 
 
