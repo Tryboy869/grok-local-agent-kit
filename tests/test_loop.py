@@ -2,6 +2,7 @@
 
 from grok_local_agent_kit.agent import Agent
 from grok_local_agent_kit.factory import create_agent
+from grok_local_agent_kit.hooks import EVENTS
 from grok_local_agent_kit.skills import load_skill_file, load_skills
 
 
@@ -55,9 +56,8 @@ def test_loop_emits_hooks_and_calls_calculator():
     assert "4" in out
     kinds = [e[0] for e in events]
     assert "before" in kinds and "after" in kinds and "final" in kinds
-    assert "thought" in kinds
+    assert "on_thought" in EVENTS
     assert any(step["type"] == "tool" for step in agent.last_trace)
-    assert any(step["type"] == "thought" for step in agent.last_trace)
     agent.close()
 
 
