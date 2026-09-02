@@ -1,23 +1,21 @@
-"""Local bag-of-words vector memory on SQLite (stdlib only).
+"""Local vector memory on SQLite.
 
-Stores notes in .grok/memory/vectors.db and ranks them with cosine
-similarity over a hashed term-frequency vector. Good enough for
-offline recall without pulling sqlite-vec or an embedding model.
+Default embeddings are hashed bag-of-words (stdlib). Set
+GROK_EMBED_BACKEND=ollama to use a live Ollama embedding model
+(nomic-embed-text by default) with automatic hash fallback.
 """
 
 from __future__ import annotations
 
-import math
-import re
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable, List, Tuple
 
+from .embeddings import DIM, backend_name, embed
+
 MEMORY_DIR = Path(".grok") / "memory"
 DB_PATH = MEMORY_DIR / "vectors.db"
-DIM = 256
-_TOKEN = re.compile(r"[a-z0-9_]{2,}", re.I)
 
 
 def _connect(path: Path | None = None) -> sqlite3.Connection:
@@ -37,22 +35,6 @@ def _connect(path: Path | None = None) -> sqlite3.Connection:
     )
     conn.commit()
     return conn
-
-
-def _tokens(text: str) -> List[str]:
-    return [t.lower() for t in _TOKEN.findall(text or "")]
-
-
-def embed(text: str, dim: int = DIM) -> List[float]:
-    vec = [0.0] * dim
-    toks = _tokens(text)
-    if not toks:
-        return vec
-    for tok in toks:
-        idx = hash(tok) % dim
-        vec[idx] += 1.0
-    norm = math.sqrt(sum(x * x for x in vec)) or 1.0
-    return [x / norm for x in vec]
 
 
 def _pack(vec: Iterable[float]) -> bytes:
@@ -139,4 +121,4 @@ def vstats(db_path: Path | None = None) -> str:
     finally:
         conn.close()
     dest = db_path or DB_PATH
-    return f"vector memory: {n} notes in {dest}"
+    return f"vector memory: {n} notes in {dest} backend={backend_name()}"

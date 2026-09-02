@@ -44,10 +44,19 @@ def _attach_usage(agent: Agent) -> None:
         except Exception:
             pass
 
+    def _on_thought(*, text="", **_):
+        if text:
+            agent.usage.record_completion(text)
+            try:
+                agent.hooks.emit("on_token", agent=agent, text=text, kind="thought")
+            except Exception:
+                pass
+
     agent.hooks.on("on_start", _start)
     agent.hooks.on("before_llm", _before_llm)
     agent.hooks.on("after_tool", _after_tool)
     agent.hooks.on("on_final", _on_final)
+    agent.hooks.on("on_thought", _on_thought)
     agent._usage_attached = True
 
 

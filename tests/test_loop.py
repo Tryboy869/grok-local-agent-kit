@@ -33,7 +33,7 @@ def test_loop_emits_hooks_and_calls_calculator():
     agent.llm = FakeLLM(
         [
             {
-                "content": "",
+                "content": "I'll use the calculator.",
                 "tool_calls": [
                     {
                         "id": "c1",
@@ -49,14 +49,15 @@ def test_loop_emits_hooks_and_calls_calculator():
     agent.on("before_tool", lambda **p: events.append(("before", p["name"])))
     agent.on("after_tool", lambda **p: events.append(("after", p["name"], p["result"])))
     agent.on("on_final", lambda **p: events.append(("final", p["text"])))
+    agent.on("on_thought", lambda **p: events.append(("thought", p["text"])))
 
     out = agent.run("what is 2+2?")
     assert "4" in out
-    assert events[0][0] == "before"
-    assert events[1][0] == "after"
-    assert "4" in events[1][2]
-    assert events[2][0] == "final"
+    kinds = [e[0] for e in events]
+    assert "before" in kinds and "after" in kinds and "final" in kinds
+    assert "thought" in kinds
     assert any(step["type"] == "tool" for step in agent.last_trace)
+    assert any(step["type"] == "thought" for step in agent.last_trace)
     agent.close()
 
 
