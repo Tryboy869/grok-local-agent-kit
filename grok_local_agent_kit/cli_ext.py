@@ -69,4 +69,19 @@ def register(cli) -> None:
         vec = embed(text)
         console.print(f"backend={backend_name()} dim={len(vec)} sample={vec[:4]}")
 
+    @cli.command("trace")
+    @click.option("--path", default=".grok/traces/last.json", help="Where to write the last run if you first chat")
+    def trace_cmd(path):
+        """Explain how traces work and print the last exported file if present."""
+        from pathlib import Path
+
+        p = Path(path)
+        if p.exists():
+            console.print(p.read_text(encoding="utf-8")[:4000])
+        else:
+            console.print(
+                "No trace file yet. After a run call agent.export_trace() "
+                "or use examples/parallel_agent.py. Default path: .grok/traces/last.json"
+            )
+
     cli._grok_ext = True
