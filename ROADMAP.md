@@ -28,19 +28,26 @@
 - MCP prompts/list + prompts/get
 - Usage estimator + `on_token` hook
 
-## ✅ v0.14.0 (current)
+## ✅ v0.14.0
 
 - Optional real embeddings via Ollama `/api/embeddings` (hash fallback)
 - `on_thought` during the tool loop (not only the final answer)
 - Stronger sandboxed `execute_python` (timeout + dunder/import guard)
 - Demo storyboard in `docs/gifs/`
 
-## 🚧 v0.15.x
+## ✅ v0.15.0 (current)
+
+- Parallel tool calls in one ReAct turn
+- `on_thought` actually recorded in `last_trace`
+- Streamed `on_token` chunks on the final answer
+- Trace export (`.grok/traces/`) + `grok-agent trace`
+
+## 🚧 v0.16.x
 
 - sqlite-vec optional backend
-- Token-by-token streaming while tools are still in play
 - Recorded binary GIFs committed to `docs/gifs/`
 - PyPI test publish
+- Cancellation / timeouts per tool
 
 ## 📋 v1.0 — Production ready
 

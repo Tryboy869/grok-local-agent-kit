@@ -29,16 +29,15 @@ pytest -q
 
 ## What we need most (priority order)
 
-1. Real embedding backends (Ollama embeddings / sqlite-vec) behind the vector memory API
+1. sqlite-vec (or similar) behind the existing vector memory API
 2. Full MCP Streamable HTTP session ids + cancellation
-3. Stronger tool sandboxing (`execute_python` & `run_shell`)
-4. Token-level streaming *inside* tool-thought turns
-5. Vision support (local multimodal models)
-6. Demo GIFs / asciinema recordings for the README (`docs/gifs/`)
-7. Windows & macOS packaging notes
-8. Additional ready-to-run examples and skill packs
-9. CI coverage for more edge cases
-10. PyPI-stable 1.0 API freeze
+3. Per-tool timeouts and cancellation tokens
+4. Vision support (local multimodal models)
+5. Demo GIFs / asciinema recordings for the README (`docs/gifs/`)
+6. Windows & macOS packaging notes
+7. Additional ready-to-run examples and skill packs
+8. CI coverage for more edge cases
+9. PyPI-stable 1.0 API freeze
 
 ## Code style
 

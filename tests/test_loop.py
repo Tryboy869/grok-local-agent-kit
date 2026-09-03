@@ -56,8 +56,45 @@ def test_loop_emits_hooks_and_calls_calculator():
     assert "4" in out
     kinds = [e[0] for e in events]
     assert "before" in kinds and "after" in kinds and "final" in kinds
+    assert "thought" in kinds
     assert "on_thought" in EVENTS
     assert any(step["type"] == "tool" for step in agent.last_trace)
+    assert any(step["type"] == "thought" for step in agent.last_trace)
+    dumped = agent.export_trace(".grok/traces/test_loop.json")
+    assert "Wrote trace" in dumped
+    agent.close()
+
+
+def test_parallel_tools_preserve_order():
+    agent = Agent(model="dummy", provider="ollama", verbose=False, parallel_tools=True)
+    seen = []
+
+    def slow_a(msg: str = "") -> str:
+        seen.append("a")
+        return "A"
+
+    def slow_b(msg: str = "") -> str:
+        seen.append("b")
+        return "B"
+
+    agent.register_tool("slow_a", slow_a, "a", {"type": "object", "properties": {}})
+    agent.register_tool("slow_b", slow_b, "b", {"type": "object", "properties": {}})
+    agent.llm = FakeLLM(
+        [
+            {
+                "content": "calling both",
+                "tool_calls": [
+                    {"id": "1", "name": "slow_a", "arguments": {}},
+                    {"id": "2", "name": "slow_b", "arguments": {}},
+                ],
+            },
+            {"content": "done A then B", "tool_calls": None},
+        ]
+    )
+    out = agent.run("go")
+    assert "done" in out
+    tool_steps = [s for s in agent.last_trace if s["type"] == "tool"]
+    assert [s["name"] for s in tool_steps] == ["slow_a", "slow_b"]
     agent.close()
 
 

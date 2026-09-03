@@ -2,6 +2,20 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.15.0] — 2026-09-03
+
+### Added
+- Real `on_thought` emission when the model writes a thought *and* calls tools
+- Parallel tool execution in a single ReAct turn (`parallel_tools=True`, `max_parallel_tools=4`)
+- Token-level `on_token` events during streamed final answers (`kind="stream"`)
+- `Agent.export_trace()` writes last_trace + usage + history under `.grok/traces/`
+- `grok-agent trace` CLI helper
+- Example `examples/parallel_agent.py` (no live LLM required)
+
+### Changed
+- Version bump to 0.15.0
+- README / roadmap / HN drafts updated for parallel tools + traces
+
 ## [0.14.0] — 2026-09-02
 
 ### Added
@@ -30,7 +44,6 @@ All notable changes to grok-local-agent-kit are documented here.
 
 ### Changed
 - Version bump to 0.13.0
-- README / roadmap / HN drafts updated for vector memory + SSE + prompts
 
 ## [0.12.0] — 2026-08-31
 
