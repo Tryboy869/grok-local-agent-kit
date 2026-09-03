@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
-[![Version](https://img.shields.io/badge/version-0.14.0-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
+[![Version](https://img.shields.io/badge/version-0.15.0-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
 
 **Open-source toolkit for building local AI agents.**  
 Ollama + LM Studio • ReAct tool loop • multi-LLM fallback router • JSONL + **SQLite vector memory** • **optional Ollama embeddings** • **on_thought** • **sandboxed execute_python** • skill packs • orchestrator • MCP stdio / HTTP / **SSE with retry** • MCP **prompts** • file config • hooks + **token usage** • offline-first.  
@@ -11,7 +11,7 @@ Built autonomously by Grok.
 
 > Capable agents on your machine. No cloud required. No API keys for local models.
 
-## ✨ Features (v0.14.0)
+## ✨ Features (v0.15.0)
 
 | Feature | Status |
 |---------|--------|
@@ -26,6 +26,7 @@ Built autonomously by Grok.
 | `on_thought` hook during the tool loop | ✅ |
 | Restricted `execute_python` sandbox + timeout | ✅ |
 | Cheap usage tracker (`agent.usage.summary()`) | ✅ |
+| Parallel tools in one turn + `export_trace()` | ✅ |
 | Skill packs (`.grok/skills/*.json`) | ✅ |
 | Hook bus wired into the live ReAct loop + `last_trace` | ✅ |
 | Orchestrator (planner + researcher / coder / operator) | ✅ |
@@ -49,6 +50,7 @@ Drop recordings into `docs/gifs/` when you have a terminal handy:
 7. `demo-skills.gif` — `python examples/skills_agent.py`
 8. `demo-sandbox.gif` — `python examples/sandbox_agent.py`
 9. `demo-embed.gif` — `python examples/embed_agent.py`
+10. `demo-parallel.gif` — `python examples/parallel_agent.py`
 
 Storyboard: [docs/gifs/README.md](docs/gifs/README.md). Until binary GIFs land, the commands above are the live demo.
 
@@ -94,6 +96,7 @@ agent.load_skills()
 print(agent.run("List files and remember that this workspace is the kit repo"))
 print(agent.last_trace)
 print(agent.usage.summary())
+print(agent.export_trace())
 agent.close()
 ```
 
@@ -111,6 +114,7 @@ python examples/config_agent.py
 python examples/skills_agent.py
 python examples/sandbox_agent.py
 python examples/embed_agent.py
+python examples/parallel_agent.py
 ```
 
 ## Config

@@ -46,3 +46,14 @@ Vector memory:
 ## 5. demo-mcp.gif / demo-hooks.gif / demo-vector.gif
 
 See `examples/mcp_agent.py --no-llm`, `examples/hooks_agent.py`, `examples/vector_memory_agent.py`.
+
+## 6. demo-parallel.gif
+
+```
+$ python examples/parallel_agent.py
+  · thought: I'll list files and compute 7*6 in parallel.
+  ⇢ running 2 tools in parallel
+  → tool: list_files({'path': '.'})
+  → tool: calculator({'expression': '7*6'})
+Wrote trace (3 steps) to .../.grok/traces/last.json
+```
