@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import json
 import os
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from .hooks import HookBus
 from .llm import LLMClient
@@ -51,6 +52,8 @@ class Agent:
         session_name: Optional[str] = None,
         attach_mcp: bool = False,
         hooks: Optional[HookBus] = None,
+        parallel_tools: bool = True,
+        max_parallel_tools: int = 4,
     ):
         self.llm = LLMClient(
             model=model, provider=provider, base_url=base_url, temperature=temperature
@@ -63,6 +66,8 @@ class Agent:
         self.session_name = session_name or "default"
         self.hooks = hooks if hooks is not None else HookBus()
         self.last_trace: List[Dict[str, Any]] = []
+        self.parallel_tools = parallel_tools
+        self.max_parallel_tools = max(1, int(max_parallel_tools))
 
         self.tool_schemas, self.tool_funcs = extend_default_tools(*get_default_tools())
         self.history: List[Dict[str, Any]] = []
@@ -166,6 +171,65 @@ class Agent:
                 return {"raw": raw}
         return {}
 
+    def _emit_thought(self, content: Any) -> None:
+        text = (content or "").strip() if isinstance(content, str) else str(content or "").strip()
+        if not text:
+            return
+        self.last_trace.append({"type": "thought", "text": text})
+        self.hooks.emit("on_thought", agent=self, text=text)
+        if self.verbose:
+            preview = text[:240] + ("..." if len(text) > 240 else "")
+            print(f"  · thought: {preview}")
+
+    def _run_one_tool(self, tc: Dict[str, Any]) -> Tuple[Dict[str, Any], str, Dict[str, Any]]:
+        name = tc.get("name") or ""
+        args = self._parse_args(tc.get("arguments", {}))
+        self.hooks.emit("before_tool", agent=self, name=name, args=args)
+        result = execute_tool(name, args, self.tool_funcs)
+        result = self._truncate_tool_result(result)
+        self.hooks.emit("after_tool", agent=self, name=name, args=args, result=result)
+        step = {"type": "tool", "name": name, "args": args, "result": result[:500]}
+        return tc, result, step
+
+    def _run_tools(self, tool_calls: List[Dict[str, Any]]) -> List[Tuple[Dict[str, Any], str, Dict[str, Any]]]:
+        if not tool_calls:
+            return []
+        if not self.parallel_tools or len(tool_calls) == 1:
+            return [self._run_one_tool(tc) for tc in tool_calls]
+        workers = min(self.max_parallel_tools, len(tool_calls))
+        indexed = list(enumerate(tool_calls))
+        out: List[Optional[Tuple[Dict[str, Any], str, Dict[str, Any]]]] = [None] * len(tool_calls)
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            futures = {pool.submit(self._run_one_tool, tc): i for i, tc in indexed}
+            for fut in as_completed(futures):
+                i = futures[fut]
+                out[i] = fut.result()
+        return [item for item in out if item is not None]
+
+    def export_trace(self, path: str = ".grok/traces/last.json") -> str:
+        """Write last_trace + usage to a JSON file under the workspace."""
+        try:
+            p = Path(path).expanduser()
+            if not p.is_absolute():
+                p = (Path.cwd() / p).resolve()
+            else:
+                p = p.resolve()
+            cwd = Path.cwd().resolve()
+            p.relative_to(cwd)
+            p.parent.mkdir(parents=True, exist_ok=True)
+            payload: Dict[str, Any] = {
+                "session": self.session_name,
+                "trace": self.last_trace,
+                "history": self.history,
+            }
+            usage = getattr(self, "usage", None)
+            if usage is not None and hasattr(usage, "as_dict"):
+                payload["usage"] = usage.as_dict()
+            p.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+            return f"Wrote trace ({len(self.last_trace)} steps) to {p}"
+        except Exception as e:
+            return f"export_trace error: {e}"
+
     def _run_loop(self) -> str:
         messages: List[Dict[str, Any]] = [
             {"role": "system", "content": self.system_prompt},
@@ -195,6 +259,7 @@ class Agent:
                             chunk = next(stream_resp)
                             if isinstance(chunk, str) and chunk:
                                 final_parts.append(chunk)
+                                self.hooks.emit("on_token", agent=self, text=chunk, kind="stream")
                                 if self.verbose:
                                     print(chunk, end="", flush=True)
                     except StopIteration as stop:
@@ -219,6 +284,8 @@ class Agent:
                 self.hooks.emit("on_final", agent=self, text=final)
                 return final
 
+            self._emit_thought(content)
+
             assistant_msg: Dict[str, Any] = {
                 "role": "assistant",
                 "content": content or "",
@@ -238,27 +305,17 @@ class Agent:
             ]
             messages.append(assistant_msg)
 
-            for tc in tool_calls:
+            if self.verbose and len(tool_calls) > 1 and self.parallel_tools:
+                print(f"  ⇢ running {len(tool_calls)} tools in parallel")
+
+            for tc, result, step in self._run_tools(tool_calls):
                 name = tc.get("name") or ""
                 args = self._parse_args(tc.get("arguments", {}))
-
                 if self.verbose:
                     print(f"  → tool: {name}({args})")
-
-                self.hooks.emit("before_tool", agent=self, name=name, args=args)
-                result = execute_tool(name, args, self.tool_funcs)
-                result = self._truncate_tool_result(result)
-                self.hooks.emit(
-                    "after_tool", agent=self, name=name, args=args, result=result
-                )
-                self.last_trace.append(
-                    {"type": "tool", "name": name, "args": args, "result": result[:500]}
-                )
-
-                if self.verbose:
                     preview = result[:300] + ("..." if len(result) > 300 else "")
                     print(f"  ← {preview}")
-
+                self.last_trace.append(step)
                 messages.append(
                     {
                         "role": "tool",
