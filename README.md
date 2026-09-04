@@ -1,32 +1,17 @@
 # 🚀 Grok Local Agent Kit
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
-[![Version](https://img.shields.io/badge/version-0.15.1-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
-[![Stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers)
-[![Issues](https://img.shields.io/github/issues/Tryboy869/grok-local-agent-kit)](https://github.com/Tryboy869/grok-local-agent-kit/issues)
+[![Version](https://img.shields.io/badge/version-0.16.0-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
 
 **Open-source toolkit for building local AI agents.**  
-Ollama + LM Studio • ReAct tool loop • multi-LLM fallback router • JSONL + **SQLite vector memory** • **optional Ollama embeddings** • **on_thought** • **sandboxed execute_python** • skill packs • orchestrator • MCP stdio / HTTP / **SSE with retry** • MCP **prompts** • file config • hooks + **token usage** • offline-first.  
+Ollama + LM Studio • ReAct tool loop • multi-LLM fallback router • JSONL + **SQLite vector memory** • **optional Ollama embeddings** • **on_thought** • **sandboxed execute_python** • skill packs • orchestrator • MCP stdio / HTTP / **SSE with retry** • MCP **prompts** • file config • hooks + **token usage** • **local HTTP API** • **planner** • **tool guardrails + timeouts** • offline-first.  
 Built autonomously by Grok.
 
 > Capable agents on your machine. No cloud required. No API keys for local models.
 
-**Not affiliated with xAI.** "Grok" here means the kit was built by Grok as an autonomous coding agent. It talks to *your* local models.
-
-## Why this exists
-
-Most agent frameworks assume a cloud API key and a fat dependency tree. This kit is the opposite:
-
-1. **Offline-first** — Ollama or LM Studio is enough.
-2. **Small surface** — one Python package, one CLI (`grok-agent`), tests that run without a live LLM.
-3. **Real tools** — files, web, shell, sandboxed Python, memory, MCP — not just chat wrappers.
-4. **Inspectable** — hooks, traces, usage stats. You can see what the agent did.
-
-If you want a laptop agent that does not phone home, start here.
-
-## ✨ Features (v0.15.1)
+## ✨ Features (v0.16.0)
 
 | Feature | Status |
 |---------|--------|
@@ -35,39 +20,23 @@ If you want a laptop agent that does not phone home, start here.
 | ReAct-style tool calling loop | ✅ |
 | Streaming final answers + `on_token` hook | ✅ |
 | File / web / shell / Python / calculator / MCP tools | ✅ |
-| Memory tools (`remember` / `recall` / `forget`) + CLI | ✅ |
-| SQLite vector memory (`vremember` / `vrecall`) | ✅ |
-| Optional Ollama embeddings (`GROK_EMBED_BACKEND=ollama`) | ✅ |
-| `on_thought` hook during the tool loop | ✅ |
-| Restricted `execute_python` sandbox + timeout | ✅ |
-| Cheap usage tracker (`agent.usage.summary()`) | ✅ |
-| Parallel tools in one turn + `export_trace()` | ✅ |
-| Skill packs (`.grok/skills/*.json`) | ✅ |
-| Hook bus wired into the live ReAct loop + `last_trace` | ✅ |
-| Orchestrator (planner + researcher / coder / operator) | ✅ |
-| MCP stdio JSON-RPC + auto-register discovered tools | ✅ |
-| MCP HTTP JSON-RPC + SSE client with reconnect | ✅ |
-| MCP prompts (`prompts/list`, `prompts/get`) | ✅ |
-| Named sessions under `.grok/sessions/` | ✅ |
-| `grok-agent.toml` / JSON config (`grok-agent init`) | ✅ |
+| Memory + SQLite vector memory | ✅ |
+| Optional Ollama embeddings | ✅ |
+| Restricted `execute_python` sandbox | ✅ |
+| Parallel tools + `export_trace()` | ✅ |
+| Skill packs + orchestrator + sessions | ✅ |
+| MCP stdio / HTTP / SSE + prompts | ✅ |
+| **Local HTTP API** (`grok-agent serve`, POST `/v1/chat`) | ✅ |
+| **Workspace planner** (`plan_add` / `plan_list` / `plan_done`) | ✅ |
+| **Tool allow/deny lists + per-tool timeout** | ✅ |
+| **Interval scheduler** for automation agents | ✅ |
 | CLI + examples + unit tests (no live LLM required) | ✅ |
 
-## 🎬 Demo GIFs (record with asciinema / VHS)
+## 🎬 Demo GIFs
 
-Drop recordings into `docs/gifs/` when you have a terminal handy. This is the highest-leverage first contribution ([issue #1](https://github.com/Tryboy869/grok-local-agent-kit/issues/1)).
+Storyboard: [docs/gifs/README.md](docs/gifs/README.md). Until binary GIFs land, run:
 
-1. `demo-chat.gif` — `grok-agent chat -v --stream`
-2. `demo-route.gif` — `grok-agent route`
-3. `demo-mcp.gif` — `python examples/mcp_agent.py --no-llm`
-4. `demo-hooks.gif` — `python examples/hooks_agent.py`
-5. `demo-memory.gif` — `grok-agent memory remember "ship v0.15"` then `recall ship`
-6. `demo-vector.gif` — `python examples/vector_memory_agent.py`
-7. `demo-skills.gif` — `python examples/skills_agent.py`
-8. `demo-sandbox.gif` — `python examples/sandbox_agent.py`
-9. `demo-embed.gif` — `python examples/embed_agent.py`
-10. `demo-parallel.gif` — `python examples/parallel_agent.py`
-
-Storyboard: [docs/gifs/README.md](docs/gifs/README.md).
+`grok-agent chat -v --stream` · `python examples/serve_agent.py` · `python examples/planner_agent.py` · `python examples/guardrails_agent.py` · `python examples/parallel_agent.py`
 
 ## ⚡ Quick start (1 command)
 
@@ -79,39 +48,29 @@ grok-agent route
 grok-agent chat -v --stream --router
 ```
 
-Or:
+Local API (loopback only by default):
+
+```bash
+grok-agent serve --port 8765
+curl -s http://127.0.0.1:8765/health
+curl -s -X POST http://127.0.0.1:8765/v1/chat -H 'content-type: application/json' -d '{"prompt":"List files in this folder"}'
+```
 
 ```bash
 pip install git+https://github.com/Tryboy869/grok-local-agent-kit.git
-```
-
-From source:
-
-```bash
 git clone https://github.com/Tryboy869/grok-local-agent-kit.git
-cd grok-local-agent-kit
-pip install -e ".[dev]"
-pytest -q
+cd grok-local-agent-kit && pip install -e ".[dev]" && pytest -q
 ```
 
 Needs Python 3.10+ and Ollama or LM Studio. `ollama pull llama3.2` is a good default.
 
 ```python
-from grok_local_agent_kit import create_agent
+from grok_local_agent_kit import create_agent, ToolGuard, set_guard
 
+set_guard(ToolGuard(deny={"run_shell"}, timeout_s=20))
 agent = create_agent(model="llama3.2", provider="ollama", use_router=True, verbose=True)
-
-def log_tool(*, name, args, **_):
-    print("calling", name, args)
-
-agent.on("before_tool", log_tool)
-agent.on("on_thought", lambda **p: print("thought:", p.get("text", "")[:200]))
-agent.on("on_token", lambda **p: print(p.get("text", ""), end=""))
-agent.load_skills()
-print(agent.run("List files and remember that this workspace is the kit repo"))
-print(agent.last_trace)
+print(agent.run("Add a plan item called ship local API, then list the plan"))
 print(agent.usage.summary())
-print(agent.export_trace())
 agent.close()
 ```
 
@@ -120,41 +79,20 @@ agent.close()
 ```bash
 python examples/chat_agent.py
 python examples/automation_agent.py
+python examples/serve_agent.py
+python examples/planner_agent.py
+python examples/guardrails_agent.py
 python examples/mcp_agent.py --no-llm
-python examples/memory_agent.py
-python examples/vector_memory_agent.py
-python examples/orchestrator_agent.py --no-llm
-python examples/hooks_agent.py
-python examples/config_agent.py
-python examples/skills_agent.py
-python examples/sandbox_agent.py
-python examples/embed_agent.py
 python examples/parallel_agent.py
 ```
 
 ## Config
 
-`grok-agent init` writes `grok-agent.toml`. Env vars still win:
+- `GROK_AGENT_MODEL`, `GROK_AGENT_PROVIDER`, `GROK_AGENT_BASE_URL`, `GROK_AGENT_ROUTER=1`
+- `GROK_EMBED_BACKEND=hash|ollama`
+- `GROK_AGENT_ALLOW_TOOLS`, `GROK_AGENT_DENY_TOOLS`, `GROK_AGENT_TOOL_TIMEOUT`
 
-- `GROK_AGENT_MODEL`, `GROK_AGENT_PROVIDER`, `GROK_AGENT_BASE_URL`
-- `GROK_AGENT_ROUTER=1`
-- `GROK_AGENT_CONFIG=/path/to/file`
-- `GROK_EMBED_BACKEND=hash|ollama` and `GROK_EMBED_MODEL=nomic-embed-text`
-
-## Star / contribute without buying reach
-
-Stars come from people who actually run the thing. The honest 90-day plan is in [GROWTH.md](GROWTH.md):
-
-- Ship weekly, keep tests green, record demos.
-- Post Show HN / Reddit / X with a *working* one-liner, not a manifesto.
-- Close issues fast. Tag `good first issue`.
-- No star-exchange, no bot farms, no fake accounts.
-
-## Roadmap / contributing / license
-
-See [ROADMAP.md](ROADMAP.md), [CONTRIBUTING.md](CONTRIBUTING.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), [SECURITY.md](SECURITY.md), [LICENSE](LICENSE).
-
-Launch drafts: [SHOW_HN.md](SHOW_HN.md) · [docs/HN_INDIE_HACKERS.md](docs/HN_INDIE_HACKERS.md)
+See [ROADMAP.md](ROADMAP.md), [CONTRIBUTING.md](CONTRIBUTING.md), [SHOW_HN.md](SHOW_HN.md), [docs/HN_INDIE_HACKERS.md](docs/HN_INDIE_HACKERS.md).
 
 Built autonomously by Grok · Nexus Studio / Tryboy869  
 https://github.com/Tryboy869/grok-local-agent-kit
