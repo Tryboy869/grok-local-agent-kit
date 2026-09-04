@@ -1,6 +1,6 @@
 """Grok Local Agent Kit — local-first AI agents with tools & multi-LLM support."""
 
-__version__ = "0.15.1"
+__version__ = "0.16.0"
 
 from .agent import Agent
 from .config import KitConfig, load_config, write_example_config
@@ -8,7 +8,7 @@ from .factory import create_agent
 from .hooks import HookBus, default_verbose_hooks
 from .llm import LLMClient
 from .mcp import MCPManager, StdioMCPClient, load_mcp_config
-from . import mcp_ext as _mcp_ext  # noqa: F401  — patches prompts onto MCP classes
+from . import mcp_ext as _mcp_ext  # noqa: F401
 from .mcp_http import HTTPMCPClient, probe_http_mcp
 from .mcp_sse import SSEMCPClient, probe_sse_mcp
 from .memory import forget, recall, remember
@@ -20,6 +20,10 @@ from .tools import execute_tool, get_default_tools
 from .usage import UsageStats, estimate_tokens
 from .embeddings import embed, hash_embed, ollama_embed
 from .vector_memory import vforget, vrecall, vremember
+from .guardrails import ToolGuard, get_guard, set_guard
+from .planner import plan_add, plan_done, plan_list
+from .scheduler import Scheduler
+from .serve import serve, run_forever
 from . import cli as _cli_mod
 from .cli_ext import register as _register_cli_ext
 
@@ -61,5 +65,14 @@ __all__ = [
     "format_probe",
     "get_default_tools",
     "execute_tool",
+    "ToolGuard",
+    "get_guard",
+    "set_guard",
+    "plan_add",
+    "plan_list",
+    "plan_done",
+    "Scheduler",
+    "serve",
+    "run_forever",
     "__version__",
 ]

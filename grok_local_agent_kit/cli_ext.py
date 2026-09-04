@@ -70,9 +70,9 @@ def register(cli) -> None:
         console.print(f"backend={backend_name()} dim={len(vec)} sample={vec[:4]}")
 
     @cli.command("trace")
-    @click.option("--path", default=".grok/traces/last.json", help="Where to write the last run if you first chat")
+    @click.option("--path", default=".grok/traces/last.json")
     def trace_cmd(path):
-        """Explain how traces work and print the last exported file if present."""
+        """Print the last exported trace if present."""
         from pathlib import Path
 
         p = Path(path)
@@ -83,5 +83,35 @@ def register(cli) -> None:
                 "No trace file yet. After a run call agent.export_trace() "
                 "or use examples/parallel_agent.py. Default path: .grok/traces/last.json"
             )
+
+    @cli.command("serve")
+    @click.option("--host", default="127.0.0.1", help="Bind address (default loopback)")
+    @click.option("--port", default=8765, type=int)
+    @click.option("--router", is_flag=True, help="Enable MultiLLMRouter fallback")
+    def serve_cmd(host, port, router):
+        """Run a local HTTP API: GET /health, POST /v1/chat."""
+        from .factory import create_agent
+        from .serve import run_forever
+
+        def factory():
+            return create_agent(use_router=router)
+
+        run_forever(host, port, factory)
+
+    @cli.command("plan")
+    @click.argument("action", type=click.Choice(["add", "list", "done", "clear"]))
+    @click.argument("text", required=False, default="")
+    def plan_cmd(action, text):
+        """Workspace planner stored in .grok/plan.json."""
+        from . import planner as pl
+
+        if action == "add":
+            console.print(pl.plan_add(text))
+        elif action == "list":
+            console.print(pl.plan_list(text or "all"))
+        elif action == "done":
+            console.print(pl.plan_done(int(text or "0")))
+        else:
+            console.print(pl.plan_clear(done_only=True))
 
     cli._grok_ext = True
