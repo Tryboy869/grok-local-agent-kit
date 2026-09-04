@@ -2,6 +2,18 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.15.1] — 2026-09-04
+
+### Added
+- Launch pack: GROWTH.md (honest 90-day plan, no star farms)
+- CODE_OF_CONDUCT.md, SECURITY.md
+- GitHub issue templates (bug / feature)
+- README: stars/issues badges, why-this-exists, affiliation disclaimer
+
+### Changed
+- SHOW_HN.md rewritten for a first public post
+- Version badge 0.15.1 (docs + packaging metadata)
+
 ## [0.15.0] — 2026-09-03
 
 ### Added

@@ -1,9 +1,11 @@
 # 🚀 Grok Local Agent Kit
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
-[![Version](https://img.shields.io/badge/version-0.15.0-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
+[![Version](https://img.shields.io/badge/version-0.15.1-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
+[![Stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers)
+[![Issues](https://img.shields.io/github/issues/Tryboy869/grok-local-agent-kit)](https://github.com/Tryboy869/grok-local-agent-kit/issues)
 
 **Open-source toolkit for building local AI agents.**  
 Ollama + LM Studio • ReAct tool loop • multi-LLM fallback router • JSONL + **SQLite vector memory** • **optional Ollama embeddings** • **on_thought** • **sandboxed execute_python** • skill packs • orchestrator • MCP stdio / HTTP / **SSE with retry** • MCP **prompts** • file config • hooks + **token usage** • offline-first.  
@@ -11,7 +13,20 @@ Built autonomously by Grok.
 
 > Capable agents on your machine. No cloud required. No API keys for local models.
 
-## ✨ Features (v0.15.0)
+**Not affiliated with xAI.** "Grok" here means the kit was built by Grok as an autonomous coding agent. It talks to *your* local models.
+
+## Why this exists
+
+Most agent frameworks assume a cloud API key and a fat dependency tree. This kit is the opposite:
+
+1. **Offline-first** — Ollama or LM Studio is enough.
+2. **Small surface** — one Python package, one CLI (`grok-agent`), tests that run without a live LLM.
+3. **Real tools** — files, web, shell, sandboxed Python, memory, MCP — not just chat wrappers.
+4. **Inspectable** — hooks, traces, usage stats. You can see what the agent did.
+
+If you want a laptop agent that does not phone home, start here.
+
+## ✨ Features (v0.15.1)
 
 | Feature | Status |
 |---------|--------|
@@ -39,20 +54,20 @@ Built autonomously by Grok.
 
 ## 🎬 Demo GIFs (record with asciinema / VHS)
 
-Drop recordings into `docs/gifs/` when you have a terminal handy:
+Drop recordings into `docs/gifs/` when you have a terminal handy. This is the highest-leverage first contribution ([issue #1](https://github.com/Tryboy869/grok-local-agent-kit/issues/1)).
 
 1. `demo-chat.gif` — `grok-agent chat -v --stream`
 2. `demo-route.gif` — `grok-agent route`
 3. `demo-mcp.gif` — `python examples/mcp_agent.py --no-llm`
 4. `demo-hooks.gif` — `python examples/hooks_agent.py`
-5. `demo-memory.gif` — `grok-agent memory remember "ship v0.14"` then `recall ship`
+5. `demo-memory.gif` — `grok-agent memory remember "ship v0.15"` then `recall ship`
 6. `demo-vector.gif` — `python examples/vector_memory_agent.py`
 7. `demo-skills.gif` — `python examples/skills_agent.py`
 8. `demo-sandbox.gif` — `python examples/sandbox_agent.py`
 9. `demo-embed.gif` — `python examples/embed_agent.py`
 10. `demo-parallel.gif` — `python examples/parallel_agent.py`
 
-Storyboard: [docs/gifs/README.md](docs/gifs/README.md). Until binary GIFs land, the commands above are the live demo.
+Storyboard: [docs/gifs/README.md](docs/gifs/README.md).
 
 ## ⚡ Quick start (1 command)
 
@@ -126,9 +141,18 @@ python examples/parallel_agent.py
 - `GROK_AGENT_CONFIG=/path/to/file`
 - `GROK_EMBED_BACKEND=hash|ollama` and `GROK_EMBED_MODEL=nomic-embed-text`
 
+## Star / contribute without buying reach
+
+Stars come from people who actually run the thing. The honest 90-day plan is in [GROWTH.md](GROWTH.md):
+
+- Ship weekly, keep tests green, record demos.
+- Post Show HN / Reddit / X with a *working* one-liner, not a manifesto.
+- Close issues fast. Tag `good first issue`.
+- No star-exchange, no bot farms, no fake accounts.
+
 ## Roadmap / contributing / license
 
-See [ROADMAP.md](ROADMAP.md), [CONTRIBUTING.md](CONTRIBUTING.md), [LICENSE](LICENSE).
+See [ROADMAP.md](ROADMAP.md), [CONTRIBUTING.md](CONTRIBUTING.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), [SECURITY.md](SECURITY.md), [LICENSE](LICENSE).
 
 Launch drafts: [SHOW_HN.md](SHOW_HN.md) · [docs/HN_INDIE_HACKERS.md](docs/HN_INDIE_HACKERS.md)
 
