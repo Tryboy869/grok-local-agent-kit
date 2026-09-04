@@ -1,59 +1,22 @@
 # Demo GIFs
 
-Record these with [asciinema](https://asciinema.org/) + `agg`, or [VHS](https://github.com/charmbracelet/vhs).
-Until binary GIFs are committed, this file is the storyboard.
+Record these with asciinema + agg, or VHS. Until binary GIFs are committed, this file is the storyboard.
 
-## 1. demo-chat.gif
+1. demo-chat.gif — grok-agent chat -v --stream
+2. demo-route.gif — grok-agent route
+3. demo-mcp.gif — python examples/mcp_agent.py --no-llm
+4. demo-hooks.gif — python examples/hooks_agent.py
+5. demo-memory.gif — grok-agent memory remember / recall
+6. demo-vector.gif — python examples/vector_memory_agent.py
+7. demo-skills.gif — python examples/skills_agent.py
+8. demo-sandbox.gif — python examples/sandbox_agent.py
+9. demo-embed.gif — python examples/embed_agent.py
+10. demo-parallel.gif — python examples/parallel_agent.py
+11. demo-serve.gif — python examples/serve_agent.py then curl POST /v1/chat
+12. demo-planner.gif — python examples/planner_agent.py
+13. demo-guardrails.gif — python examples/guardrails_agent.py
 
-```
-$ grok-agent chat -v --stream
-You › list files in this folder then summarize README.md
-  · thought: I'll list the workspace then read README.md
-  → tool: list_files({})
-  → tool: read_file({path: README.md})
-Agent › This kit runs local ReAct agents on Ollama / LM Studio...
-```
-
-## 2. demo-route.gif
-
-```
-$ grok-agent route
-ollama  llama3.2   http://127.0.0.1:11434   ok
-lmstudio local-model http://127.0.0.1:1234/v1   down — skipped
-picked ollama
-```
-
-## 3. demo-sandbox.gif
-
-```
-$ python examples/sandbox_agent.py
->>> print(sum(range(10)))
-    45
->>> import os
-    Blocked import of 'os'
-```
-
-## 4. demo-embed.gif
-
-```
-$ GROK_EMBED_BACKEND=hash python examples/embed_agent.py
-embed backend: hash  dim=256
-Vector-remembered id=1
-Vector memory:
-- #1 score=0.71 ... Ship grok-local-agent-kit v0.14
-```
-
-## 5. demo-mcp.gif / demo-hooks.gif / demo-vector.gif
-
-See `examples/mcp_agent.py --no-llm`, `examples/hooks_agent.py`, `examples/vector_memory_agent.py`.
-
-## 6. demo-parallel.gif
-
-```
-$ python examples/parallel_agent.py
-  · thought: I'll list files and compute 7*6 in parallel.
-  ⇢ running 2 tools in parallel
-  → tool: list_files({'path': '.'})
-  → tool: calculator({'expression': '7*6'})
-Wrote trace (3 steps) to .../.grok/traces/last.json
-```
+Storyboard notes:
+- Serve: split pane, server logs + JSON response with text and trace.
+- Planner: add two items, mark one done, show .grok/plan.json.
+- Guardrails: denied tool name printed, then a timeout message.
