@@ -24,7 +24,7 @@ class Scheduler:
     _stop: threading.Event = field(default_factory=threading.Event)
 
     def add(self, name: str, interval_s: float, fn: Callable[[], str]) -> None:
-        self.jobs[name] = Job(name=name, interval_s=max(0.2, float(interval_s)), fn=fn)
+        self.jobs[name] = Job(name=name, interval_s=max(0.01, float(interval_s)), fn=fn)
 
     def run_once(self, now: Optional[float] = None) -> List[str]:
         now = time.time() if now is None else now
@@ -50,7 +50,6 @@ class Scheduler:
         return "Jobs:\n" + "\n".join(lines)
 
     def loop(self, ticks: int = 0, sleep_s: float = 0.25) -> None:
-        """If ticks==0, run until stop(). Otherwise run a bounded number of ticks."""
         n = 0
         while not self._stop.is_set():
             self.run_once()
