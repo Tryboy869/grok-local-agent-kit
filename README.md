@@ -3,15 +3,15 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
-[![Version](https://img.shields.io/badge/version-0.16.0-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
+[![Version](https://img.shields.io/badge/version-0.17.0-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
 
 **Open-source toolkit for building local AI agents.**  
-Ollama + LM Studio • ReAct tool loop • multi-LLM fallback router • JSONL + **SQLite vector memory** • **optional Ollama embeddings** • **on_thought** • **sandboxed execute_python** • skill packs • orchestrator • MCP stdio / HTTP / **SSE with retry** • MCP **prompts** • file config • hooks + **token usage** • **local HTTP API** • **planner** • **tool guardrails + timeouts** • offline-first.  
+Ollama + LM Studio • ReAct tool loop • multi-LLM fallback router • JSONL + **SQLite vector memory** • **optional Ollama embeddings** • **on_thought** • **sandboxed execute_python** • skill packs • orchestrator • MCP stdio / HTTP / **SSE with retry** • MCP **prompts** • file config • hooks + **token usage** • **local HTTP API + optional bearer auth** • **trace replay** • **planner** • **tool guardrails + timeouts** • offline-first.  
 Built autonomously by Grok.
 
 > Capable agents on your machine. No cloud required. No API keys for local models.
 
-## ✨ Features (v0.16.0)
+## ✨ Features (v0.17.0)
 
 | Feature | Status |
 |---------|--------|
@@ -24,19 +24,30 @@ Built autonomously by Grok.
 | Optional Ollama embeddings | ✅ |
 | Restricted `execute_python` sandbox | ✅ |
 | Parallel tools + `export_trace()` | ✅ |
+| **Trace replay** (`grok-agent replay`, `examples/replay_agent.py`) | ✅ |
 | Skill packs + orchestrator + sessions | ✅ |
 | MCP stdio / HTTP / SSE + prompts | ✅ |
 | **Local HTTP API** (`grok-agent serve`, POST `/v1/chat`) | ✅ |
-| **Workspace planner** (`plan_add` / `plan_list` / `plan_done`) | ✅ |
+| **Optional bearer auth** (`--token` / `GROK_AGENT_SERVE_TOKEN`) | ✅ |
+| **Workspace planner** | ✅ |
 | **Tool allow/deny lists + per-tool timeout** | ✅ |
 | **Interval scheduler** for automation agents | ✅ |
 | CLI + examples + unit tests (no live LLM required) | ✅ |
 
 ## 🎬 Demo GIFs
 
-Storyboard: [docs/gifs/README.md](docs/gifs/README.md). Until binary GIFs land, run:
+Storyboard: [docs/gifs/README.md](docs/gifs/README.md).
 
-`grok-agent chat -v --stream` · `python examples/serve_agent.py` · `python examples/planner_agent.py` · `python examples/guardrails_agent.py` · `python examples/parallel_agent.py`
+`grok-agent chat -v --stream` · `python examples/serve_agent.py` · `python examples/replay_agent.py` · `python examples/planner_agent.py` · `python examples/guardrails_agent.py` · `python examples/parallel_agent.py`
+
+**Demo 1 — chat + tools**  
+`grok-agent chat -v --stream` → “list files then compute 21*2” → thoughts → parallel tools → streamed answer.
+
+**Demo 2 — local API + bearer**  
+`GROK_AGENT_SERVE_TOKEN=dev grok-agent serve --port 8765` then curl `/health` (public) and `/v1/chat` with `Authorization: Bearer dev`.
+
+**Demo 3 — replay**  
+`python examples/replay_agent.py --run` re-executes a calculator tool call with no LLM.
 
 ## ⚡ Quick start (1 command)
 
@@ -51,9 +62,12 @@ grok-agent chat -v --stream --router
 Local API (loopback only by default):
 
 ```bash
-grok-agent serve --port 8765
+GROK_AGENT_SERVE_TOKEN=dev grok-agent serve --port 8765
 curl -s http://127.0.0.1:8765/health
-curl -s -X POST http://127.0.0.1:8765/v1/chat -H 'content-type: application/json' -d '{"prompt":"List files in this folder"}'
+curl -s -X POST http://127.0.0.1:8765/v1/chat \
+  -H 'content-type: application/json' \
+  -H 'Authorization: Bearer dev' \
+  -d '{"prompt":"List files in this folder"}'
 ```
 
 ```bash
@@ -74,12 +88,20 @@ print(agent.usage.summary())
 agent.close()
 ```
 
+Replay a saved trace with no model:
+
+```python
+from grok_local_agent_kit.replay import replay_file
+print(replay_file(".grok/traces/last.json", dry_run=True)["summary"])
+```
+
 ## Examples
 
 ```bash
 python examples/chat_agent.py
 python examples/automation_agent.py
 python examples/serve_agent.py
+python examples/replay_agent.py --run
 python examples/planner_agent.py
 python examples/guardrails_agent.py
 python examples/mcp_agent.py --no-llm
@@ -91,6 +113,7 @@ python examples/parallel_agent.py
 - `GROK_AGENT_MODEL`, `GROK_AGENT_PROVIDER`, `GROK_AGENT_BASE_URL`, `GROK_AGENT_ROUTER=1`
 - `GROK_EMBED_BACKEND=hash|ollama`
 - `GROK_AGENT_ALLOW_TOOLS`, `GROK_AGENT_DENY_TOOLS`, `GROK_AGENT_TOOL_TIMEOUT`
+- `GROK_AGENT_SERVE_TOKEN` — optional bearer for `grok-agent serve`
 
 See [ROADMAP.md](ROADMAP.md), [CONTRIBUTING.md](CONTRIBUTING.md), [SHOW_HN.md](SHOW_HN.md), [docs/HN_INDIE_HACKERS.md](docs/HN_INDIE_HACKERS.md).
 

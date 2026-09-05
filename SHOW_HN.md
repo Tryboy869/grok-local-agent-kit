@@ -1,28 +1,18 @@
-# Show HN: grok-local-agent-kit 0.16 — local agents with a loopback HTTP API
+# Show HN: grok-local-agent-kit 0.17 — local agents with tool traces you can replay
 
-I wanted a small Python kit that runs an agent on my laptop against Ollama or LM Studio without wrapping a cloud API.
+I keep shipping a small Python kit for **offline-first agents** on Ollama / LM Studio.
 
-v0.16 ships:
+v0.17 adds two things people actually asked for after the HTTP API landed:
 
-- ReAct tool loop (files, web, shell, sandboxed python, calculator, MCP)
-- Parallel tool calls in a single turn
-- Multi-LLM fallback router (Ollama → LM Studio)
-- JSONL memory *and* SQLite vector memory (optional Ollama embeddings)
-- `on_thought` + streamed `on_token` hooks + JSON traces
-- JSON skill packs under `.grok/skills/`
-- MCP over stdio, HTTP, and SSE with retry
-- Local HTTP API: `grok-agent serve` then `POST /v1/chat`
-- Workspace planner (`plan_add` / `plan_list` / `plan_done`)
-- Tool allow/deny lists and per-tool timeouts
-- Tests that do not need a live LLM
+1. Optional bearer token on `grok-agent serve` (loopback still default; `/health` stays public).
+2. Replay of `export_trace()` JSON — summarize or re-run the tool calls **without a live model**. That makes CI and demos cheap.
 
 ```bash
-pip install git+https://github.com/Tryboy869/grok-local-agent-kit.git
+curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
 grok-agent doctor
-grok-agent serve --port 8765
-curl -s -X POST http://127.0.0.1:8765/v1/chat -H 'content-type: application/json' -d '{"prompt":"What files are here?"}'
-python examples/planner_agent.py
-python examples/serve_agent.py
+python examples/replay_agent.py --run
 ```
+
+Stack: ReAct loop, parallel tools, MCP stdio/HTTP/SSE, SQLite vector memory, planner, guardrails, scheduler.
 
 Repo: https://github.com/Tryboy869/grok-local-agent-kit
