@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+
 import click
 from rich.console import Console
 
@@ -84,11 +86,32 @@ def register(cli) -> None:
                 "or use examples/parallel_agent.py. Default path: .grok/traces/last.json"
             )
 
+    @cli.command("replay")
+    @click.option("--path", default=".grok/traces/last.json")
+    @click.option("--run", is_flag=True, help="Re-execute tools found in the trace")
+    def replay_cmd(path, run):
+        """Summarize (and optionally re-run) an exported ReAct trace."""
+        from pathlib import Path
+
+        from .replay import replay_file, summarize_trace, load_trace
+
+        p = Path(path)
+        if not p.exists():
+            console.print(f"[yellow]No trace at {p}. Try examples/replay_agent.py[/]")
+            return
+        if run:
+            report = replay_file(p, dry_run=False)
+            console.print(report["summary"])
+            console.print(report["tools"])
+        else:
+            console.print(summarize_trace(load_trace(p)))
+
     @cli.command("serve")
     @click.option("--host", default="127.0.0.1", help="Bind address (default loopback)")
     @click.option("--port", default=8765, type=int)
     @click.option("--router", is_flag=True, help="Enable MultiLLMRouter fallback")
-    def serve_cmd(host, port, router):
+    @click.option("--token", default=lambda: os.environ.get("GROK_AGENT_SERVE_TOKEN", ""), help="Optional bearer token")
+    def serve_cmd(host, port, router, token):
         """Run a local HTTP API: GET /health, POST /v1/chat."""
         from .factory import create_agent
         from .serve import run_forever
@@ -96,7 +119,7 @@ def register(cli) -> None:
         def factory():
             return create_agent(use_router=router)
 
-        run_forever(host, port, factory)
+        run_forever(host, port, factory, token=token or None)
 
     @cli.command("plan")
     @click.argument("action", type=click.Choice(["add", "list", "done", "clear"]))

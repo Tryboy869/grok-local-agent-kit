@@ -3,12 +3,22 @@
 from __future__ import annotations
 
 import json
+import os
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any, Optional
 from urllib.parse import urlparse
 
 
-def make_handler(agent_factory):
+def _extract_bearer(header_val: str) -> str:
+    raw = (header_val or "").strip()
+    if raw.lower().startswith("bearer "):
+        return raw[7:].strip()
+    return raw
+
+
+def make_handler(agent_factory, token: Optional[str] = None):
+    expected = (token or os.environ.get("GROK_AGENT_SERVE_TOKEN") or "").strip()
+
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, fmt: str, *args: Any) -> None:
             return
@@ -21,10 +31,21 @@ def make_handler(agent_factory):
             self.end_headers()
             self.wfile.write(raw)
 
+        def _authorized(self) -> bool:
+            if not expected:
+                return True
+            got = _extract_bearer(self.headers.get("Authorization") or "")
+            if got == expected:
+                return True
+            self._json(401, {"error": "unauthorized", "hint": "set Authorization: Bearer <token>"})
+            return False
+
         def do_GET(self) -> None:
             path = urlparse(self.path).path
             if path in {"/", "/health", "/v1/health"}:
-                self._json(200, {"ok": True, "service": "grok-local-agent-kit"})
+                self._json(200, {"ok": True, "service": "grok-local-agent-kit", "auth": bool(expected)})
+                return
+            if not self._authorized():
                 return
             if path == "/v1/tools":
                 agent = agent_factory()
@@ -36,6 +57,8 @@ def make_handler(agent_factory):
             self._json(404, {"error": "not found"})
 
         def do_POST(self) -> None:
+            if not self._authorized():
+                return
             path = urlparse(self.path).path
             length = int(self.headers.get("Content-Length") or 0)
             body = self.rfile.read(length) if length else b"{}"
@@ -75,18 +98,25 @@ def serve(
     host: str = "127.0.0.1",
     port: int = 8765,
     agent_factory=None,
+    token: Optional[str] = None,
 ) -> ThreadingHTTPServer:
     if agent_factory is None:
         from .factory import create_agent
 
         agent_factory = lambda: create_agent()  # noqa: E731
-    httpd = ThreadingHTTPServer((host, port), make_handler(agent_factory))
+    httpd = ThreadingHTTPServer((host, port), make_handler(agent_factory, token=token))
     return httpd
 
 
-def run_forever(host: str = "127.0.0.1", port: int = 8765, agent_factory=None) -> None:
-    httpd = serve(host, port, agent_factory)
-    print(f"grok-agent serve listening on http://{host}:{port}  (POST /v1/chat)")
+def run_forever(
+    host: str = "127.0.0.1",
+    port: int = 8765,
+    agent_factory=None,
+    token: Optional[str] = None,
+) -> None:
+    httpd = serve(host, port, agent_factory, token=token)
+    auth = "on" if (token or os.environ.get("GROK_AGENT_SERVE_TOKEN")) else "off"
+    print(f"grok-agent serve listening on http://{host}:{port}  (POST /v1/chat, auth={auth})")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
