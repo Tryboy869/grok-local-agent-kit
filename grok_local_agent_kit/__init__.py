@@ -1,6 +1,6 @@
 """Grok Local Agent Kit — local-first AI agents with tools & multi-LLM support."""
 
-__version__ = "0.17.0"
+__version__ = "0.18.0"
 
 from .agent import Agent
 from .config import KitConfig, load_config, write_example_config
@@ -25,6 +25,15 @@ from .planner import plan_add, plan_done, plan_list
 from .scheduler import Scheduler
 from .serve import serve, run_forever
 from .replay import load_trace, replay_file, replay_tools, summarize_trace
+from .cancel import (
+    CancelToken,
+    CancelledError,
+    ProcessRegistry,
+    cancel_all,
+    get_registry,
+    get_token,
+    set_token,
+)
 from . import cli as _cli_mod
 from .cli_ext import register as _register_cli_ext
 
@@ -79,5 +88,12 @@ __all__ = [
     "replay_file",
     "replay_tools",
     "summarize_trace",
+    "CancelToken",
+    "CancelledError",
+    "ProcessRegistry",
+    "cancel_all",
+    "get_registry",
+    "get_token",
+    "set_token",
     "__version__",
 ]
