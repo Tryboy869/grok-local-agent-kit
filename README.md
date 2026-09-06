@@ -3,15 +3,15 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
-[![Version](https://img.shields.io/badge/version-0.17.0-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
+[![Version](https://img.shields.io/badge/version-0.18.0-green.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
 
 **Open-source toolkit for building local AI agents.**  
-Ollama + LM Studio • ReAct tool loop • multi-LLM fallback router • JSONL + **SQLite vector memory** • **optional Ollama embeddings** • **on_thought** • **sandboxed execute_python** • skill packs • orchestrator • MCP stdio / HTTP / **SSE with retry** • MCP **prompts** • file config • hooks + **token usage** • **local HTTP API + optional bearer auth** • **trace replay** • **planner** • **tool guardrails + timeouts** • offline-first.  
+Ollama + LM Studio • ReAct tool loop • multi-LLM fallback router • JSONL + **SQLite vector memory** • **optional Ollama embeddings** • **on_thought** • **sandboxed execute_python** • skill packs • orchestrator • MCP stdio / HTTP / **SSE with retry** • MCP **prompts** • file config • hooks + **token usage** • **local HTTP API + optional bearer auth** • **trace replay** • **planner** • **tool guardrails + timeouts** • **cancel tokens that kill hung shells** • offline-first.  
 Built autonomously by Grok.
 
 > Capable agents on your machine. No cloud required. No API keys for local models.
 
-## ✨ Features (v0.17.0)
+## ✨ Features (v0.18.0)
 
 | Feature | Status |
 |---------|--------|
@@ -31,6 +31,7 @@ Built autonomously by Grok.
 | **Optional bearer auth** (`--token` / `GROK_AGENT_SERVE_TOKEN`) | ✅ |
 | **Workspace planner** | ✅ |
 | **Tool allow/deny lists + per-tool timeout** | ✅ |
+| **Cancel tokens + process-group kill** for `run_shell` | ✅ |
 | **Interval scheduler** for automation agents | ✅ |
 | CLI + examples + unit tests (no live LLM required) | ✅ |
 
@@ -38,7 +39,7 @@ Built autonomously by Grok.
 
 Storyboard: [docs/gifs/README.md](docs/gifs/README.md).
 
-`grok-agent chat -v --stream` · `python examples/serve_agent.py` · `python examples/replay_agent.py` · `python examples/planner_agent.py` · `python examples/guardrails_agent.py` · `python examples/parallel_agent.py`
+`grok-agent chat -v --stream` · `python examples/serve_agent.py` · `python examples/replay_agent.py` · `python examples/cancel_agent.py` · `python examples/planner_agent.py` · `python examples/guardrails_agent.py`
 
 **Demo 1 — chat + tools**  
 `grok-agent chat -v --stream` → “list files then compute 21*2” → thoughts → parallel tools → streamed answer.
@@ -48,6 +49,9 @@ Storyboard: [docs/gifs/README.md](docs/gifs/README.md).
 
 **Demo 3 — replay**  
 `python examples/replay_agent.py --run` re-executes a calculator tool call with no LLM.
+
+**Demo 4 — cancel hung shell**  
+`python examples/cancel_agent.py` starts `sleep 10` then cancels; the child is SIGTERM'd in well under a second.
 
 ## ⚡ Quick start (1 command)
 
@@ -102,6 +106,7 @@ python examples/chat_agent.py
 python examples/automation_agent.py
 python examples/serve_agent.py
 python examples/replay_agent.py --run
+python examples/cancel_agent.py
 python examples/planner_agent.py
 python examples/guardrails_agent.py
 python examples/mcp_agent.py --no-llm
