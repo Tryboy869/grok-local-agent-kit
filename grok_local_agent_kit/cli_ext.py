@@ -137,4 +137,17 @@ def register(cli) -> None:
         else:
             console.print(pl.plan_clear(done_only=True))
 
+    @cli.command("cancel")
+    @click.argument("reason", required=False, default="cli")
+    def cancel_cmd(reason):
+        """Cancel the shared token and SIGTERM tracked shell children."""
+        from .cancel import cancel_all, get_registry, get_token
+
+        n = cancel_all(reason)
+        token = get_token()
+        console.print(
+            f"cancelled={token.cancelled} reason={token.reason!r} "
+            f"signalled={n} live={sorted(get_registry().pids())}"
+        )
+
     cli._grok_ext = True
