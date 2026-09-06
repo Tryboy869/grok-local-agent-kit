@@ -6,6 +6,7 @@ from __future__ import annotations
 import threading
 import time
 
+import grok_local_agent_kit  # noqa: F401
 from grok_local_agent_kit.cancel import CancelToken, get_token, set_token
 from grok_local_agent_kit.tools import run_shell
 

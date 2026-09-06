@@ -34,10 +34,12 @@ from .cancel import (
     get_token,
     set_token,
 )
+from .shell import patch_tools as _patch_tools
 from . import cli as _cli_mod
 from .cli_ext import register as _register_cli_ext
 
 _register_cli_ext(_cli_mod.cli)
+_patch_tools()
 
 __all__ = [
     "Agent",
