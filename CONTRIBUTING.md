@@ -23,15 +23,14 @@ pytest -q
 ## What we need most (priority order)
 
 1. sqlite-vec behind the existing vector memory API
-2. Full MCP Streamable HTTP session ids + cancellation
-3. Per-tool timeouts that cancel `run_shell` subprocesses
-4. Vision support (local multimodal models)
-5. Demo GIFs / asciinema recordings (`docs/gifs/`)
-6. Windows & macOS packaging notes
-7. Additional examples and skill packs
-8. PyPI-stable 1.0 API freeze
+2. Full MCP Streamable HTTP session ids + request cancellation
+3. Vision support (local multimodal models)
+4. Demo GIFs / asciinema recordings (`docs/gifs/`)
+5. Windows & macOS packaging notes
+6. Additional examples and skill packs
+7. PyPI-stable 1.0 API freeze
 
-Bearer auth on `serve` and trace replay shipped in v0.17.
+v0.18 ships process-group kill on `run_shell` timeout/cancel. Bearer auth + replay shipped in v0.17.
 
 ## Code style
 

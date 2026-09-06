@@ -2,6 +2,19 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.18.0] — 2026-09-06
+
+### Added
+- `CancelToken` + `ProcessRegistry` (`grok_local_agent_kit.cancel`)
+- `run_shell` now uses `Popen` + process groups and **kills children** on timeout or cancel
+- Guard timeout signals tracked subprocesses (`cancel_all`)
+- CLI: `grok-agent cancel [reason]`
+- Example: `examples/cancel_agent.py`
+- Tests: `tests/test_v018.py`
+
+### Changed
+- Version bump to 0.18.0
+
 ## [0.17.0] — 2026-09-05
 
 ### Added

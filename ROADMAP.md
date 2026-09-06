@@ -13,19 +13,23 @@
 - Tool allow/deny lists and per-tool timeouts
 - Interval scheduler for automation examples
 
-## ✅ v0.17.0 (current)
+## ✅ v0.17.0
 
-- Optional bearer auth on `grok-agent serve` (`--token` / `GROK_AGENT_SERVE_TOKEN`)
-- Trace replay (`grok-agent replay`, `replay_file`, `examples/replay_agent.py`)
-- Health endpoint reports whether auth is enabled
-- Tests in `tests/test_v017.py` (no live LLM)
+- Optional bearer auth on `grok-agent serve`
+- Trace replay (`grok-agent replay`)
 
-## 🚧 v0.18.x
+## ✅ v0.18.0 (current)
+
+- Cancellation tokens that kill hung `run_shell` process groups
+- `grok-agent cancel` + `examples/cancel_agent.py`
+- Guard timeouts signal tracked children
+
+## 🚧 v0.19.x
 
 - sqlite-vec optional backend
 - Recorded binary GIFs committed to `docs/gifs/`
 - PyPI test publish
-- Cancellation tokens that actually kill hung subprocesses
+- MCP Streamable HTTP session ids + request cancellation
 
 ## 📋 v1.0 — Production ready
 

@@ -56,7 +56,13 @@ class ToolGuard:
             try:
                 return fut.result(timeout=timeout)
             except FuturesTimeout:
-                return f"Tool '{name}' timed out after {timeout}s."
+                try:
+                    from .cancel import cancel_all
+
+                    cancel_all(f"tool {name} timeout")
+                except Exception:
+                    pass
+                return f"Tool '{name}' timed out after {timeout}s (children signalled)."
             except Exception as e:
                 return f"Tool '{name}' error: {type(e).__name__}: {e}"
 

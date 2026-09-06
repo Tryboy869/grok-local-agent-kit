@@ -15,6 +15,7 @@ Record these with asciinema + agg, or VHS. Until binary GIFs are committed, this
 11. demo-serve.gif — python examples/serve_agent.py then curl POST /v1/chat
 12. demo-planner.gif — python examples/planner_agent.py
 13. demo-guardrails.gif — python examples/guardrails_agent.py
+14. demo-cancel.gif — python examples/cancel_agent.py (sleep killed <1s)
 
 Storyboard notes:
 - Serve: split pane, server logs + JSON response with text and trace.
