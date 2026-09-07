@@ -2,6 +2,18 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.19.0] — 2026-09-07
+
+### Added
+- Workspace file watcher (`grok_local_agent_kit.watch`, `grok-agent watch`)
+- Structured JSON extract (`extract_json`, `grok-agent json-extract`)
+- TOML/JSON recipe runner (`load_recipe` / `run_recipe`, `grok-agent recipe`)
+- Examples: `watch_agent.py`, `structured_agent.py`, `recipe_agent.py`
+- Tests: `tests/test_v019.py`
+
+### Changed
+- Version bump to 0.19.0
+
 ## [0.18.0] — 2026-09-06
 
 ### Added

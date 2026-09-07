@@ -18,13 +18,19 @@
 - Optional bearer auth on `grok-agent serve`
 - Trace replay (`grok-agent replay`)
 
-## ✅ v0.18.0 (current)
+## ✅ v0.18.0
 
 - Cancellation tokens that kill hung `run_shell` process groups
 - `grok-agent cancel` + `examples/cancel_agent.py`
 - Guard timeouts signal tracked children
 
-## 🚧 v0.19.x
+## ✅ v0.19.0 (current)
+
+- Polling workspace watcher (`grok-agent watch`)
+- Structured JSON extract from model text
+- TOML/JSON tool recipes that run without an LLM
+
+## 🚧 v0.20.x
 
 - sqlite-vec optional backend
 - Recorded binary GIFs committed to `docs/gifs/`

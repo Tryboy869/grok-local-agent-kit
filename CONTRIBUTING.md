@@ -30,7 +30,7 @@ pytest -q
 6. Additional examples and skill packs
 7. PyPI-stable 1.0 API freeze
 
-v0.18 ships process-group kill on `run_shell` timeout/cancel. Bearer auth + replay shipped in v0.17.
+v0.19 ships a workspace watcher, JSON extract, and LLM-free TOML recipes. v0.18 shipped process-group kill on `run_shell` timeout/cancel. Bearer auth + replay shipped in v0.17.
 
 ## Code style
 

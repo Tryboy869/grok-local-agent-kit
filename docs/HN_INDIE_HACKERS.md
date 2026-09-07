@@ -1,20 +1,22 @@
-# Launch update — v0.18.0 (HN / Indie Hackers)
+# Launch update — v0.19.0 (HN / Indie Hackers)
 
-**One-liner:** Local AI agents that call tools, fail over Ollama ↔ LM Studio, speak MCP, stream thoughts, replay traces without a GPU — and now **actually kill hung shell children** when you cancel or hit a tool timeout.
+**One-liner:** Local AI agents that call tools, fail over Ollama ↔ LM Studio, speak MCP, cancel hung shells — and now **watch your workspace, parse JSON out of messy model text, and run TOML recipes with zero LLM**.
 
-**What's new since v0.17**
+**What's new since v0.18**
 
-- `CancelToken` + process-group `run_shell` (`Popen`, `start_new_session=True`)
-- Timeout / `cancel_all()` sends SIGTERM then SIGKILL to tracked PIDs
-- `grok-agent cancel` and `python examples/cancel_agent.py` (no LLM)
-- `tests/test_v018.py`
+- `grok-agent watch` — polling file watcher (created / modified / deleted)
+- `extract_json()` — first JSON object from fenced or bare model output
+- `grok-agent recipe path.toml` — multi-step built-in tools, no GPU
+- Examples: `watch_agent.py`, `structured_agent.py`, `recipe_agent.py`
+- `tests/test_v019.py` (no live LLM)
 
 **Install**
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
 grok-agent doctor && grok-agent route
-python examples/cancel_agent.py
+python examples/watch_agent.py
+python examples/recipe_agent.py
 pytest -q
 ```
 
