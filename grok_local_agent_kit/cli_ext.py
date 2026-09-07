@@ -137,6 +137,46 @@ def register(cli) -> None:
         else:
             console.print(pl.plan_clear(done_only=True))
 
+    @cli.command("watch")
+    @click.option("--root", default=".", help="Folder to watch")
+    @click.option("--pattern", default="*", help="Glob relative to root")
+    @click.option("--interval", default=1.0, type=float)
+    @click.option("--seconds", default=8.0, type=float, help="Stop after N seconds")
+    def watch_cmd(root, pattern, interval, seconds):
+        """Poll a folder and print created/modified/deleted files."""
+        from .watch import format_events, watch as watch_loop
+
+        def _print(events):
+            console.print(format_events(events))
+
+        last = watch_loop(
+            root,
+            patterns=(pattern,),
+            interval=interval,
+            on_events=_print,
+            max_seconds=seconds,
+        )
+        if not last:
+            console.print("[dim]no file events[/]")
+
+    @cli.command("recipe")
+    @click.argument("path")
+    def recipe_cmd(path):
+        """Run a TOML/JSON tool recipe without an LLM."""
+        from .recipes import format_results, load_recipe, run_recipe
+
+        recipe = load_recipe(path)
+        console.print(f"[bold]{recipe.name}[/] — {recipe.description}")
+        console.print(format_results(run_recipe(recipe)))
+
+    @cli.command("json-extract")
+    @click.argument("text")
+    def json_extract_cmd(text):
+        """Pull the first JSON object out of messy model text."""
+        from .structured import extract_json
+
+        console.print(extract_json(text))
+
     @cli.command("cancel")
     @click.argument("reason", required=False, default="cli")
     def cancel_cmd(reason):
