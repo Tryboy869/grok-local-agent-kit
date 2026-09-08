@@ -2,6 +2,19 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.20.0] — 2026-09-08
+
+### Added
+- MCP Streamable HTTP session registry (`Mcp-Session-Id`, in-flight request cancel, JSON-RPC -32800)
+- `SSEMCPClient` now opens a session, echoes server session headers, and honors cancel
+- Offline eval harness (`evalkit`, `grok-agent eval`, `examples/eval_agent.py`)
+- CLI: `grok-agent mcp-session open|list|cancel|close`
+- Examples: `mcp_session_agent.py`, `eval_cases.json`
+- Tests: `tests/test_v020.py` (no live LLM)
+
+### Changed
+- Version bump to 0.20.0
+
 ## [0.19.0] — 2026-09-07
 
 ### Added

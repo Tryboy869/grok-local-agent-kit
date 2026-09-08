@@ -22,20 +22,25 @@
 
 - Cancellation tokens that kill hung `run_shell` process groups
 - `grok-agent cancel` + `examples/cancel_agent.py`
-- Guard timeouts signal tracked children
 
-## ✅ v0.19.0 (current)
+## ✅ v0.19.0
 
 - Polling workspace watcher (`grok-agent watch`)
 - Structured JSON extract from model text
 - TOML/JSON tool recipes that run without an LLM
 
-## 🚧 v0.20.x
+## ✅ v0.20.0 (current)
+
+- MCP Streamable HTTP session ids + in-flight request cancellation
+- Offline eval harness (`grok-agent eval`)
+- `SSEMCPClient` honors `Mcp-Session-Id` and JSON-RPC -32800
+
+## 🚧 v0.21.x
 
 - sqlite-vec optional backend
 - Recorded binary GIFs committed to `docs/gifs/`
 - PyPI test publish
-- MCP Streamable HTTP session ids + request cancellation
+- Eval cases against live local models (opt-in)
 
 ## 📋 v1.0 — Production ready
 

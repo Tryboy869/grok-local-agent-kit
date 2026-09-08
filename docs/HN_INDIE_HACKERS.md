@@ -1,22 +1,21 @@
-# Launch update — v0.19.0 (HN / Indie Hackers)
+# Launch update — v0.20.0 (HN / Indie Hackers)
 
-**One-liner:** Local AI agents that call tools, fail over Ollama ↔ LM Studio, speak MCP, cancel hung shells — and now **watch your workspace, parse JSON out of messy model text, and run TOML recipes with zero LLM**.
+**One-liner:** Local AI agents that call tools, fail over Ollama ↔ LM Studio, speak MCP — now with **Streamable HTTP session ids, request cancellation, and an offline eval harness**.
 
-**What's new since v0.18**
+**What's new since v0.19**
 
-- `grok-agent watch` — polling file watcher (created / modified / deleted)
-- `extract_json()` — first JSON object from fenced or bare model output
-- `grok-agent recipe path.toml` — multi-step built-in tools, no GPU
-- Examples: `watch_agent.py`, `structured_agent.py`, `recipe_agent.py`
-- `tests/test_v019.py` (no live LLM)
+- `MCPSessionRegistry` + `Mcp-Session-Id` on SSE/HTTP client
+- Cancel in-flight MCP requests (JSON-RPC `-32800`)
+- `grok-agent eval` / `examples/eval_agent.py` — golden tools + JSON extract, no LLM
+- `grok-agent mcp-session` to open / list / cancel / close sessions
+- `tests/test_v020.py` (no live LLM)
 
 **Install**
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
-grok-agent doctor && grok-agent route
-python examples/watch_agent.py
-python examples/recipe_agent.py
+grok-agent doctor && grok-agent eval
+python examples/mcp_session_agent.py
 pytest -q
 ```
 

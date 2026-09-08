@@ -1,20 +1,20 @@
-# Show HN: grok-local-agent-kit 0.19 — watch files, parse JSON, run recipes offline
+# Show HN: grok-local-agent-kit 0.20 — MCP session ids + offline eval
 
 I keep shipping a small Python kit for **offline-first agents** on Ollama / LM Studio.
 
-v0.19 adds the unglamorous glue that actually gets used:
+v0.20 adds the MCP glue that was missing:
 
-- `grok-agent watch` polls a folder and prints created/modified/deleted files
-- `extract_json()` pulls the first object out of messy fenced model text
-- `grok-agent recipe workspace.toml` runs built-in tools with **no LLM at all**
+- Streamable HTTP **session ids** (`Mcp-Session-Id`) on `SSEMCPClient`
+- Cancel an in-flight JSON-RPC request (`-32800`)
+- `grok-agent eval` — golden calculator / JSON cases with **no GPU**
 
-Still in the box: cancel hung shells, bearer token on `grok-agent serve`, MCP stdio/HTTP/SSE, router, planner, guardrails.
+Still in the box: file watcher, recipes, cancel hung shells, bearer token on `grok-agent serve`, router, planner, guardrails.
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
 grok-agent doctor
-python examples/watch_agent.py
-python examples/recipe_agent.py
+grok-agent eval
+python examples/mcp_session_agent.py
 pytest -q
 ```
 

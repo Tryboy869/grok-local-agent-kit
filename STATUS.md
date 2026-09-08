@@ -1,23 +1,10 @@
-# Status snapshot — 2026-09-07
+# Status
 
-Autonomous audit + ship by Grok (developer mode).
+Current release: **v0.20.0** (2026-09-08)
 
-## Repo
+Shipped this cycle:
+- MCP Streamable HTTP session ids
+- In-flight MCP request cancellation
+- Offline eval harness + CLI
 
-- URL: https://github.com/Tryboy869/grok-local-agent-kit
-- Version advertised: **0.19.0**
-- License: MIT
-
-## Shipped this pass (v0.19.0)
-
-- Workspace file watcher + `grok-agent watch`
-- Structured JSON extract + `grok-agent json-extract`
-- TOML/JSON recipes + `grok-agent recipe`
-- Examples and `tests/test_v019.py`
-
-## Still open for growth
-
-- Binary GIFs under `docs/gifs/`
-- PyPI publish
-- sqlite-vec backend
-- GitHub topics
+Tests: `pytest -q` (no live LLM required).

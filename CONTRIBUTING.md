@@ -23,14 +23,16 @@ pytest -q
 ## What we need most (priority order)
 
 1. sqlite-vec behind the existing vector memory API
-2. Full MCP Streamable HTTP session ids + request cancellation
+2. Live-model opt-in eval cases (Ollama)
 3. Vision support (local multimodal models)
 4. Demo GIFs / asciinema recordings (`docs/gifs/`)
 5. Windows & macOS packaging notes
 6. Additional examples and skill packs
 7. PyPI-stable 1.0 API freeze
 
-v0.19 ships a workspace watcher, JSON extract, and LLM-free TOML recipes. v0.18 shipped process-group kill on `run_shell` timeout/cancel. Bearer auth + replay shipped in v0.17.
+v0.20 ships MCP session ids + request cancel and an offline eval harness.
+v0.19 shipped a workspace watcher, JSON extract, and LLM-free TOML recipes.
+v0.18 shipped process-group kill on `run_shell` timeout/cancel.
 
 ## Code style
 
