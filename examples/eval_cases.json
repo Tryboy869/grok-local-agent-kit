@@ -1,0 +1,23 @@
+{
+  "cases": [
+    {
+      "name": "calculator-product",
+      "kind": "tool",
+      "tool": "calculator",
+      "args": {"expression": "6*7"},
+      "expect": "42"
+    },
+    {
+      "name": "extract-fenced",
+      "kind": "json",
+      "text": "here\n```json\n{\"status\": \"ok\"}\n```\n",
+      "expect": {"status": "ok"}
+    },
+    {
+      "name": "equals-sanity",
+      "kind": "equals",
+      "input": "local",
+      "expect": "local"
+    }
+  ]
+}
