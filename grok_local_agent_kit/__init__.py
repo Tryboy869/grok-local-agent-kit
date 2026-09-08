@@ -1,6 +1,6 @@
 """Grok Local Agent Kit — local-first AI agents with tools & multi-LLM support."""
 
-__version__ = "0.19.0"
+__version__ = "0.20.0"
 
 from .agent import Agent
 from .config import KitConfig, load_config, write_example_config
@@ -37,6 +37,14 @@ from .cancel import (
     get_token,
     set_token,
 )
+from .mcp_session import (
+    MCPSession,
+    MCPSessionRegistry,
+    get_registry as get_mcp_registry,
+    reset_registry as reset_mcp_registry,
+    run_cancellable,
+)
+from .evalkit import EvalCase, load_cases, run_suite, format_report
 from .shell import patch_tools as _patch_tools
 from . import cli as _cli_mod
 from .cli_ext import register as _register_cli_ext
@@ -110,5 +118,14 @@ __all__ = [
     "Recipe",
     "load_recipe",
     "run_recipe",
+    "MCPSession",
+    "MCPSessionRegistry",
+    "get_mcp_registry",
+    "reset_mcp_registry",
+    "run_cancellable",
+    "EvalCase",
+    "load_cases",
+    "run_suite",
+    "format_report",
     "__version__",
 ]
