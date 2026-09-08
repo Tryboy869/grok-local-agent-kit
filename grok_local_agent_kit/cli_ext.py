@@ -190,4 +190,35 @@ def register(cli) -> None:
             f"signalled={n} live={sorted(get_registry().pids())}"
         )
 
+    @cli.command("eval")
+    @click.option("--cases", default=None, help="JSON file of golden cases")
+    def eval_cmd(cases):
+        """Run the offline eval harness (tools + JSON extract, no LLM)."""
+        from .evalkit import DEFAULT_CASES, format_report, load_cases, run_suite
+
+        suite = load_cases(cases) if cases else DEFAULT_CASES
+        report = run_suite(suite)
+        console.print(format_report(report))
+        if not report["ok"]:
+            raise SystemExit(1)
+
+    @cli.command("mcp-session")
+    @click.argument("action", type=click.Choice(["open", "list", "cancel", "close"]))
+    @click.option("--id", "sid", default=None)
+    @click.option("--request", default=None)
+    def mcp_session_cmd(action, sid, request):
+        """Inspect local MCP Streamable HTTP session ids."""
+        from .mcp_session import get_registry
+
+        reg = get_registry()
+        if action == "open":
+            sess = reg.open(sid)
+            console.print({"session_id": sess.session_id, "headers": sess.header()})
+        elif action == "list":
+            console.print(reg.list_sessions())
+        elif action == "cancel":
+            console.print(reg.cancel_request(sid or "", request or ""))
+        else:
+            console.print(reg.close(sid or ""))
+
     cli._grok_ext = True
