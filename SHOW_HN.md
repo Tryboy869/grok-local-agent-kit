@@ -1,21 +1,16 @@
-# Show HN: grok-local-agent-kit 0.20 — MCP session ids + offline eval
+# Show HN: grok-local-agent-kit v0.21 — local agents with a tool cache
 
-I keep shipping a small Python kit for **offline-first agents** on Ollama / LM Studio.
+I keep building a Python kit for **offline-first agents** that talk to Ollama or LM Studio, call real tools, and speak MCP.
 
-v0.20 adds the MCP glue that was missing:
+v0.21 adds what I actually needed while looping an agent on the same calculator / file-read calls:
 
-- Streamable HTTP **session ids** (`Mcp-Session-Id`) on `SSEMCPClient`
-- Cancel an in-flight JSON-RPC request (`-32800`)
-- `grok-agent eval` — golden calculator / JSON cases with **no GPU**
+- TTL cache so identical tool calls are free
+- Offline telemetry (latency, hits, errors) with `grok-agent telemetry`
+- Still no cloud, no API keys for local models
 
-Still in the box: file watcher, recipes, cancel hung shells, bearer token on `grok-agent serve`, router, planner, guardrails.
-
-```bash
+```
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
-grok-agent doctor
-grok-agent eval
-python examples/mcp_session_agent.py
-pytest -q
+python examples/cache_agent.py
 ```
 
 Repo: https://github.com/Tryboy869/grok-local-agent-kit
