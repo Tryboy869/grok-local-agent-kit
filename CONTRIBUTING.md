@@ -30,7 +30,8 @@ pytest -q
 6. Additional examples and skill packs
 7. PyPI-stable 1.0 API freeze
 
-v0.20 ships MCP session ids + request cancel and an offline eval harness.
+v0.21 ships a TTL tool cache and offline telemetry.
+v0.20 shipped MCP session ids + request cancel and an offline eval harness.
 v0.19 shipped a workspace watcher, JSON extract, and LLM-free TOML recipes.
 v0.18 shipped process-group kill on `run_shell` timeout/cancel.
 

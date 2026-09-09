@@ -2,6 +2,15 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.21.0] — 2026-09-09
+
+### Added
+- In-process TTL tool cache (`ToolCache`, `cached_execute`, `grok-agent cache`)
+- Tool telemetry (`Telemetry`, `timed_execute`, `grok-agent telemetry`)
+- Runtime wrapper patches `execute_tool` with cache + timing
+- Examples: `cache_agent.py`, `telemetry_agent.py`
+- Tests in `tests/test_v021.py` (no live LLM)
+
 ## [0.20.0] — 2026-09-08
 
 ### Added
@@ -24,48 +33,11 @@ All notable changes to grok-local-agent-kit are documented here.
 - Examples: `watch_agent.py`, `structured_agent.py`, `recipe_agent.py`
 - Tests: `tests/test_v019.py`
 
-### Changed
-- Version bump to 0.19.0
+## [0.18.0]
+- Cancellation tokens that kill hung `run_shell` process groups
 
-## [0.18.0] — 2026-09-06
+## [0.17.0]
+- Bearer auth on `grok-agent serve`, trace replay
 
-### Added
-- `CancelToken` + `ProcessRegistry` (`grok_local_agent_kit.cancel`)
-- `run_shell` now uses `Popen` + process groups and **kills children** on timeout or cancel
-- Guard timeout signals tracked subprocesses (`cancel_all`)
-- CLI: `grok-agent cancel [reason]`
-- Example: `examples/cancel_agent.py`
-- Tests: `tests/test_v018.py`
-
-### Changed
-- Version bump to 0.18.0
-
-## [0.17.0] — 2026-09-05
-
-### Added
-- Optional bearer token for `grok-agent serve` (`--token` / `GROK_AGENT_SERVE_TOKEN`)
-- Health JSON now includes `"auth": true|false`; `/health` stays public
-- Trace replay module + CLI: `grok-agent replay`, `replay_file()`, `examples/replay_agent.py`
-- Tests in `tests/test_v017.py` (no live LLM)
-
-### Changed
-- Version bump to 0.17.0
-- README / roadmap / contributing / HN drafts updated
-
-## [0.16.0] — 2026-09-04
-
-### Added
-- Local HTTP API (`grok-agent serve`, GET `/health`, POST `/v1/chat`) bound to 127.0.0.1 by default
-- Workspace planner tools + CLI
-- Tool guardrails: allow-list, deny-list, per-tool wall-clock timeout
-- Interval `Scheduler` for automation agents
-- Examples: `serve_agent.py`, `planner_agent.py`, `guardrails_agent.py`
-- Tests in `tests/test_v016.py` (no live LLM)
-
-## [0.15.0] — 2026-09-03
-
-- Parallel tools, `on_thought`, `export_trace()`
-
-## [0.14.0] — 2026-09-02
-
-- Optional Ollama embeddings, stronger execute_python sandbox
+## [0.16.0]
+- Local HTTP API, planner, guardrails, scheduler

@@ -29,13 +29,19 @@
 - Structured JSON extract from model text
 - TOML/JSON tool recipes that run without an LLM
 
-## ✅ v0.20.0 (current)
+## ✅ v0.20.0
 
 - MCP Streamable HTTP session ids + in-flight request cancellation
 - Offline eval harness (`grok-agent eval`)
 - `SSEMCPClient` honors `Mcp-Session-Id` and JSON-RPC -32800
 
-## 🚧 v0.21.x
+## ✅ v0.21.0 (current)
+
+- In-process TTL cache for tool results
+- Tool latency / hit / error telemetry (offline)
+- `grok-agent cache` and `grok-agent telemetry`
+
+## 🚧 v0.22.x
 
 - sqlite-vec optional backend
 - Recorded binary GIFs committed to `docs/gifs/`
