@@ -35,13 +35,19 @@
 - Offline eval harness (`grok-agent eval`)
 - `SSEMCPClient` honors `Mcp-Session-Id` and JSON-RPC -32800
 
-## ✅ v0.21.0 (current)
+## ✅ v0.21.0
 
 - In-process TTL cache for tool results
 - Tool latency / hit / error telemetry (offline)
 - `grok-agent cache` and `grok-agent telemetry`
 
-## 🚧 v0.22.x
+## ✅ v0.22.0 (current)
+
+- Tool-call budget (global + per-tool) with CLI `grok-agent budget`
+- `retry_call` backoff helper for flaky local backends
+- Runtime consumes budget on cache-miss executions
+
+## 🚧 v0.23.x
 
 - sqlite-vec optional backend
 - Recorded binary GIFs committed to `docs/gifs/`

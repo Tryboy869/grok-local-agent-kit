@@ -21,3 +21,4 @@ Storyboard notes:
 - Serve: split pane, server logs + JSON response with text and trace.
 - Planner: add two items, mark one done, show .grok/plan.json.
 - Guardrails: denied tool name printed, then a timeout message.
+- Budget: first two calculator calls succeed, third prints "Budget exceeded".

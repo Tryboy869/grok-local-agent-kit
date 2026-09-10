@@ -2,6 +2,16 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.22.0] — 2026-09-10
+
+### Added
+- Tool-call budget (`ToolBudget`, `GROK_AGENT_MAX_TOOL_CALLS`, `grok-agent budget`)
+- Global + per-tool caps so ReAct loops cannot spin forever
+- `retry_call` helper with exponential backoff for flaky local LLM/HTTP
+- Runtime wraps `execute_tool` so cache-miss calls consume the budget
+- Examples: `budget_agent.py`, `retry_agent.py`
+- Tests in `tests/test_v022.py` (no live LLM)
+
 ## [0.21.0] — 2026-09-09
 
 ### Added
