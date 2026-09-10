@@ -1,6 +1,6 @@
 """Grok Local Agent Kit — local-first AI agents with tools & multi-LLM support."""
 
-__version__ = "0.21.0"
+__version__ = "0.22.0"
 
 from .agent import Agent
 from .config import KitConfig, load_config, write_example_config
@@ -47,14 +47,18 @@ from .mcp_session import (
 from .evalkit import EvalCase, load_cases, run_suite, format_report
 from .cache import ToolCache, cache_key, cached_execute, get_cache, reset_cache
 from .telemetry import Telemetry, ToolEvent, get_telemetry, reset_telemetry, timed_execute
+from .budget import ToolBudget, get_budget, set_budget, reset_budget, BudgetExceeded
+from .retry import retry_call
 from .shell import patch_tools as _patch_tools
 from .runtime import patch as _patch_runtime
 from . import cli as _cli_mod
 from .cli_ext import register as _register_cli_ext
 from .cli_v021 import register as _register_cli_v021
+from .cli_v022 import register as _register_cli_v022
 
 _register_cli_ext(_cli_mod.cli)
 _register_cli_v021(_cli_mod.cli)
+_register_cli_v022(_cli_mod.cli)
 _patch_tools()
 _patch_runtime()
 
@@ -143,5 +147,11 @@ __all__ = [
     "get_telemetry",
     "reset_telemetry",
     "timed_execute",
+    "ToolBudget",
+    "get_budget",
+    "set_budget",
+    "reset_budget",
+    "BudgetExceeded",
+    "retry_call",
     "__version__",
 ]
