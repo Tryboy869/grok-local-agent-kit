@@ -1,9 +1,10 @@
-"""Wrap execute_tool with cache + telemetry (v0.21)."""
+"""Wrap execute_tool with cache + telemetry + budget (v0.21-0.22)."""
 
 from __future__ import annotations
 
 from typing import Any, Callable, Dict
 
+from .budget import get_budget
 from .cache import get_cache
 from .telemetry import get_telemetry
 
@@ -16,6 +17,11 @@ def wrap_execute(original: Callable[..., str]) -> Callable[..., str]:
         if hit is not None:
             tel.record(name, 0.0, cached=True, ok=True)
             return hit
+
+        blocked = get_budget().consume(name)
+        if blocked:
+            tel.record(name, 0.0, cached=False, ok=False)
+            return blocked
 
         import time
 
@@ -37,8 +43,9 @@ def wrap_execute(original: Callable[..., str]) -> Callable[..., str]:
 def patch() -> None:
     from . import tools
 
-    if getattr(tools.execute_tool, "_grok_v021", False):
+    if getattr(tools.execute_tool, "_grok_v022", False):
         return
     wrapped = wrap_execute(tools.execute_tool)
     wrapped._grok_v021 = True  # type: ignore[attr-defined]
+    wrapped._grok_v022 = True  # type: ignore[attr-defined]
     tools.execute_tool = wrapped
