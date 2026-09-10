@@ -1,35 +1,17 @@
-# Show HN: grok-local-agent-kit — offline-first local agents (Ollama + MCP)
+# Show HN: grok-local-agent-kit v0.22 — local agents with a tool-call budget
 
-Title (HN):
-Show HN: A small Python kit for local agents with Ollama, MCP, and a tool cache
+I keep building a Python kit for **offline-first agents** that talk to Ollama or LM Studio, call real tools, and speak MCP.
 
----
+v0.22 adds what I needed after a ReAct loop tried the same tool 200 times:
 
-Paste-ready body:
+- Tool-call budget (global + per-tool) via `grok-agent budget`
+- Retry helper with backoff for flaky local backends
+- Still no cloud, no API keys for local models
 
-I built a small Python toolkit for agents that stay on your machine.
-
-Problem: most agent frameworks assume a cloud LLM + embeddings API. I wanted something that boots against Ollama or LM Studio, calls real tools, speaks MCP, and does not phone home.
-
-grok-local-agent-kit (v0.21):
-
-- ReAct tool loop (files, shell, python sandbox, calculator, custom tools)
-- Ollama + LM Studio / OpenAI-compat with a fallback router
-- MCP over stdio, Streamable HTTP (session ids), and SSE + JSON-RPC cancel
-- TTL cache so identical tool calls are free
-- Offline telemetry (latency, hits, errors) — no network
-- Local HTTP API, eval harness, recipes, watcher
-
-Install:
-
-    curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
-    grok-agent doctor
-    python examples/cache_agent.py
-
-Or:
-
-    pip install git+https://github.com/Tryboy869/grok-local-agent-kit.git
+```
+curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
+python examples/budget_agent.py
+python examples/retry_agent.py
+```
 
 Repo: https://github.com/Tryboy869/grok-local-agent-kit
-
-Happy to hear what is missing for your local-agent workflow.
