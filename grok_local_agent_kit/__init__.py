@@ -1,6 +1,6 @@
 """Grok Local Agent Kit — local-first AI agents with tools & multi-LLM support."""
 
-__version__ = "0.22.0"
+__version__ = "0.23.0"
 
 from .agent import Agent
 from .config import KitConfig, load_config, write_example_config
@@ -20,6 +20,7 @@ from .tools import execute_tool, get_default_tools
 from .usage import UsageStats, estimate_tokens
 from .embeddings import embed, hash_embed, ollama_embed
 from .vector_memory import vforget, vrecall, vremember
+from .sqlite_vec_store import active_backend, describe as vec_describe, knn as vec_knn
 from .guardrails import ToolGuard, get_guard, set_guard
 from .planner import plan_add, plan_done, plan_list
 from .scheduler import Scheduler
@@ -55,10 +56,12 @@ from . import cli as _cli_mod
 from .cli_ext import register as _register_cli_ext
 from .cli_v021 import register as _register_cli_v021
 from .cli_v022 import register as _register_cli_v022
+from .cli_v023 import register as _register_cli_v023
 
 _register_cli_ext(_cli_mod.cli)
 _register_cli_v021(_cli_mod.cli)
 _register_cli_v022(_cli_mod.cli)
+_register_cli_v023(_cli_mod.cli)
 _patch_tools()
 _patch_runtime()
 
@@ -90,6 +93,9 @@ __all__ = [
     "forget",
     "vremember",
     "vrecall",
+    "active_backend",
+    "vec_describe",
+    "vec_knn",
     "embed",
     "hash_embed",
     "ollama_embed",
