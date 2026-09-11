@@ -41,18 +41,24 @@
 - Tool latency / hit / error telemetry (offline)
 - `grok-agent cache` and `grok-agent telemetry`
 
-## ✅ v0.22.0 (current)
+## ✅ v0.22.0
 
 - Tool-call budget (global + per-tool) with CLI `grok-agent budget`
 - `retry_call` backoff helper for flaky local backends
 - Runtime consumes budget on cache-miss executions
 
-## 🚧 v0.23.x
+## ✅ v0.23.0 (current)
 
-- sqlite-vec optional backend
+- Optional sqlite-vec backend with hash cosine fallback
+- `grok-agent vec info|search|remember`
+- Extra: `pip install -e ".[vec]"`
+
+## 🚧 v0.24.x
+
 - Recorded binary GIFs committed to `docs/gifs/`
 - PyPI test publish
 - Eval cases against live local models (opt-in)
+- True vec0 virtual table writes when sqlite-vec is present
 
 ## 📋 v1.0 — Production ready
 
