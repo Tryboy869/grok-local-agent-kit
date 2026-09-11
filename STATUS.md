@@ -1,1 +1,1 @@
-Current: v0.22.0 — tool budgets + retry helper. Next: sqlite-vec, GIFs, PyPI.
+Current: v0.23.0 — optional sqlite-vec backend + `grok-agent vec`. Next: recorded GIFs, PyPI.
