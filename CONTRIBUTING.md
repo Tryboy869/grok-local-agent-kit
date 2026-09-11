@@ -22,7 +22,7 @@ pytest -q
 
 ## What we need most (priority order)
 
-1. sqlite-vec behind the existing vector memory API
+1. True sqlite-vec vec0 writes (v0.23 already probes + falls back)
 2. Live-model opt-in eval cases (Ollama)
 3. Vision support (local multimodal models)
 4. Demo GIFs / asciinema recordings (`docs/gifs/`)
@@ -30,6 +30,7 @@ pytest -q
 6. Additional examples and skill packs
 7. PyPI-stable 1.0 API freeze
 
+v0.23 ships an optional sqlite-vec backend (`grok-agent vec`) with hash fallback.
 v0.22 ships tool-call budgets and a retry helper on top of the v0.21 cache/telemetry stack.
 v0.20 shipped MCP session ids + request cancel and an offline eval harness.
 v0.19 shipped a workspace watcher, JSON extract, and LLM-free TOML recipes.

@@ -2,6 +2,16 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.23.0] — 2026-09-11
+
+### Added
+- Optional **sqlite-vec** backend (`GROK_VEC_BACKEND=auto|hash|sqlite-vec`)
+- `sqlite_vec_store.knn` / `describe` with automatic hash cosine fallback
+- CLI `grok-agent vec info|search|remember`
+- Example `examples/sqlite_vec_agent.py`
+- Tests in `tests/test_v023.py` (no live LLM, no sqlite-vec required)
+- Extra install: `pip install -e ".[vec]"`
+
 ## [0.22.0] — 2026-09-10
 
 ### Added

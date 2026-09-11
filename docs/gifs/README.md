@@ -22,3 +22,4 @@ Storyboard notes:
 - Planner: add two items, mark one done, show .grok/plan.json.
 - Guardrails: denied tool name printed, then a timeout message.
 - Budget: first two calculator calls succeed, third prints "Budget exceeded".
+- Vec: `grok-agent vec info` prints hash or sqlite-vec; search ranks the cat note above the market note.
