@@ -1,0 +1,10 @@
+{
+  "name": "workspace_ping",
+  "description": "Tiny sample plugin that returns a fixed pong.",
+  "kind": "template",
+  "template": "pong from grok-local-agent-kit",
+  "parameters": {
+    "type": "object",
+    "properties": {}
+  }
+}
