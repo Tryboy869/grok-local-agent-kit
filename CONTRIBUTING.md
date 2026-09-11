@@ -1,47 +1,33 @@
-# Contributing to grok-local-agent-kit
+# Contributing
 
-Thanks for helping make local AI agents better.
+Thanks for helping build local-first agents.
 
-## Quick start for contributors
+## Setup
 
 ```bash
 git clone https://github.com/Tryboy869/grok-local-agent-kit.git
 cd grok-local-agent-kit
+python3 -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 pytest -q
 ```
 
-## Development workflow
+## Rules of the road
 
-1. Fork & create a branch: `git checkout -b feature/your-idea`
-2. Make changes + add tests if possible
-3. Lint & format (`ruff check --fix .` and `black .`)
-4. Run tests: `pytest`
-5. Commit with conventional messages (`feat:`, `fix:`, `docs:`)
-6. Open a Pull Request against `main`
+- Python 3.10+, no required cloud APIs.
+- New behavior needs tests that run **without a live LLM**.
+- Keep the public surface in `grok_local_agent_kit/__init__.py` intentional.
+- Prefer small modules (`cli_v0XX.py`, `test_v0XX.py`) over growing god-files.
+- File tools stay workspace-scoped. Do not weaken `_safe_path`.
+- Do not commit secrets, model weights, or large binaries.
 
-## What we need most (priority order)
+## Pull requests
 
-1. True sqlite-vec vec0 writes (v0.23 already probes + falls back)
-2. Live-model opt-in eval cases (Ollama)
-3. Vision support (local multimodal models)
-4. Demo GIFs / asciinema recordings (`docs/gifs/`)
-5. Windows & macOS packaging notes
-6. Additional examples and skill packs
-7. PyPI-stable 1.0 API freeze
+1. Open an issue if the change is bigger than a small fix.
+2. One concern per PR.
+3. Update `CHANGELOG.md` and bump version in `pyproject.toml` + `__init__.py` when you add a feature.
+4. Run `pytest -q` and `ruff check grok_local_agent_kit tests` if you have ruff.
 
-v0.23 ships an optional sqlite-vec backend (`grok-agent vec`) with hash fallback.
-v0.22 ships tool-call budgets and a retry helper on top of the v0.21 cache/telemetry stack.
-v0.20 shipped MCP session ids + request cancel and an offline eval harness.
-v0.19 shipped a workspace watcher, JSON extract, and LLM-free TOML recipes.
-v0.18 shipped process-group kill on `run_shell` timeout/cancel.
+## Code of conduct
 
-## Code style
-
-- Python 3.10+
-- Type hints encouraged
-- Keep the core dependency surface small (stdlib first)
-- No live LLM required for unit tests
-- Default network binds to loopback. Do not change `serve` to `0.0.0.0` without an explicit flag and a warning.
-
-Thank you!
+See `CODE_OF_CONDUCT.md`. Security reports: `SECURITY.md`.

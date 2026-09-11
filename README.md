@@ -1,7 +1,7 @@
 # grok-local-agent-kit
 
 **Open-source toolkit for building local AI agents.**
-Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE with session ids + request cancel, local HTTP API, recipes, watcher, offline eval harness, tool-result cache + telemetry, tool-call budgets + retries.
+Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, tool cache + telemetry + budgets, **drop-in tool plugins**, **JSONL transcripts**.
 Offline-first.
 Built autonomously by Grok.
 
@@ -9,7 +9,7 @@ Built autonomously by Grok.
 > No cloud required.
 > No API keys for local models.
 
-## Features (v0.23.0)
+## Features (v0.24.0)
 
 * Multi-LLM (Ollama + LM Studio / OpenAI-compat) + fallback router
 * ReAct tool loop, streaming, hooks, skills, orchestrator
@@ -18,25 +18,20 @@ Built autonomously by Grok.
 * Offline eval harness (`grok-agent eval`)
 * Local HTTP API + optional bearer auth, planner, guardrails, cancel tokens
 * Workspace watcher, JSON extract, LLM-free TOML recipes
-* **Tool-result TTL cache** (`grok-agent cache`) — skip repeated calculator / file reads
-* **Tool telemetry** (`grok-agent telemetry`) — latency, hits, errors, no network
-* **Tool-call budget** (`grok-agent budget`) — global + per-tool caps, env `GROK_AGENT_MAX_TOOL_CALLS`
-* **Retry helper** (`retry_call`) — exponential backoff for flaky local backends
-* **Optional sqlite-vec** (`GROK_VEC_BACKEND`, `grok-agent vec`) — ANN when installed, hash cosine otherwise
+* Tool-result TTL cache, telemetry, tool-call budgets, retry helper
+* Optional sqlite-vec (`GROK_VEC_BACKEND`, `grok-agent vec`)
+* **Drop-in plugins** — JSON or Python tools from `./tools` or `~/.grok-agent/tools` (`grok-agent plugins list`)
+* **Transcripts** — local JSONL logs (`grok-agent transcripts list`)
 
 ## Demo storyboard
 
-See docs/gifs/README.md. Binary GIFs not in-repo yet.
+Binary GIFs are not generated in this environment. Recreate them with VHS or `script` + `agg`. Storyboards live in `docs/gifs/README.md`.
 
-1. `grok-agent chat -v --stream` list files then compute 21*2
+1. `grok-agent chat -v --stream` — list files, then `calculator` for `21*2`
 2. `GROK_AGENT_SERVE_TOKEN=dev grok-agent serve --port 8765`
-3. `python examples/replay_agent.py --run`
-4. `python examples/cancel_agent.py`
-5. `python examples/watch_agent.py` and `python examples/recipe_agent.py`
-6. `grok-agent eval` and `python examples/mcp_session_agent.py`
-7. `python examples/cache_agent.py` and `python examples/telemetry_agent.py`
-8. `python examples/budget_agent.py` and `python examples/retry_agent.py`
-9. `python examples/sqlite_vec_agent.py` and `grok-agent vec info`
+3. `python examples/plugin_agent.py` then `grok-agent plugins list`
+4. `python examples/transcript_agent.py` then `grok-agent transcripts list`
+5. `python examples/budget_agent.py` / `python examples/sqlite_vec_agent.py`
 
 ## Quick start (1 command)
 
@@ -44,13 +39,11 @@ See docs/gifs/README.md. Binary GIFs not in-repo yet.
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
 grok-agent doctor
 grok-agent init
-grok-agent route
-grok-agent eval
-python examples/cache_agent.py
-python examples/budget_agent.py
-python examples/sqlite_vec_agent.py
-grok-agent vec info
-grok-agent budget stats
+grok-agent plugins list
+grok-agent transcripts new
+python examples/plugin_agent.py
+python examples/transcript_agent.py
+pytest -q
 grok-agent chat -v --stream --router
 ```
 

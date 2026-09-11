@@ -1,18 +1,17 @@
-# Show HN: grok-local-agent-kit v0.23 — local agents + optional sqlite-vec
+# Show HN: grok-local-agent-kit v0.24 — local agents + drop-in plugins
 
 Offline-first Python agents that talk to Ollama or LM Studio, call real tools, and speak MCP.
 
-v0.23 adds a vector backend switch:
+v0.24 adds:
 
-- `GROK_VEC_BACKEND=auto|hash|sqlite-vec`
-- `grok-agent vec info|search|remember`
-- Hash cosine fallback so nothing extra is required
-- `pip install -e ".[vec]"` when you want sqlite-vec
+- Drop-in tools from `./tools` or `~/.grok-agent/tools` (JSON or Python)
+- Local JSONL transcripts (`grok-agent transcripts`)
+- `grok-agent plugins list`
 
 ```
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
-python examples/sqlite_vec_agent.py
-grok-agent vec info
+python examples/plugin_agent.py
+grok-agent plugins list
 pytest -q
 ```
 

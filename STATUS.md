@@ -1,1 +1,3 @@
-Current: v0.23.0 — optional sqlite-vec backend + `grok-agent vec`. Next: recorded GIFs, PyPI.
+# Status
+
+Current release: **v0.24.0** (plugins + transcripts).

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "grok-local-agent-kit"
-version = "0.23.0"
+version = "0.24.0"
 description = "Open-source toolkit for building powerful local AI agents with MCP support, multi-LLM routing (Ollama, LM Studio), and real tools. Offline-first."
 readme = "README.md"
 license = {text = "MIT"}
@@ -13,7 +13,7 @@ authors = [{name = "Nexus Studio / Tryboy869"}]
 keywords = ["ai", "agents", "ollama", "lm-studio", "mcp", "local-llm", "tool-calling", "react"]
 classifiers = [
     "Development Status :: 4 - Beta",
-    "Intended Audience :: Developers",
+    "Intended Audience Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",

@@ -2,62 +2,18 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.24.0] — 2026-09-11
+
+### Added
+- Drop-in tool plugins (`plugins.py`) from `./tools`, `~/.grok-agent/tools`, or `GROK_AGENT_PLUGIN_DIR`
+- JSON plugins (`kind=template|json`) and Python plugins (`handler` / `register`)
+- JSONL transcripts (`transcripts.py`, `grok-agent transcripts`)
+- CLI: `grok-agent plugins list|dirs`
+- Examples: `plugin_agent.py`, `transcript_agent.py`, `examples/tools/workspace_ping.json`
+- Tests in `tests/test_v024.py` (no live LLM)
+
 ## [0.23.0] — 2026-09-11
 
 ### Added
-- Optional **sqlite-vec** backend (`GROK_VEC_BACKEND=auto|hash|sqlite-vec`)
-- `sqlite_vec_store.knn` / `describe` with automatic hash cosine fallback
-- CLI `grok-agent vec info|search|remember`
-- Example `examples/sqlite_vec_agent.py`
-- Tests in `tests/test_v023.py` (no live LLM, no sqlite-vec required)
-- Extra install: `pip install -e ".[vec]"`
-
-## [0.22.0] — 2026-09-10
-
-### Added
-- Tool-call budget (`ToolBudget`, `GROK_AGENT_MAX_TOOL_CALLS`, `grok-agent budget`)
-- Global + per-tool caps so ReAct loops cannot spin forever
-- `retry_call` helper with exponential backoff for flaky local LLM/HTTP
-- Runtime wraps `execute_tool` so cache-miss calls consume the budget
-- Examples: `budget_agent.py`, `retry_agent.py`
-- Tests in `tests/test_v022.py` (no live LLM)
-
-## [0.21.0] — 2026-09-09
-
-### Added
-- In-process TTL tool cache (`ToolCache`, `cached_execute`, `grok-agent cache`)
-- Tool telemetry (`Telemetry`, `timed_execute`, `grok-agent telemetry`)
-- Runtime wrapper patches `execute_tool` with cache + timing
-- Examples: `cache_agent.py`, `telemetry_agent.py`
-- Tests in `tests/test_v021.py` (no live LLM)
-
-## [0.20.0] — 2026-09-08
-
-### Added
-- MCP Streamable HTTP session registry (`Mcp-Session-Id`, in-flight request cancel, JSON-RPC -32800)
-- `SSEMCPClient` now opens a session, echoes server session headers, and honors cancel
-- Offline eval harness (`evalkit`, `grok-agent eval`, `examples/eval_agent.py`)
-- CLI: `grok-agent mcp-session open|list|cancel|close`
-- Examples: `mcp_session_agent.py`, `eval_cases.json`
-- Tests: `tests/test_v020.py` (no live LLM)
-
-### Changed
-- Version bump to 0.20.0
-
-## [0.19.0] — 2026-09-07
-
-### Added
-- Workspace file watcher (`grok_local_agent_kit.watch`, `grok-agent watch`)
-- Structured JSON extract (`extract_json`, `grok-agent json-extract`)
-- TOML/JSON recipe runner (`load_recipe` / `run_recipe`, `grok-agent recipe`)
-- Examples: `watch_agent.py`, `structured_agent.py`, `recipe_agent.py`
-- Tests: `tests/test_v019.py`
-
-## [0.18.0]
-- Cancellation tokens that kill hung `run_shell` process groups
-
-## [0.17.0]
-- Bearer auth on `grok-agent serve`, trace replay
-
-## [0.16.0]
-- Local HTTP API, planner, guardrails, scheduler
+- Optional sqlite-vec backend with hash cosine fallback
+- `grok-agent vec info|search|remember`
