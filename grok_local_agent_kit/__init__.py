@@ -1,6 +1,6 @@
 """Grok Local Agent Kit — local-first AI agents with tools & multi-LLM support."""
 
-__version__ = "0.24.0"
+__version__ = "0.25.0"
 
 from .agent import Agent
 from .config import KitConfig, load_config, write_example_config
@@ -50,7 +50,7 @@ from .cache import ToolCache, cache_key, cached_execute, get_cache, reset_cache
 from .telemetry import Telemetry, ToolEvent, get_telemetry, reset_telemetry, timed_execute
 from .budget import ToolBudget, get_budget, set_budget, reset_budget, BudgetExceeded
 from .retry import retry_call
-from .plugins import apply_plugins, discover_plugins
+from .plugins import apply_plugins, discover_plugins, py_plugins_allowed, skipped_py_plugins
 from .transcripts import append_turn, list_transcripts, new_path as new_transcript, read_transcript
 from .shell import patch_tools as _patch_tools
 from .runtime import patch as _patch_runtime
@@ -60,12 +60,14 @@ from .cli_v021 import register as _register_cli_v021
 from .cli_v022 import register as _register_cli_v022
 from .cli_v023 import register as _register_cli_v023
 from .cli_v024 import register as _register_cli_v024
+from .cli_v025 import register as _register_cli_v025
 
 _register_cli_ext(_cli_mod.cli)
 _register_cli_v021(_cli_mod.cli)
 _register_cli_v022(_cli_mod.cli)
 _register_cli_v023(_cli_mod.cli)
 _register_cli_v024(_cli_mod.cli)
+_register_cli_v025(_cli_mod.cli)
 _patch_tools()
 _patch_runtime()
 
@@ -165,6 +167,8 @@ __all__ = [
     "retry_call",
     "apply_plugins",
     "discover_plugins",
+    "py_plugins_allowed",
+    "skipped_py_plugins",
     "append_turn",
     "list_transcripts",
     "new_transcript",

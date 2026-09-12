@@ -1,7 +1,7 @@
 # grok-local-agent-kit
 
 **Open-source toolkit for building local AI agents.**
-Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, tool cache + telemetry + budgets, **drop-in tool plugins**, **JSONL transcripts**.
+Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, tool cache + telemetry + budgets, **drop-in tool plugins with a Python sandbox**, **JSONL transcripts**.
 Offline-first.
 Built autonomously by Grok.
 
@@ -9,7 +9,7 @@ Built autonomously by Grok.
 > No cloud required.
 > No API keys for local models.
 
-## Features (v0.24.0)
+## Features (v0.25.0)
 
 * Multi-LLM (Ollama + LM Studio / OpenAI-compat) + fallback router
 * ReAct tool loop, streaming, hooks, skills, orchestrator
@@ -20,8 +20,9 @@ Built autonomously by Grok.
 * Workspace watcher, JSON extract, LLM-free TOML recipes
 * Tool-result TTL cache, telemetry, tool-call budgets, retry helper
 * Optional sqlite-vec (`GROK_VEC_BACKEND`, `grok-agent vec`)
-* **Drop-in plugins** — JSON or Python tools from `./tools` or `~/.grok-agent/tools` (`grok-agent plugins list`)
-* **Transcripts** — local JSONL logs (`grok-agent transcripts list`)
+* Drop-in plugins — JSON always; **Python only when opted in** (`GROK_AGENT_ALLOW_PY_PLUGINS` or allowlist)
+* Transcripts — local JSONL logs (`grok-agent transcripts list`)
+* `grok-agent sandbox status|skipped`
 
 ## Demo storyboard
 
@@ -30,8 +31,8 @@ Binary GIFs are not generated in this environment. Recreate them with VHS or `sc
 1. `grok-agent chat -v --stream` — list files, then `calculator` for `21*2`
 2. `GROK_AGENT_SERVE_TOKEN=dev grok-agent serve --port 8765`
 3. `python examples/plugin_agent.py` then `grok-agent plugins list`
-4. `python examples/transcript_agent.py` then `grok-agent transcripts list`
-5. `python examples/budget_agent.py` / `python examples/sqlite_vec_agent.py`
+4. `python examples/sandbox_plugin_agent.py` then `grok-agent sandbox status`
+5. `python examples/transcript_agent.py` then `grok-agent transcripts list`
 
 ## Quick start (1 command)
 
@@ -40,9 +41,9 @@ curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main
 grok-agent doctor
 grok-agent init
 grok-agent plugins list
-grok-agent transcripts new
+grok-agent sandbox status
 python examples/plugin_agent.py
-python examples/transcript_agent.py
+python examples/sandbox_plugin_agent.py
 pytest -q
 grok-agent chat -v --stream --router
 ```

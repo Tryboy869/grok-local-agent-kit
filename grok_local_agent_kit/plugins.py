@@ -4,6 +4,9 @@ Search order (first match wins per tool name):
 1. GROK_AGENT_PLUGIN_DIR
 2. ./tools
 3. ~/.grok-agent/tools
+
+Python plugins are sandboxed: they are NOT imported unless explicitly allowed.
+JSON plugins are always loaded (data only, no code execution).
 """
 
 from __future__ import annotations
@@ -13,6 +16,8 @@ import json
 import os
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Tuple
+
+_SKIPPED_PY: List[Path] = []
 
 
 def plugin_dirs() -> List[Path]:
@@ -31,6 +36,35 @@ def plugin_dirs() -> List[Path]:
         seen.add(key)
         out.append(d)
     return out
+
+
+def _truthy(value: str | None) -> bool:
+    return str(value or "").strip().lower() in {"1", "true", "yes", "on"}
+
+
+def py_plugins_allowed() -> bool:
+    """Global opt-in: GROK_AGENT_ALLOW_PY_PLUGINS=1."""
+    return _truthy(os.environ.get("GROK_AGENT_ALLOW_PY_PLUGINS"))
+
+
+def py_plugin_allowlist() -> set[str]:
+    raw = os.environ.get("GROK_AGENT_PY_PLUGIN_ALLOWLIST", "")
+    return {part.strip() for part in raw.split(",") if part.strip()}
+
+
+def skipped_py_plugins() -> List[Path]:
+    return list(_SKIPPED_PY)
+
+
+def _may_load_py(path: Path, allow_py: bool | None) -> bool:
+    if allow_py is True:
+        return True
+    if allow_py is False:
+        return False
+    if py_plugins_allowed():
+        return True
+    allow = py_plugin_allowlist()
+    return path.stem in allow or path.name in allow
 
 
 def _spec_from_meta(meta: Dict[str, Any]) -> Dict[str, Any]:
@@ -99,7 +133,12 @@ def load_py_plugin(path: Path) -> Tuple[Dict[str, Any], Callable[..., str]]:
     return spec_obj, fn
 
 
-def discover_plugins(extra_dirs: List[Path] | None = None) -> List[Tuple[str, Dict[str, Any], Callable[..., str]]]:
+def discover_plugins(
+    extra_dirs: List[Path] | None = None,
+    allow_py: bool | None = None,
+) -> List[Tuple[str, Dict[str, Any], Callable[..., str]]]:
+    global _SKIPPED_PY
+    _SKIPPED_PY = []
     found: List[Tuple[str, Dict[str, Any], Callable[..., str]]] = []
     seen_names: set[str] = set()
     dirs = list(extra_dirs or []) + plugin_dirs()
@@ -114,6 +153,9 @@ def discover_plugins(extra_dirs: List[Path] | None = None) -> List[Tuple[str, Di
                 if path.suffix == ".json":
                     spec_obj, fn = load_json_plugin(path)
                 else:
+                    if not _may_load_py(path, allow_py):
+                        _SKIPPED_PY.append(path)
+                        continue
                     spec_obj, fn = load_py_plugin(path)
                 name = spec_obj["function"]["name"]
                 if name in seen_names:
@@ -129,11 +171,12 @@ def apply_plugins(
     specs: List[Dict[str, Any]],
     funcs: Dict[str, Callable[..., str]],
     extra_dirs: List[Path] | None = None,
+    allow_py: bool | None = None,
 ) -> Tuple[List[Dict[str, Any]], Dict[str, Callable[..., str]]]:
     specs = list(specs)
     funcs = dict(funcs)
     existing = {s.get("function", {}).get("name") for s in specs}
-    for name, spec_obj, fn in discover_plugins(extra_dirs):
+    for name, spec_obj, fn in discover_plugins(extra_dirs, allow_py=allow_py):
         funcs[name] = fn
         if name not in existing:
             specs.append(spec_obj)

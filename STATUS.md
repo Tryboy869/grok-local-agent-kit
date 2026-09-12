@@ -1,3 +1,3 @@
 # Status
 
-Current release: **v0.24.0** (plugins + transcripts).
+Current release: **v0.25.0** (plugin sandbox — Python plugins opt-in).

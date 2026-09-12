@@ -1,25 +1,28 @@
-# Demo GIFs
+# Demo GIFs (storyboards)
 
-Record these with asciinema + agg, or VHS. Until binary GIFs are committed, this file is the storyboard.
+Binary GIFs are not checked in. Record with [VHS](https://github.com/charmbracelet/vhs) or `script` + `agg`.
 
-1. demo-chat.gif — grok-agent chat -v --stream
-2. demo-route.gif — grok-agent route
-3. demo-mcp.gif — python examples/mcp_agent.py --no-llm
-4. demo-hooks.gif — python examples/hooks_agent.py
-5. demo-memory.gif — grok-agent memory remember / recall
-6. demo-vector.gif — python examples/vector_memory_agent.py
-7. demo-skills.gif — python examples/skills_agent.py
-8. demo-sandbox.gif — python examples/sandbox_agent.py
-9. demo-embed.gif — python examples/embed_agent.py
-10. demo-parallel.gif — python examples/parallel_agent.py
-11. demo-serve.gif — python examples/serve_agent.py then curl POST /v1/chat
-12. demo-planner.gif — python examples/planner_agent.py
-13. demo-guardrails.gif — python examples/guardrails_agent.py
-14. demo-cancel.gif — python examples/cancel_agent.py (sleep killed <1s)
+## 1. Chat + tools
 
-Storyboard notes:
-- Serve: split pane, server logs + JSON response with text and trace.
-- Planner: add two items, mark one done, show .grok/plan.json.
-- Guardrails: denied tool name printed, then a timeout message.
-- Budget: first two calculator calls succeed, third prints "Budget exceeded".
-- Vec: `grok-agent vec info` prints hash or sqlite-vec; search ranks the cat note above the market note.
+```
+grok-agent chat -v --stream
+# user: list files in this folder
+# user: calculate 21*2
+```
+
+## 2. Plugin sandbox
+
+```
+python examples/sandbox_plugin_agent.py
+grok-agent sandbox status
+grok-agent sandbox skipped
+GROK_AGENT_ALLOW_PY_PLUGINS=1 grok-agent plugins list
+```
+
+Expected: JSON plugins appear; `.py` plugins stay skipped until the env flag or allowlist.
+
+## 3. Serve
+
+```
+GROK_AGENT_SERVE_TOKEN=dev grok-agent serve --port 8765
+```

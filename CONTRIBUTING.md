@@ -19,6 +19,7 @@ pytest -q
 - Keep the public surface in `grok_local_agent_kit/__init__.py` intentional.
 - Prefer small modules (`cli_v0XX.py`, `test_v0XX.py`) over growing god-files.
 - File tools stay workspace-scoped. Do not weaken `_safe_path`.
+- Do not load untrusted Python plugins by default. JSON plugins are data-only.
 - Do not commit secrets, model weights, or large binaries.
 
 ## Pull requests
