@@ -1,23 +1,24 @@
-# Launch update — v0.25.0 (HN / Indie Hackers)
+# Launch update — v0.26.0 (HN / Indie Hackers)
 
-**One-liner:** Local AI agents that call tools, fail over Ollama ↔ LM Studio, speak MCP — now with a plugin sandbox so a random `tools/*.py` in your workspace cannot execute on import.
+**One-liner:** Local AI agents that call tools, fail over Ollama ↔ LM Studio, speak MCP — now with a cwd-safe workspace packer and file RAG that runs without a network or a live model.
 
-**What's new since v0.24**
+**What's new since v0.25**
 
-- Python plugins require `GROK_AGENT_ALLOW_PY_PLUGINS=1` or `GROK_AGENT_PY_PLUGIN_ALLOWLIST`
-- JSON plugins still load (templates / static returns, no code exec)
-- `discover_plugins(allow_py=True)` for explicit loads in your own scripts
-- `grok-agent sandbox status|skipped`
-- Example: `examples/sandbox_plugin_agent.py`
-- Tests: `tests/test_v025.py` (no live LLM)
+- `pack_workspace` summarizes the repo (paths + snippets, skips `.git` / `.venv`)
+- `search_workspace` ranks files with local hash embeddings
+- `grok-agent workspace pack` / `grok-agent workspace search "query"`
+- Example: `python examples/workspace_agent.py`
+- Tests: `tests/test_v026.py` (no live LLM)
+- File tools still cannot escape the working directory
 
 **Install**
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
 grok-agent doctor
-python examples/sandbox_plugin_agent.py
-grok-agent sandbox status
+python examples/workspace_agent.py
+grok-agent workspace pack
+grok-agent workspace search "MCP routing"
 pytest -q
 ```
 

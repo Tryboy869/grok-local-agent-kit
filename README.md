@@ -1,24 +1,20 @@
 # grok-local-agent-kit
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
-[![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions)
-[![GitHub stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers)
-
 **Open-source toolkit for building local AI agents.**
-Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, tool cache + telemetry + budgets, **drop-in tool plugins with a Python sandbox**, **JSONL transcripts**.
-
-Offline-first. Built autonomously by Grok.
+Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, tool cache + telemetry + budgets, **drop-in tool plugins with a Python sandbox**, **JSONL transcripts**, **workspace packer + local file RAG**.
+Offline-first.
+Built autonomously by Grok.
 
 > Capable agents on your machine.
 > No cloud required.
 > No API keys for local models.
 
-## Features (v0.25.0)
+## Features (v0.26.0)
 
 * Multi-LLM (Ollama + LM Studio / OpenAI-compat) + fallback router
 * ReAct tool loop, streaming, hooks, skills, orchestrator
 * File / web / shell / Python sandbox / calculator / MCP tools
+* Workspace packer + local file RAG (`pack_workspace`, `search_workspace`)
 * MCP Streamable HTTP session ids (`Mcp-Session-Id`) + JSON-RPC `-32800` cancel
 * Offline eval harness (`grok-agent eval`)
 * Local HTTP API + optional bearer auth, planner, guardrails, cancel tokens
@@ -28,6 +24,18 @@ Offline-first. Built autonomously by Grok.
 * Drop-in plugins — JSON always; **Python only when opted in** (`GROK_AGENT_ALLOW_PY_PLUGINS` or allowlist)
 * Transcripts — local JSONL logs (`grok-agent transcripts list`)
 * `grok-agent sandbox status|skipped`
+* `grok-agent workspace pack|search`
+
+## Demo storyboard
+
+Binary GIFs are not generated in this environment. Recreate them with VHS or `script` + `agg`. Storyboards live in `docs/gifs/README.md`.
+
+1. `grok-agent chat -v --stream` — list files, then `calculator` for `21*2`
+2. `GROK_AGENT_SERVE_TOKEN=dev grok-agent serve --port 8765`
+3. `python examples/plugin_agent.py` then `grok-agent plugins list`
+4. `python examples/sandbox_plugin_agent.py` then `grok-agent sandbox status`
+5. `python examples/transcript_agent.py` then `grok-agent transcripts list`
+6. `python examples/workspace_agent.py` then `grok-agent workspace search "MCP"`
 
 ## Quick start (1 command)
 
@@ -35,10 +43,10 @@ Offline-first. Built autonomously by Grok.
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
 grok-agent doctor
 grok-agent init
-grok-agent plugins list
-grok-agent sandbox status
-python examples/plugin_agent.py
-python examples/sandbox_plugin_agent.py
+grok-agent workspace pack
+python examples/workspace_agent.py
+python examples/chat_agent.py --verbose --stream
+python examples/automation_agent.py
 pytest -q
 grok-agent chat -v --stream --router
 ```
@@ -51,23 +59,7 @@ cd grok-local-agent-kit && pip install -e ".[dev]" && pytest -q
 
 Needs Python 3.10+ and Ollama or LM Studio. `ollama pull llama3.2` is a good default.
 
-## Demo storyboard
+See ROADMAP.md, CONTRIBUTING.md, SHOW_HN.md, docs/HN_INDIE_HACKERS.md.
 
-1. `grok-agent chat -v --stream` — list files, then `calculator` for `21*2`
-2. `GROK_AGENT_SERVE_TOKEN=dev grok-agent serve --port 8765`
-3. `python examples/plugin_agent.py` then `grok-agent plugins list`
-4. `python examples/sandbox_plugin_agent.py` then `grok-agent sandbox status`
-5. `python examples/transcript_agent.py` then `grok-agent transcripts list`
-
-Storyboards: `docs/gifs/README.md`.
-
-## Roadmap
-
-See [ROADMAP.md](ROADMAP.md). Growth plan: [GROWTH.md](GROWTH.md).
-
-## License
-
-MIT — see [LICENSE](LICENSE).
-
-Built autonomously by Grok / Nexus Studio / Tryboy869  
+Built autonomously by Grok / Nexus Studio / Tryboy869
 https://github.com/Tryboy869/grok-local-agent-kit

@@ -2,6 +2,15 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.26.0] — 2026-09-13
+
+### Added
+- Workspace packer (`pack_workspace`) — cwd-safe file list + snippets
+- Local file RAG (`search_workspace`) — ranks files with hash embeddings (no network)
+- CLI: `grok-agent workspace pack|search`
+- Example: `examples/workspace_agent.py`
+- Tests: `tests/test_v026.py` (no live LLM)
+
 ## [0.25.0] — 2026-09-12
 
 ### Added

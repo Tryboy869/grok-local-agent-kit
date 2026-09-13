@@ -20,6 +20,7 @@ pytest -q
 - Prefer small modules (`cli_v0XX.py`, `test_v0XX.py`) over growing god-files.
 - File tools stay workspace-scoped. Do not weaken `_safe_path`.
 - Do not load untrusted Python plugins by default. JSON plugins are data-only.
+- Workspace packer / file RAG must stay cwd-safe and skip VCS / venv trees.
 - Do not commit secrets, model weights, or large binaries.
 
 ## Pull requests
