@@ -1,18 +1,34 @@
-# Show HN: grok-local-agent-kit v0.25 — local agents + plugin sandbox
+# Show HN: grok-local-agent-kit — offline-first local agents (Ollama + MCP + sandbox)
 
-Offline-first Python agents that talk to Ollama or LM Studio, call real tools, and speak MCP.
+I built a small Python toolkit so you can run capable agents on your machine with no cloud and no API keys for local models.
 
-v0.25 adds a plugin sandbox:
+**What it does**
 
-- JSON tools in `./tools` still load automatically (data only)
-- Python `.py` plugins are **not imported** unless you set `GROK_AGENT_ALLOW_PY_PLUGINS=1` or an allowlist
-- `grok-agent sandbox status|skipped`
+- Talks to Ollama or LM Studio (OpenAI-compat) with a multi-LLM fallback router
+- ReAct tool loop: files, web, shell, calculator, Python sandbox, MCP (stdio / HTTP / SSE)
+- Drop-in plugins: JSON tools always load; Python plugins are opt-in only (`GROK_AGENT_ALLOW_PY_PLUGINS`)
+- Local HTTP API, SQLite memory (optional sqlite-vec), transcripts, eval harness, telemetry + budgets
+
+**Why I made it**
+
+Most agent frameworks assume the cloud. I wanted something you can `pip install`, point at a local model, and use the same day — including MCP tools and a sandbox that does not auto-import random `.py` files.
+
+**Try it**
 
 ```
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
-python examples/sandbox_plugin_agent.py
-grok-agent sandbox status
+grok-agent doctor
+grok-agent chat -v --stream --router
+```
+
+Or:
+
+```
+pip install git+https://github.com/Tryboy869/grok-local-agent-kit.git
+ollama pull llama3.2
 pytest -q
 ```
 
 Repo: https://github.com/Tryboy869/grok-local-agent-kit
+
+Happy to hear what breaks first.
