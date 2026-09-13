@@ -1,6 +1,6 @@
 """Grok Local Agent Kit — local-first AI agents with tools & multi-LLM support."""
 
-__version__ = "0.25.0"
+__version__ = "0.26.0"
 
 from .agent import Agent
 from .config import KitConfig, load_config, write_example_config
@@ -52,6 +52,7 @@ from .budget import ToolBudget, get_budget, set_budget, reset_budget, BudgetExce
 from .retry import retry_call
 from .plugins import apply_plugins, discover_plugins, py_plugins_allowed, skipped_py_plugins
 from .transcripts import append_turn, list_transcripts, new_path as new_transcript, read_transcript
+from .workspace import pack_workspace, search_workspace, register_tools as _register_workspace_tools
 from .shell import patch_tools as _patch_tools
 from .runtime import patch as _patch_runtime
 from . import cli as _cli_mod
@@ -61,6 +62,7 @@ from .cli_v022 import register as _register_cli_v022
 from .cli_v023 import register as _register_cli_v023
 from .cli_v024 import register as _register_cli_v024
 from .cli_v025 import register as _register_cli_v025
+from .cli_v026 import register as _register_cli_v026
 
 _register_cli_ext(_cli_mod.cli)
 _register_cli_v021(_cli_mod.cli)
@@ -68,8 +70,10 @@ _register_cli_v022(_cli_mod.cli)
 _register_cli_v023(_cli_mod.cli)
 _register_cli_v024(_cli_mod.cli)
 _register_cli_v025(_cli_mod.cli)
+_register_cli_v026(_cli_mod.cli)
 _patch_tools()
 _patch_runtime()
+_register_workspace_tools()
 
 __all__ = [
     "Agent",
@@ -173,5 +177,7 @@ __all__ = [
     "list_transcripts",
     "new_transcript",
     "read_transcript",
+    "pack_workspace",
+    "search_workspace",
     "__version__",
 ]
