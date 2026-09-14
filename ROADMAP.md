@@ -11,8 +11,9 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.24: drop-in JSON/Python tool plugins + JSONL transcripts
 - v0.25: plugin sandbox — Python plugins opt-in / allowlist only
 - v0.26: workspace packer + local file RAG (`pack_workspace`, `search_workspace`)
+- v0.27: web search HTML fallback + LLM-free `grok-agent tools demo`
 
-## Next (v0.27.x)
+## Next (v0.28.x)
 
 - Recorded binary GIFs in `docs/gifs/`
 - PyPI test publish

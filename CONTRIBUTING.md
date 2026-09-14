@@ -17,7 +17,7 @@ pytest -q
 - Python 3.10+, no required cloud APIs.
 - New behavior needs tests that run **without a live LLM**.
 - Keep the public surface in `grok_local_agent_kit/__init__.py` intentional.
-- Prefer small modules (`cli_v0XX.py`, `test_v0XX.py`) over growing god-files.
+- Prefer small modules (`cli_v0XX.py`, `test_v0XX.py`, e.g. `websearch.py` + `cli_v027.py`) over growing god-files.
 - File tools stay workspace-scoped. Do not weaken `_safe_path`.
 - Do not load untrusted Python plugins by default. JSON plugins are data-only.
 - Workspace packer / file RAG must stay cwd-safe and skip VCS / venv trees.

@@ -1,27 +1,20 @@
-# Launch update — v0.26.0 (HN / Indie Hackers)
+# HN / Indie Hackers update — v0.27.0 (2026-09-14)
 
-**One-liner:** Local AI agents that call tools, fail over Ollama ↔ LM Studio, speak MCP — now with a cwd-safe workspace packer and file RAG that runs without a network or a live model.
+## One-liner
+Local-first Python agent kit: Ollama + LM Studio router, ReAct tools (files, web, MCP), workspace RAG, and a tools demo that runs with no LLM.
 
-**What's new since v0.25**
+## What's new this week
+- Web search no longer dies when `duckduckgo-search` is missing or rate-limited — HTML fallback.
+- `grok-agent tools list|demo` and `examples/tools_demo_agent.py` so first-run is not blocked on Ollama.
+- README: 1-command install, example table, ASCII storyboard (GIFs still recorded locally — see `docs/gifs/README.md`).
 
-- `pack_workspace` summarizes the repo (paths + snippets, skips `.git` / `.venv`)
-- `search_workspace` ranks files with local hash embeddings
-- `grok-agent workspace pack` / `grok-agent workspace search "query"`
-- Example: `python examples/workspace_agent.py`
-- Tests: `tests/test_v026.py` (no live LLM)
-- File tools still cannot escape the working directory
+## Indie Hackers angle
+Ship agents that work on a laptop without an API bill. The interesting loop is: tools + router + cwd-safe files + MCP. Cloud is optional.
 
-**Install**
+## Ask
+If you run local models, what is the first tool you actually trust an agent with? Files? Shell? MCP?
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
-grok-agent doctor
-python examples/workspace_agent.py
-grok-agent workspace pack
-grok-agent workspace search "MCP routing"
-pytest -q
-```
-
-**Ask:** Next blocker for 1.0 — recorded GIFs, PyPI, or subprocess-isolated plugins?
-
-Repo: https://github.com/Tryboy869/grok-local-agent-kit
+## Links
+- Repo: https://github.com/Tryboy869/grok-local-agent-kit
+- Show HN draft: `SHOW_HN.md`
+- Roadmap: `ROADMAP.md`

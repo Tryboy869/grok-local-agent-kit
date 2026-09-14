@@ -1,7 +1,7 @@
 # grok-local-agent-kit
 
 **Open-source toolkit for building local AI agents.**
-Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, tool cache + telemetry + budgets, **drop-in tool plugins with a Python sandbox**, **JSONL transcripts**, **workspace packer + local file RAG**.
+Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, tool cache + telemetry + budgets, **drop-in tool plugins with a Python sandbox**, **JSONL transcripts**, **workspace packer + local file RAG**, **web search with HTML fallback**.
 Offline-first.
 Built autonomously by Grok.
 
@@ -9,11 +9,12 @@ Built autonomously by Grok.
 > No cloud required.
 > No API keys for local models.
 
-## Features (v0.26.0)
+## Features (v0.27.0)
 
 * Multi-LLM (Ollama + LM Studio / OpenAI-compat) + fallback router
 * ReAct tool loop, streaming, hooks, skills, orchestrator
 * File / web / shell / Python sandbox / calculator / MCP tools
+* Web search: `duckduckgo-search` first, DuckDuckGo HTML fallback if the package or API fails
 * Workspace packer + local file RAG (`pack_workspace`, `search_workspace`)
 * MCP Streamable HTTP session ids (`Mcp-Session-Id`) + JSON-RPC `-32800` cancel
 * Offline eval harness (`grok-agent eval`)
@@ -21,45 +22,75 @@ Built autonomously by Grok.
 * Workspace watcher, JSON extract, LLM-free TOML recipes
 * Tool-result TTL cache, telemetry, tool-call budgets, retry helper
 * Optional sqlite-vec (`GROK_VEC_BACKEND`, `grok-agent vec`)
-* Drop-in plugins — JSON always; **Python only when opted in** (`GROK_AGENT_ALLOW_PY_PLUGINS` or allowlist)
-* Transcripts — local JSONL logs (`grok-agent transcripts list`)
-* `grok-agent sandbox status|skipped`
+* Drop-in plugins — JSON always; **Python only when opted in**
+* Transcripts — local JSONL logs
+* `grok-agent tools list|demo` — inspect tools **without a live LLM**
 * `grok-agent workspace pack|search`
+* `grok-agent sandbox status|skipped`
 
 ## Demo storyboard
 
-Binary GIFs are not generated in this environment. Recreate them with VHS or `script` + `agg`. Storyboards live in `docs/gifs/README.md`.
+Binary GIFs are not generated in this environment. Recreate them with [VHS](https://github.com/charmbracelet/vhs) or `script` + `agg`. Storyboards: `docs/gifs/README.md`.
 
-1. `grok-agent chat -v --stream` — list files, then `calculator` for `21*2`
-2. `GROK_AGENT_SERVE_TOKEN=dev grok-agent serve --port 8765`
-3. `python examples/plugin_agent.py` then `grok-agent plugins list`
-4. `python examples/sandbox_plugin_agent.py` then `grok-agent sandbox status`
-5. `python examples/transcript_agent.py` then `grok-agent transcripts list`
+1. `python examples/tools_demo_agent.py` or `grok-agent tools demo` — no LLM needed
+2. `grok-agent chat -v --stream` — list files, then `calculator` for `21*2`
+3. `python examples/chat_agent.py`
+4. `python examples/automation_agent.py`
+5. `GROK_AGENT_SERVE_TOKEN=dev grok-agent serve --port 8765`
 6. `python examples/workspace_agent.py` then `grok-agent workspace search "MCP"`
+
+```
+┌─────────────────────────────────────────┐
+│  You › list files in this folder        │
+│  Agent › [list_files] README.md  …      │
+│  You › calculate 21*2                   │
+│  Agent › [calculator] 42                │
+└─────────────────────────────────────────┘
+```
 
 ## Quick start (1 command)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
 grok-agent doctor
-grok-agent init
-grok-agent workspace pack
-python examples/workspace_agent.py
-python examples/chat_agent.py --verbose --stream
-python examples/automation_agent.py
+grok-agent tools demo
+```
+
+From source:
+
+```bash
+git clone https://github.com/Tryboy869/grok-local-agent-kit.git
+cd grok-local-agent-kit
+python3 -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev]"
 pytest -q
+grok-agent doctor
+```
+
+Local model (optional — only needed for chat / ReAct):
+
+```bash
+ollama serve && ollama pull llama3.2
+# or start LM Studio on http://127.0.0.1:1234/v1
 grok-agent chat -v --stream --router
 ```
 
-```bash
-pip install git+https://github.com/Tryboy869/grok-local-agent-kit.git
-git clone https://github.com/Tryboy869/grok-local-agent-kit.git
-cd grok-local-agent-kit && pip install -e ".[dev]" && pytest -q
-```
+## Examples
 
-Needs Python 3.10+ and Ollama or LM Studio. `ollama pull llama3.2` is a good default.
+| Script | Needs LLM | What it shows |
+|---|---|---|
+| `examples/tools_demo_agent.py` | no | calculator, list_files, system info |
+| `examples/chat_agent.py` | yes | interactive ReAct chat |
+| `examples/automation_agent.py` | yes | one-shot goal with tools |
+| `examples/mcp_agent.py` | optional | MCP stdio / HTTP / SSE |
+| `examples/workspace_agent.py` | no | pack + local file RAG |
 
-See ROADMAP.md, CONTRIBUTING.md, SHOW_HN.md, docs/HN_INDIE_HACKERS.md.
+## Docs
 
-Built autonomously by Grok / Nexus Studio / Tryboy869
-https://github.com/Tryboy869/grok-local-agent-kit
+* [CONTRIBUTING.md](CONTRIBUTING.md)
+* [ROADMAP.md](ROADMAP.md)
+* [CHANGELOG.md](CHANGELOG.md)
+* [SHOW_HN.md](SHOW_HN.md)
+* [docs/HN_INDIE_HACKERS.md](docs/HN_INDIE_HACKERS.md)
+
+MIT © Nexus Studio / Tryboy869

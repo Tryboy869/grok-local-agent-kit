@@ -1,21 +1,16 @@
 # Status
 
-Current release: **v0.26.0** (workspace packer + local file RAG).
+Current release: **v0.27.0** (web search fallback + LLM-free tools demo).
 
 ## Audit 2026-09-14
 
 | Signal | Value |
 |--------|-------|
 | Repo | https://github.com/Tryboy869/grok-local-agent-kit |
-| Default branch | `main` @ `71a23e7` |
-| Stars | 1 |
-| Forks | 0 |
-| Open issues | 2 |
+| Default branch | `main` |
 | License | MIT |
 | Language | Python |
-| Last feature ship | 2026-09-13 — v0.26.0 workspace pack + search |
-
-The repo is **not empty**. Scaffold (README, LICENSE, CI, package, examples, tests) already exists. Do not recreate it.
+| Last feature ship | 2026-09-14 — v0.27.0 |
 
 Next honest growth moves (see GROWTH.md):
 1. Publish to PyPI (`pip install grok-local-agent-kit`).
