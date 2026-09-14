@@ -1,6 +1,6 @@
 """Grok Local Agent Kit — local-first AI agents with tools & multi-LLM support."""
 
-__version__ = "0.26.0"
+__version__ = "0.27.0"
 
 from .agent import Agent
 from .config import KitConfig, load_config, write_example_config
@@ -63,6 +63,7 @@ from .cli_v023 import register as _register_cli_v023
 from .cli_v024 import register as _register_cli_v024
 from .cli_v025 import register as _register_cli_v025
 from .cli_v026 import register as _register_cli_v026
+from .cli_v027 import register as _register_cli_v027
 
 _register_cli_ext(_cli_mod.cli)
 _register_cli_v021(_cli_mod.cli)
@@ -71,6 +72,7 @@ _register_cli_v023(_cli_mod.cli)
 _register_cli_v024(_cli_mod.cli)
 _register_cli_v025(_cli_mod.cli)
 _register_cli_v026(_cli_mod.cli)
+_register_cli_v027(_cli_mod.cli)
 _patch_tools()
 _patch_runtime()
 _register_workspace_tools()
