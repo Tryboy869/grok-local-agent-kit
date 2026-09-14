@@ -2,14 +2,15 @@
 
 Goal: 10k GitHub stars in ~90 days is **extremely hard** for a new toolkit from an account with ~9 followers. Treat 10k as a stretch north star. The plan below is the only honest path.
 
-## Reality check
+## Reality check (2026-09-14)
 
 | Signal today | Value |
 |--------------|-------|
-| Stars | 0 |
+| Stars | 1 |
 | Forks | 0 |
 | Followers on owner account | 9 |
-| Product | real Python kit, tests, CLI, MCP |
+| Product | real Python kit, tests, CLI, MCP, workspace RAG |
+| Last release | v0.26.0 (2026-09-13) |
 
 Buying stars, star-for-star groups, or bot farms will get the repo flagged and is explicitly out of scope.
 
