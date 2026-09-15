@@ -12,12 +12,14 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.25: plugin sandbox — Python plugins opt-in / allowlist only
 - v0.26: workspace packer + local file RAG (`pack_workspace`, `search_workspace`)
 - v0.27: web search HTML fallback + LLM-free `grok-agent tools demo`
+- v0.28: multi-agent `Team` + shared `Blackboard` (`grok-agent team demo`)
 
-## Next (v0.28.x)
+## Next (v0.29.x)
 
 - Recorded binary GIFs in `docs/gifs/`
 - PyPI test publish
 - Opt-in live-model eval profile
+- Persist blackboard to JSONL / SQLite
 - True vec0 virtual table writes when sqlite-vec is present
 - Stronger plugin isolation (subprocess / restricted builtins)
 

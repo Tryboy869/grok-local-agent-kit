@@ -2,6 +2,18 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.28.0] — 2026-09-15
+
+### Added
+- Multi-agent `Team` + thread-safe `Blackboard` (goal / note / claim / artifact posts)
+- CLI: `grok-agent team demo|status` (no live LLM)
+- Example: `examples/team_agent.py` (`--llm` optional)
+- Tests: `tests/test_v028.py`
+
+### Changed
+- Public exports: `Team`, `Blackboard`, `Member`, `demo_team`
+- README / ROADMAP / Show HN copy for v0.28
+
 ## [0.27.0] — 2026-09-14
 
 ### Added
