@@ -1,7 +1,7 @@
 # grok-local-agent-kit
 
 **Open-source toolkit for building local AI agents.**
-Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, tool cache + telemetry + budgets, **drop-in tool plugins with a Python sandbox**, **JSONL transcripts**, **workspace packer + local file RAG**, **web search with HTML fallback**.
+Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, tool cache + telemetry + budgets, **drop-in tool plugins with a Python sandbox**, **JSONL transcripts**, **workspace packer + local file RAG**, **web search with HTML fallback**, **multi-agent Team + shared blackboard**.
 Offline-first.
 Built autonomously by Grok.
 
@@ -9,10 +9,11 @@ Built autonomously by Grok.
 > No cloud required.
 > No API keys for local models.
 
-## Features (v0.27.0)
+## Features (v0.28.0)
 
 * Multi-LLM (Ollama + LM Studio / OpenAI-compat) + fallback router
 * ReAct tool loop, streaming, hooks, skills, orchestrator
+* **Team + Blackboard** — coordinator / researcher / operator share posts (`grok-agent team demo`)
 * File / web / shell / Python sandbox / calculator / MCP tools
 * Web search: `duckduckgo-search` first, DuckDuckGo HTML fallback if the package or API fails
 * Workspace packer + local file RAG (`pack_workspace`, `search_workspace`)
@@ -33,18 +34,20 @@ Built autonomously by Grok.
 Binary GIFs are not generated in this environment. Recreate them with [VHS](https://github.com/charmbracelet/vhs) or `script` + `agg`. Storyboards: `docs/gifs/README.md`.
 
 1. `python examples/tools_demo_agent.py` or `grok-agent tools demo` — no LLM needed
-2. `grok-agent chat -v --stream` — list files, then `calculator` for `21*2`
-3. `python examples/chat_agent.py`
-4. `python examples/automation_agent.py`
-5. `GROK_AGENT_SERVE_TOKEN=dev grok-agent serve --port 8765`
-6. `python examples/workspace_agent.py` then `grok-agent workspace search "MCP"`
+2. `grok-agent team demo` — shared blackboard, still no LLM
+3. `grok-agent chat -v --stream` — list files, then `calculator` for `21*2`
+4. `python examples/chat_agent.py`
+5. `python examples/automation_agent.py`
+6. `GROK_AGENT_SERVE_TOKEN=dev grok-agent serve --port 8765`
+7. `python examples/workspace_agent.py` then `grok-agent workspace search "MCP"`
 
 ```
 ┌─────────────────────────────────────────┐
-│  You › list files in this folder        │
-│  Agent › [list_files] README.md  …      │
-│  You › calculate 21*2                   │
-│  Agent › [calculator] 42                │
+│  You › grok-agent team demo                 │
+│  system/goal: Ship a local agent…          │
+│  coordinator/note: reviewed goal           │
+│  researcher/note: ready                    │
+│  operator/note: ready                      │
 └─────────────────────────────────────────┘
 ```
 
@@ -54,6 +57,7 @@ Binary GIFs are not generated in this environment. Recreate them with [VHS](http
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
 grok-agent doctor
 grok-agent tools demo
+grok-agent team demo
 ```
 
 From source:
@@ -80,6 +84,7 @@ grok-agent chat -v --stream --router
 | Script | Needs LLM | What it shows |
 |---|---|---|
 | `examples/tools_demo_agent.py` | no | calculator, list_files, system info |
+| `examples/team_agent.py` | no (`--llm` optional) | multi-agent blackboard |
 | `examples/chat_agent.py` | yes | interactive ReAct chat |
 | `examples/automation_agent.py` | yes | one-shot goal with tools |
 | `examples/mcp_agent.py` | optional | MCP stdio / HTTP / SSE |
