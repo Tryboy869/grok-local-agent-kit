@@ -1,10 +1,5 @@
-from grok_local_agent_kit import __version__
 from grok_local_agent_kit.tools import calculator, list_tools
 from grok_local_agent_kit.websearch import _format, search_web
-
-
-def test_version():
-    assert __version__ == "0.27.0"
 
 
 def test_calculator_and_tool_list():
