@@ -13,15 +13,16 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.26: workspace packer + local file RAG (`pack_workspace`, `search_workspace`)
 - v0.27: web search HTML fallback + LLM-free `grok-agent tools demo`
 - v0.28: multi-agent `Team` + shared `Blackboard` (`grok-agent team demo`)
+- v0.29: persist blackboard to JSONL / SQLite (`grok-agent board demo`)
 
-## Next (v0.29.x)
+## Next (v0.30.x)
 
 - Recorded binary GIFs in `docs/gifs/`
 - PyPI test publish
 - Opt-in live-model eval profile
-- Persist blackboard to JSONL / SQLite
 - True vec0 virtual table writes when sqlite-vec is present
 - Stronger plugin isolation (subprocess / restricted builtins)
+- Optional per-member LLM binding on a persisted board
 
 ## v1.0
 

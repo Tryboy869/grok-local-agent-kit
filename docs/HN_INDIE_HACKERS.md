@@ -1,18 +1,18 @@
-# HN / Indie Hackers update — v0.28.0 (2026-09-15)
+# HN / Indie Hackers update — v0.29.0 (2026-09-16)
 
 ## One-liner
-Local-first Python agent kit: Ollama + LM Studio router, ReAct tools, workspace RAG, and now a multi-agent team that shares a blackboard — demo runs with zero cloud and zero LLM.
+Local-first Python agent kit: Ollama + LM Studio router, ReAct tools, workspace RAG, multi-agent teams — and now the shared blackboard survives process restarts as JSONL or SQLite. Demos still run with zero cloud and zero LLM.
 
 ## What's new this week
-- `Team` + `Blackboard`: coordinator / researcher / operator post goals, notes, claims.
-- `grok-agent team demo` and `examples/team_agent.py` (add `--llm` only when Ollama/LM Studio is up).
-- Still true: `grok-agent tools demo` and web search HTML fallback from v0.27.
+- Persist `Blackboard` to JSONL (default) or SQLite.
+- `grok-agent board demo|show` and `examples/persist_agent.py`.
+- Reload a previous team run, then append another round.
 
 ## Indie Hackers angle
-Most agent frameworks assume an API bill before you can try multi-agent. This kit lets you exercise the coordination loop on a laptop first, then plug local models in.
+Coordination state is usually trapped in RAM or a vendor dashboard. This kit writes the same posts you already see in `team demo` to a file in the workspace, so overnight runs and cron jobs can resume without a hosted queue.
 
 ## Ask
-Would you persist the blackboard to disk next, or wire members to different local models?
+Would you rather we ship a 20s terminal GIF next, or a Test PyPI package?
 
 ## Links
 - Repo: https://github.com/Tryboy869/grok-local-agent-kit

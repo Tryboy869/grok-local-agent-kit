@@ -1,9 +1,9 @@
 """Multi-agent team with a shared blackboard.
 
 Unlike Orchestrator (planner then sequential specialists via full Agent.run),
-Team keeps a durable in-memory board: members read recent posts and append
-notes / claims / artifacts. Handlers can be plain callables (LLM-free tests)
-or thin wrappers around Agent.run.
+Team keeps a durable board: members read recent posts and append notes /
+claims / artifacts. Handlers can be plain callables (LLM-free tests) or thin
+wrappers around Agent.run. v0.29 adds JSONL / SQLite persistence via persist.py.
 """
 
 from __future__ import annotations
@@ -52,6 +52,9 @@ class Blackboard:
         if kind not in ALLOWED_KINDS:
             kind = "note"
         item = Post(author=author, kind=kind, body=str(body), tags=list(tags or []))
+        return self.post_raw(item)
+
+    def post_raw(self, item: Post) -> Post:
         with self._lock:
             self._posts.append(item)
         return item

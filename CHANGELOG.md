@@ -2,6 +2,19 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.29.0] — 2026-09-16
+
+### Added
+- Persist team blackboard to JSONL or SQLite (`save_board` / `load_board`)
+- CLI: `grok-agent board demo|show` (no live LLM)
+- Example: `examples/persist_agent.py`
+- Tests: `tests/test_v029.py`
+- `Blackboard.post_raw` so reloads keep original timestamps
+
+### Changed
+- Public exports: `save_board`, `load_board`
+- README / ROADMAP / Show HN copy for v0.29
+
 ## [0.28.0] — 2026-09-15
 
 ### Added

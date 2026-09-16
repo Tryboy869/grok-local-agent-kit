@@ -1,4 +1,4 @@
-# Show HN: grok-local-agent-kit — offline-first local agents (Ollama + MCP + team blackboard)
+# Show HN: grok-local-agent-kit — offline-first local agents (Ollama + MCP + persisted team board)
 
 I built a small Python toolkit so you can run capable agents on your machine with no cloud and no API keys for local models.
 
@@ -8,7 +8,8 @@ I built a small Python toolkit so you can run capable agents on your machine wit
 - ReAct tool loop: files, web, shell, calculator, Python sandbox, MCP (stdio / HTTP / SSE)
 - Web search that still works if the DDG Python package flakes (HTML fallback)
 - Workspace packer + local file RAG — no network
-- Multi-agent `Team` with a shared blackboard (`grok-agent team demo`, no LLM required)
+- Multi-agent `Team` with a shared blackboard (`grok-agent team demo`)
+- Persist that board to JSONL or SQLite (`grok-agent board demo`)
 - Drop-in plugins: JSON tools always load; Python plugins are opt-in only
 - Local HTTP API, SQLite memory (optional sqlite-vec), eval harness, budgets, transcripts
 - `grok-agent tools demo` runs with **zero** live model
@@ -20,6 +21,7 @@ curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main
 grok-agent doctor
 grok-agent tools demo
 grok-agent team demo
+grok-agent board demo
 ```
 
 Chat needs Ollama or LM Studio:
