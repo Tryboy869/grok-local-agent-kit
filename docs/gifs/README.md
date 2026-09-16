@@ -26,3 +26,14 @@ Expected: JSON plugins appear; `.py` plugins stay skipped until the env flag or 
 ```
 GROK_AGENT_SERVE_TOKEN=dev grok-agent serve --port 8765
 ```
+
+## 4. Persisted team board (v0.29)
+
+```
+grok-agent team demo
+grok-agent board demo --path board.jsonl
+grok-agent board show board.jsonl
+python examples/persist_agent.py --sqlite
+```
+
+Expected: posts survive the process; a second demo appends another goal/round.
