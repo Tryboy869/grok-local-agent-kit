@@ -1,6 +1,6 @@
 """Grok Local Agent Kit — local-first AI agents with tools & multi-LLM support."""
 
-__version__ = "0.29.0"
+__version__ = "0.30.0"
 
 from .agent import Agent
 from .config import KitConfig, load_config, write_example_config
@@ -55,6 +55,14 @@ from .transcripts import append_turn, list_transcripts, new_path as new_transcri
 from .workspace import pack_workspace, search_workspace, register_tools as _register_workspace_tools
 from .team import Blackboard, Member, Team, demo_team
 from .persist import load_board, save_board
+from .roster import (
+    MemberSpec,
+    bind_roster,
+    format_roster,
+    load_roster,
+    save_roster,
+    team_from_roster,
+)
 from .shell import patch_tools as _patch_tools
 from .runtime import patch as _patch_runtime
 from . import cli as _cli_mod
@@ -68,6 +76,7 @@ from .cli_v026 import register as _register_cli_v026
 from .cli_v027 import register as _register_cli_v027
 from .cli_v028 import register as _register_cli_v028
 from .cli_v029 import register as _register_cli_v029
+from .cli_v030 import register as _register_cli_v030
 
 _register_cli_ext(_cli_mod.cli)
 _register_cli_v021(_cli_mod.cli)
@@ -79,6 +88,7 @@ _register_cli_v026(_cli_mod.cli)
 _register_cli_v027(_cli_mod.cli)
 _register_cli_v028(_cli_mod.cli)
 _register_cli_v029(_cli_mod.cli)
+_register_cli_v030(_cli_mod.cli)
 _patch_tools()
 _patch_runtime()
 _register_workspace_tools()
@@ -193,5 +203,11 @@ __all__ = [
     "demo_team",
     "save_board",
     "load_board",
+    "MemberSpec",
+    "bind_roster",
+    "format_roster",
+    "load_roster",
+    "save_roster",
+    "team_from_roster",
     "__version__",
 ]
