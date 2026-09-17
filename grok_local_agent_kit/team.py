@@ -3,7 +3,8 @@
 Unlike Orchestrator (planner then sequential specialists via full Agent.run),
 Team keeps a durable board: members read recent posts and append notes /
 claims / artifacts. Handlers can be plain callables (LLM-free tests) or thin
-wrappers around Agent.run. v0.29 adds JSONL / SQLite persistence via persist.py.
+wrappers around Agent.run. v0.29 persists the board; v0.30 persists the roster
+and optional per-member LLM bindings (provider + model).
 """
 
 from __future__ import annotations
@@ -86,6 +87,9 @@ class Member:
     name: str
     instruction: str
     handler: Optional[Handler] = None
+    provider: str = ""
+    model: str = ""
+    role: str = ""
 
     def act(self, board: Blackboard, goal: str) -> str:
         if self.handler is None:
