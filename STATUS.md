@@ -1,8 +1,8 @@
 # Status
 
-Current release: **v0.29.0** (persist team blackboard to JSONL / SQLite).
+Current release: **v0.30.0** (persist team roster + optional per-member LLM bindings).
 
-## Audit 2026-09-16
+## Audit 2026-09-17
 
 | Signal | Value |
 |--------|-------|
@@ -10,7 +10,7 @@ Current release: **v0.29.0** (persist team blackboard to JSONL / SQLite).
 | Default branch | `main` |
 | License | MIT |
 | Language | Python |
-| Last feature ship | 2026-09-16 — v0.29.0 |
+| Last feature ship | 2026-09-17 — v0.30.0 |
 
 Next honest growth moves (see GROWTH.md):
 1. Publish to PyPI (`pip install grok-local-agent-kit`).
