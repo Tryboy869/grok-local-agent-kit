@@ -2,6 +2,29 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.31.0] — 2026-09-18
+
+### Added
+- Task handoff queue (`HandoffQueue`, `Task`, `save_queue` / `load_queue`)
+- Offer / claim / complete / drop with optional Blackboard mirror
+- JSON + SQLite persistence (cwd-safe)
+- CLI: `grok-agent handoff demo|show` (no live LLM)
+- Example: `examples/handoff_agent.py`
+- Tests: `tests/test_v031.py`
+
+### Changed
+- README features heading aligned to current version
+- Public exports for handoff helpers
+
+## [0.30.0] — 2026-09-17
+
+### Added
+- Persist team roster to JSON or SQLite (`save_roster` / `load_roster`)
+- Optional per-member LLM bindings (`provider` + `model`, `bind_roster`)
+- CLI: `grok-agent roster demo|show` (no live LLM unless `--llm`)
+- Example: `examples/roster_agent.py`
+- Tests: `tests/test_v030.py`
+
 ## [0.29.0] — 2026-09-16
 
 ### Added
@@ -23,10 +46,6 @@ All notable changes to grok-local-agent-kit are documented here.
 - Example: `examples/team_agent.py` (`--llm` optional)
 - Tests: `tests/test_v028.py`
 
-### Changed
-- Public exports: `Team`, `Blackboard`, `Member`, `demo_team`
-- README / ROADMAP / Show HN copy for v0.28
-
 ## [0.27.0] — 2026-09-14
 
 ### Added
@@ -34,16 +53,3 @@ All notable changes to grok-local-agent-kit are documented here.
 - CLI: `grok-agent tools list|demo` (no live LLM)
 - Example: `examples/tools_demo_agent.py`
 - Tests: `tests/test_v027.py`
-
-### Changed
-- `tools.web_search` now delegates to the fallback pipeline
-- README: 1-command install, demo storyboard, examples table
-
-## [0.26.0] — 2026-09-13
-
-### Added
-- Workspace packer (`pack_workspace`) — cwd-safe file list + snippets
-- Local file RAG (`search_workspace`) — ranks files with hash embeddings (no network)
-- CLI: `grok-agent workspace pack|search`
-- Example: `examples/workspace_agent.py`
-- Tests: `tests/test_v026.py` (no live LLM)

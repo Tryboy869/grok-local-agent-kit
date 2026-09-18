@@ -15,8 +15,9 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.28: multi-agent Team + shared Blackboard
 - v0.29: persist blackboard to JSONL / SQLite
 - v0.30: persist team roster + optional per-member LLM bindings
+- v0.31: task handoff queue (offer / claim / complete)
 
-## Next (v0.31.x)
+## Next (v0.32.x)
 
 - Recorded binary GIFs in docs/gifs/
 - PyPI test publish

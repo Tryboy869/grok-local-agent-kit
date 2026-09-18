@@ -1,15 +1,15 @@
-# HN / Indie Hackers update — v0.29.0 (2026-09-16)
+# HN / Indie Hackers update — v0.31.0 (2026-09-18)
 
 ## One-liner
-Local-first Python agent kit: Ollama + LM Studio router, ReAct tools, workspace RAG, multi-agent teams — and now the shared blackboard survives process restarts as JSONL or SQLite. Demos still run with zero cloud and zero LLM.
+Local-first Python agent kit: Ollama + LM Studio router, ReAct tools, workspace RAG, multi-agent teams whose roster and blackboard survive restarts — and now a file-backed handoff queue so overnight jobs can claim work without a hosted broker.
 
 ## What's new this week
-- Persist `Blackboard` to JSONL (default) or SQLite.
-- `grok-agent board demo|show` and `examples/persist_agent.py`.
-- Reload a previous team run, then append another round.
+- v0.30: persist team roster (JSON / SQLite) + optional per-member `provider`/`model` bindings. `grok-agent roster demo`.
+- v0.31: `HandoffQueue` — offer / claim / complete / drop. Mirrors onto the blackboard. `grok-agent handoff demo`.
+- README feature list finally matches the shipped version.
 
 ## Indie Hackers angle
-Coordination state is usually trapped in RAM or a vendor dashboard. This kit writes the same posts you already see in `team demo` to a file in the workspace, so overnight runs and cron jobs can resume without a hosted queue.
+Most "multi-agent" demos die when the process exits. This kit writes the team, the board, and the work items to the workspace. Cron can resume. No Redis, no SaaS queue, no API key for the happy path.
 
 ## Ask
 Would you rather we ship a 20s terminal GIF next, or a Test PyPI package?
