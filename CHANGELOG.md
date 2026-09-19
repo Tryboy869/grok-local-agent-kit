@@ -2,6 +2,15 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.32.0] — 2026-09-19
+
+### Added
+- Local approval gate (`ApprovalGate`, `Approval`, `ApprovalDenied`)
+- Allow / deny lists + programmable decider + persist JSON
+- CLI: `grok-agent approve demo|show` (no live LLM)
+- Example: `examples/approve_agent.py`
+- Tests: `tests/test_v032.py`
+
 ## [0.31.0] — 2026-09-18
 
 ### Added

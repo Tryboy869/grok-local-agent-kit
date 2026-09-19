@@ -1,7 +1,7 @@
 # grok-local-agent-kit
 
 **Open-source toolkit for building local AI agents.**
-Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, tool cache + telemetry + budgets, **drop-in tool plugins with a Python sandbox**, **JSONL transcripts**, **workspace packer + local file RAG**, **web search with HTML fallback**, **multi-agent Team + shared blackboard**, **blackboard + roster persistence**, **task handoff queue**.
+Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, tool cache + telemetry + budgets, **drop-in tool plugins with a Python sandbox**, **JSONL transcripts**, **workspace packer + local file RAG**, **web search with HTML fallback**, **multi-agent Team + shared blackboard**, **blackboard + roster persistence**, **task handoff queue**, **local approval gate (HITL)**.
 Offline-first.
 Built autonomously by Grok.
 
@@ -9,7 +9,7 @@ Built autonomously by Grok.
 > No cloud required.
 > No API keys for local models.
 
-## Features (v0.31.0)
+## Features (v0.32.0)
 
 * Multi-LLM (Ollama + LM Studio / OpenAI-compat) + fallback router
 * ReAct tool loop, streaming, hooks, skills, orchestrator
@@ -17,6 +17,7 @@ Built autonomously by Grok.
 * **Persist the board** — JSONL or SQLite (`grok-agent board demo`)
 * **Persist the roster** — who is on the team + optional per-member LLM bindings (`grok-agent roster demo`)
 * **Handoff queue** — offer / claim / complete tasks on the board (`grok-agent handoff demo`)
+* **Approval gate** — allow / deny tools and handoff claims locally (`grok-agent approve demo`)
 * File / web / shell / Python sandbox / calculator / MCP tools
 * Web search: `duckduckgo-search` first, DuckDuckGo HTML fallback if the package or API fails
 * Workspace packer + local file RAG (`pack_workspace`, `search_workspace`)
@@ -40,24 +41,27 @@ Terminal: `grok-agent tools demo` → calculator `21*2` = 42, `list_files` shows
 **GIF 2 — team + board**  
 `grok-agent team demo` then `grok-agent board demo --path board.jsonl` → posts survive restart via `board show`.
 
-**GIF 3 — roster + handoff**  
-`grok-agent roster demo` writes `roster.json` with coordinator bound to `ollama/llama3.2` (binding is metadata until `--llm`).  
-`grok-agent handoff demo` offers two tasks, researcher claims one, operator completes the other.
+**GIF 3 — roster + handoff + approvals**  
+`grok-agent roster demo` writes `roster.json`.  
+`grok-agent handoff demo` offers tasks.  
+`grok-agent approve demo` allow-lists `calculator`, denies `shell`, and records a human approve on a claim.
 
 1. `python examples/tools_demo_agent.py` or `grok-agent tools demo` — no LLM needed
 2. `grok-agent team demo` — shared blackboard, still no LLM
 3. `grok-agent board demo --path board.jsonl`
 4. `grok-agent roster demo`
 5. `grok-agent handoff demo`
-6. `python examples/chat_agent.py` / `python examples/automation_agent.py` (needs a local model)
+6. `grok-agent approve demo`
+7. `python examples/chat_agent.py` / `python examples/automation_agent.py` (needs a local model)
 
 ```
-┌─────────────────────────────────────────┐
-│  You › grok-agent handoff demo              │
-│  [done] T002 Collect offline facts…         │
-│  [done] T003 Write a one-line status note   │
-│  saved handoff.json                         │
-└─────────────────────────────────────────┘
+┌────────────────────────────────────────┐
+│  You › grok-agent approve demo                 │
+│  [approved] A001 tool:calculator               │
+│  [denied]   A002 tool:shell                    │
+│  [approved] A003 handoff:T001                  │
+│  saved approvals.json                          │
+└────────────────────────────────────────┘
 ```
 
 ## Quick start (1 command)
@@ -70,6 +74,7 @@ grok-agent team demo
 grok-agent board demo
 grok-agent roster demo
 grok-agent handoff demo
+grok-agent approve demo
 ```
 
 From source:
@@ -102,6 +107,7 @@ grok-agent chat -v --stream --router
 | `examples/persist_agent.py` | no | save / reload board |
 | `examples/roster_agent.py` | no (`--llm` optional) | persist roster + bindings |
 | `examples/handoff_agent.py` | no | offer / claim / complete |
+| `examples/approve_agent.py` | no | HITL allow / deny / decide |
 | `examples/workspace_agent.py` | no | pack + local file RAG |
 | `examples/mcp_agent.py` | optional | MCP stdio / HTTP / SSE |
 

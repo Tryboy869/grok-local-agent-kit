@@ -1,6 +1,6 @@
 """Grok Local Agent Kit — local-first AI agents with tools & multi-LLM support."""
 
-__version__ = "0.31.0"
+__version__ = "0.32.0"
 
 from .agent import Agent
 from .config import KitConfig, load_config, write_example_config
@@ -70,6 +70,14 @@ from .handoff import (
     load_queue,
     save_queue,
 )
+from .approvals import (
+    Approval,
+    ApprovalDenied,
+    ApprovalGate,
+    demo_approvals,
+    load_approvals,
+    save_approvals,
+)
 from .shell import patch_tools as _patch_tools
 from .runtime import patch as _patch_runtime
 from . import cli as _cli_mod
@@ -85,6 +93,7 @@ from .cli_v028 import register as _register_cli_v028
 from .cli_v029 import register as _register_cli_v029
 from .cli_v030 import register as _register_cli_v030
 from .cli_v031 import register as _register_cli_v031
+from .cli_v032 import register as _register_cli_v032
 
 _register_cli_ext(_cli_mod.cli)
 _register_cli_v021(_cli_mod.cli)
@@ -98,6 +107,7 @@ _register_cli_v028(_cli_mod.cli)
 _register_cli_v029(_cli_mod.cli)
 _register_cli_v030(_cli_mod.cli)
 _register_cli_v031(_cli_mod.cli)
+_register_cli_v032(_cli_mod.cli)
 _patch_tools()
 _patch_runtime()
 _register_workspace_tools()
@@ -223,5 +233,11 @@ __all__ = [
     "demo_handoff",
     "load_queue",
     "save_queue",
+    "Approval",
+    "ApprovalDenied",
+    "ApprovalGate",
+    "demo_approvals",
+    "load_approvals",
+    "save_approvals",
     "__version__",
 ]

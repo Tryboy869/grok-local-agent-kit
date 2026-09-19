@@ -1,8 +1,8 @@
 # Status
 
-Current release: **v0.31.0** (task handoff queue on the team blackboard).
+Current release: **v0.32.0** (local approval gate for tools and handoff claims).
 
-## Audit 2026-09-18
+## Audit 2026-09-19
 
 | Signal | Value |
 |--------|-------|
