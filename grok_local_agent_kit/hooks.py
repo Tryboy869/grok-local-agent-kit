@@ -23,11 +23,20 @@ class HookBus:
             self.listeners[event] = [f for f in self.listeners[event] if f is not fn]
 
     def emit(self, event: str, **payload: Any) -> None:
+        from .approvals import ApprovalDenied
+
         for fn in list(self.listeners.get(event, [])):
             try:
                 fn(**payload)
+            except ApprovalDenied:
+                raise
             except TypeError:
-                fn(payload)
+                try:
+                    fn(payload)
+                except ApprovalDenied:
+                    raise
+                except Exception:
+                    pass
             except Exception:
                 pass
 

@@ -1,30 +1,28 @@
-# HN / Indie Hackers update — v0.32.0 (2026-09-19)
+# HN / Indie Hackers update — v0.33.0 (2026-09-20)
 
 ## One-liner
-Local-first Python agent kit: Ollama + LM Studio router, ReAct tools, workspace RAG, multi-agent teams that persist their roster / board / work queue — plus a file-backed approval gate so a human can allow or deny a tool or a task claim without sending anything to the cloud.
+Local-first Python agent kit: Ollama + LM Studio router, ReAct tools, workspace RAG, multi-agent teams — and now the file-backed approval gate actually sits on the tool loop. A denied or still-pending tool never runs; the model just sees a block message.
 
 ## What's new this week
-- v0.31: `HandoffQueue` — offer / claim / complete / drop. Mirrors onto the blackboard.
-- v0.32: `ApprovalGate` — allow/deny lists, programmable decider, JSON persist. `grok-agent approve demo`.
-- Tests run without a live LLM.
+- v0.32: `ApprovalGate` allow/deny lists + JSON persist.
+- v0.33: `Agent(approval_gate=...)` + `attach_approval_gate` + `gated_execute`. `HookBus` re-raises `ApprovalDenied`. `grok-agent approve react` simulates a ReAct batch with zero LLM.
 
 ## Indie Hackers angle
-Most agent kits either auto-run every tool or bounce you through a hosted dashboard. This one writes pending approvals next to the workspace. Cron, a TUI, or a human can decide later. No Redis, no SaaS queue, no API key for the happy path.
+Most kits either auto-run every tool or bounce you through a hosted dashboard. This one writes pending approvals next to the workspace and refuses the tool until a human (or a local decider) says yes.
 
 ## Draft post
-**Title:** Show HN: local-first agent kit with a file-backed approval gate (no cloud queue)
-
-Built a Python toolkit so agents on Ollama / LM Studio can share a team blackboard, persist a roster, hand off tasks, and now pause for a human before a dangerous tool or a claim.
+**Title:** Show HN: local-first agent kit that blocks tools until you approve them (no cloud queue)
 
 ```
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
 grok-agent approve demo
-python examples/approve_agent.py
+grok-agent approve react
+python examples/react_approve_agent.py
 ```
 
-Calculator is allow-listed, `shell` is denied, a handoff claim stays pending until you decide. Decisions land in `approvals.json`.
+Calculator runs. `run_shell` is denied. `web_search` stays pending. Decisions land in `approvals.json`.
 
-Ask: would you rather we ship a 20s terminal GIF next, or a Test PyPI package?
+Ask: Test PyPI next, or a 20s terminal GIF?
 
 ## Links
 - Repo: https://github.com/Tryboy869/grok-local-agent-kit

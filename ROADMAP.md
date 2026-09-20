@@ -17,15 +17,16 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.30: persist team roster + optional per-member LLM bindings
 - v0.31: task handoff queue (offer / claim / complete)
 - v0.32: local approval gate (HITL for tools + handoff claims)
+- v0.33: ApprovalGate wired into the ReAct tool loop (`before_tool` + `gated_execute`)
 
-## Next (v0.33.x)
+## Next (v0.34.x)
 
 - Recorded binary GIFs in docs/gifs/
-- PyPI test publish
-- Wire ApprovalGate into the ReAct loop as an optional hook
+- PyPI / Test PyPI publish
 - Opt-in live-model eval profile
 - True vec0 virtual table writes when sqlite-vec is present
 - Stronger plugin isolation
+- Interactive approve TUI for pending items
 
 ## v1.0
 
