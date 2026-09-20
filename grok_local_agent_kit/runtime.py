@@ -1,4 +1,4 @@
-"""Wrap execute_tool with cache + telemetry + budget (v0.21-0.22)."""
+"""Wrap execute_tool with cache + telemetry + budget + approval gate."""
 
 from __future__ import annotations
 
@@ -11,6 +11,17 @@ from .telemetry import get_telemetry
 
 def wrap_execute(original: Callable[..., str]) -> Callable[..., str]:
     def execute_tool(name: str, arguments: Dict[str, Any], registry: Dict[str, Callable[..., str]]) -> str:
+        from .approvals import ApprovalDenied
+        from .gate_state import get_gate
+        from .react_gate import tool_block_message
+
+        gate = get_gate()
+        if gate is not None:
+            try:
+                gate.require("tool", name, actor="agent")
+            except ApprovalDenied as exc:
+                return tool_block_message(exc)
+
         cache = get_cache()
         tel = get_telemetry()
         hit = cache.get(name, arguments)
@@ -43,9 +54,10 @@ def wrap_execute(original: Callable[..., str]) -> Callable[..., str]:
 def patch() -> None:
     from . import tools
 
-    if getattr(tools.execute_tool, "_grok_v022", False):
+    if getattr(tools.execute_tool, "_grok_v033", False):
         return
     wrapped = wrap_execute(tools.execute_tool)
     wrapped._grok_v021 = True  # type: ignore[attr-defined]
     wrapped._grok_v022 = True  # type: ignore[attr-defined]
+    wrapped._grok_v033 = True  # type: ignore[attr-defined]
     tools.execute_tool = wrapped
