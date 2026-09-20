@@ -1,4 +1,5 @@
 from grok_local_agent_kit.approvals import ApprovalDenied, ApprovalGate
+from grok_local_agent_kit.gate_state import reset_gate, set_gate
 from grok_local_agent_kit.hooks import HookBus
 from grok_local_agent_kit.react_gate import (
     attach_approval_gate,
@@ -6,6 +7,7 @@ from grok_local_agent_kit.react_gate import (
     gated_execute,
     tool_block_message,
 )
+from grok_local_agent_kit.tools import execute_tool, get_default_tools
 
 
 def test_gated_execute_allow_and_deny():
@@ -39,3 +41,17 @@ def test_attach_hook_enforces_via_require():
 def test_tool_block_message():
     msg = tool_block_message(ApprovalDenied("[denied] A001 tool:shell actor=agent"))
     assert msg.startswith("blocked by approval gate")
+
+
+def test_runtime_execute_tool_respects_set_gate():
+    reset_gate()
+    _, funcs = get_default_tools()
+    gate = ApprovalGate(allow=["calculator"], deny=["run_shell"], default="pending")
+    set_gate(gate)
+    try:
+        out = execute_tool("calculator", {"expression": "21*2"}, funcs)
+        assert "42" in out or out.strip() == "42"
+        blocked = execute_tool("run_shell", {"command": "echo no"}, funcs)
+        assert blocked.startswith("blocked by approval gate")
+    finally:
+        reset_gate()
