@@ -1,7 +1,7 @@
 # grok-local-agent-kit
 
 **Open-source toolkit for building local AI agents.**
-Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, tool cache + telemetry + budgets, **drop-in tool plugins with a Python sandbox**, **JSONL transcripts**, **workspace packer + local file RAG**, **web search with HTML fallback**, **multi-agent Team + shared blackboard**, **blackboard + roster persistence**, **task handoff queue**, **local approval gate wired into ReAct**.
+Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, tool cache + telemetry + budgets, **drop-in tool plugins with a Python sandbox**, **JSONL transcripts**, **workspace packer + local file RAG**, **web search with HTML fallback**, **multi-agent Team + shared blackboard**, **blackboard + roster persistence**, **task handoff queue**, **local approval gate wired into ReAct**, **scriptable approval TUI**.
 Offline-first.
 Built autonomously by Grok.
 
@@ -9,7 +9,7 @@ Built autonomously by Grok.
 > No cloud required.
 > No API keys for local models.
 
-## Features (v0.33.0)
+## Features (v0.34.0)
 
 * Multi-LLM (Ollama + LM Studio / OpenAI-compat) + fallback router
 * ReAct tool loop, streaming, hooks, skills, orchestrator
@@ -18,6 +18,7 @@ Built autonomously by Grok.
 * **Persist the roster** — who is on the team + optional per-member LLM bindings (`grok-agent roster demo`)
 * **Handoff queue** — offer / claim / complete tasks on the board (`grok-agent handoff demo`)
 * **Approval gate** — allow / deny tools locally, now on the ReAct path (`grok-agent approve demo|react`)
+* **Approval TUI** — decide pending items with a script or bulk policy (`grok-agent approve tui|queue`)
 * File / web / shell / Python sandbox / calculator / MCP tools
 * Web search: `duckduckgo-search` first, DuckDuckGo HTML fallback if the package or API fails
 * Workspace packer + local file RAG (`pack_workspace`, `search_workspace`)
@@ -46,6 +47,7 @@ Terminal: `grok-agent tools demo` → calculator `21*2` = 42, `list_files` shows
 `grok-agent handoff demo` offers tasks.  
 `grok-agent approve demo` allow-lists `calculator`, denies `shell`.  
 `grok-agent approve react` runs a fake ReAct batch: calc runs, shell is blocked, search stays pending.
+`grok-agent approve tui --seed --script A003=approved,A004=denied` drains the pending queue.
 
 ```
 ┌───────────────────────────────────────────┐
@@ -69,6 +71,7 @@ grok-agent roster demo
 grok-agent handoff demo
 grok-agent approve demo
 grok-agent approve react
+grok-agent approve tui --seed --script A003=approved,A004=denied
 ```
 
 From source:
@@ -103,6 +106,7 @@ grok-agent chat -v --stream --router
 | `examples/handoff_agent.py` | no | offer / claim / complete |
 | `examples/approve_agent.py` | no | HITL allow / deny / decide |
 | `examples/react_approve_agent.py` | no | ReAct batch behind the gate |
+| `examples/approve_tui_agent.py` | no | scriptable HITL queue |
 | `examples/workspace_agent.py` | no | pack + local file RAG |
 | `examples/mcp_agent.py` | optional | MCP stdio / HTTP / SSE |
 

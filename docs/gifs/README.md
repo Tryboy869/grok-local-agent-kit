@@ -37,3 +37,14 @@ python examples/persist_agent.py --sqlite
 ```
 
 Expected: posts survive the process; a second demo appends another goal/round.
+
+## 5. Approval TUI (v0.34)
+
+```
+grok-agent approve react
+grok-agent approve queue --seed
+grok-agent approve tui --seed --script A003=approved,A004=denied
+python examples/approve_tui_agent.py
+```
+
+Expected: two pending rows (web_search, T004); after the script the queue is empty and `approvals.json` records the decisions.
