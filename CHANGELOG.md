@@ -2,6 +2,14 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.34.0] — 2026-09-21
+
+### Added
+- Scriptable approval TUI (`approve_tui`): parse `A003=approved,A004=denied`, bulk policies
+- CLI: `grok-agent approve tui|queue` (no live LLM)
+- Example: `examples/approve_tui_agent.py`
+- Tests: `tests/test_v034.py`
+
 ## [0.33.0] — 2026-09-20
 
 ### Added

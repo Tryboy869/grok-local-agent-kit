@@ -1,18 +1,19 @@
-# Show HN: grok-local-agent-kit — offline-first local agents (Ollama + MCP + HITL tools)
+# Show HN: grok-local-agent-kit
 
-I built a small Python toolkit so you can run capable agents on your machine with no cloud and no API keys for local models.
+Local-first Python toolkit for AI agents. Ollama + LM Studio, ReAct tools, workspace RAG, multi-agent teams, and a file-backed approval gate that now has a scriptable TUI so a human can drain the pending queue without a cloud dashboard.
 
 **What it does**
 
 - Talks to Ollama or LM Studio (OpenAI-compat) with a multi-LLM fallback router
 - ReAct tool loop: files, web, shell, calculator, Python sandbox, MCP (stdio / HTTP / SSE)
-- A local approval gate now sits on that loop: denied or pending tools never execute
+- A local approval gate sits on that loop: denied or pending tools never execute
+- Scriptable TUI: `grok-agent approve tui --script A003=approved,A004=denied`
 - Web search that still works if the DDG Python package flakes (HTML fallback)
 - Workspace packer + local file RAG — no network
 - Multi-agent `Team` with a shared blackboard, persisted roster, handoff queue
 - Drop-in plugins: JSON tools always load; Python plugins are opt-in only
 - Local HTTP API, SQLite memory (optional sqlite-vec), eval harness, budgets, transcripts
-- Demos (`tools`, `team`, `roster`, `handoff`, `approve demo|react`) run with **zero** live model
+- Demos (`tools`, `team`, `roster`, `handoff`, `approve demo|react|tui`) run with **zero** live model
 
 **Try it**
 
@@ -21,6 +22,7 @@ curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main
 grok-agent doctor
 grok-agent tools demo
 grok-agent approve react
+grok-agent approve tui --seed --script A003=approved,A004=denied
 ```
 
 Chat needs Ollama or LM Studio:

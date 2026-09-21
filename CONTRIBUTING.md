@@ -21,6 +21,7 @@ pytest -q
 - File tools stay workspace-scoped. Do not weaken `_safe_path`.
 - Blackboard, roster, handoff, and approval persistence stay cwd-safe.
 - ApprovalGate checks on the ReAct path must fail closed (block on deny **and** pending).
+- Approval TUI scripts must stay offline-testable (`--script` / `--policy`); do not require a TTY in tests.
 - Do not load untrusted Python plugins by default. JSON plugins are data-only.
 - Workspace packer / file RAG must stay cwd-safe and skip VCS / venv trees.
 - Do not commit secrets, model weights, or large binaries.
