@@ -1,6 +1,6 @@
 """Grok Local Agent Kit — local-first AI agents with tools & multi-LLM support."""
 
-__version__ = "0.34.0"
+__version__ = "0.35.0"
 
 from .agent import Agent
 from .config import KitConfig, load_config, write_example_config
@@ -80,6 +80,17 @@ from .approvals import (
 )
 from .approve_tui import demo_tui, format_queue, parse_script, persist_scripted, run_scripted
 from .react_gate import attach_approval_gate, check_tool, gated_execute, tool_block_message
+from .live_eval import (
+    DEFAULT_PROFILE,
+    LiveCase,
+    LiveProfile,
+    demo_live_eval,
+    format_live_report,
+    live_enabled,
+    load_profile,
+    run_profile,
+    stub_complete,
+)
 from .shell import patch_tools as _patch_tools
 from .runtime import patch as _patch_runtime
 from . import cli as _cli_mod
@@ -98,6 +109,7 @@ from .cli_v031 import register as _register_cli_v031
 from .cli_v032 import register as _register_cli_v032
 from .cli_v033 import register as _register_cli_v033
 from .cli_v034 import register as _register_cli_v034
+from .cli_v035 import register as _register_cli_v035
 
 _register_cli_ext(_cli_mod.cli)
 _register_cli_v021(_cli_mod.cli)
@@ -114,6 +126,7 @@ _register_cli_v031(_cli_mod.cli)
 _register_cli_v032(_cli_mod.cli)
 _register_cli_v033(_cli_mod.cli)
 _register_cli_v034(_cli_mod.cli)
+_register_cli_v035(_cli_mod.cli)
 _patch_tools()
 _patch_runtime()
 _register_workspace_tools()
@@ -254,5 +267,14 @@ __all__ = [
     "check_tool",
     "gated_execute",
     "tool_block_message",
+    "DEFAULT_PROFILE",
+    "LiveCase",
+    "LiveProfile",
+    "demo_live_eval",
+    "format_live_report",
+    "live_enabled",
+    "load_profile",
+    "run_profile",
+    "stub_complete",
     "__version__",
 ]

@@ -1,14 +1,7 @@
 # grok-local-agent-kit
 
-[![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
-[![Offline-first](https://img.shields.io/badge/offline--first-yes-success.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
-[![MCP](https://img.shields.io/badge/MCP-stdio%2FHTTP%2FSSE-informational.svg)](https://modelcontextprotocol.io)
-[![Stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers)
-
 **Open-source toolkit for building local AI agents.**
-Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, tool cache + telemetry + budgets, **drop-in tool plugins with a Python sandbox**, **JSONL transcripts**, **workspace packer + local file RAG**, **web search with HTML fallback**, **multi-agent Team + shared blackboard**, **blackboard + roster persistence**, **task handoff queue**, **local approval gate wired into ReAct**, **scriptable approval TUI**.
+Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, **opt-in live-model eval profile**, tool cache + telemetry + budgets, **drop-in tool plugins with a Python sandbox**, **JSONL transcripts**, **workspace packer + local file RAG**, **web search with HTML fallback**, **multi-agent Team + shared blackboard**, **blackboard + roster persistence**, **task handoff queue**, **local approval gate wired into ReAct**, **scriptable approval TUI**.
 Offline-first.
 Built autonomously by Grok.
 
@@ -16,7 +9,7 @@ Built autonomously by Grok.
 > No cloud required.
 > No API keys for local models.
 
-## Features (v0.34.0)
+## Features (v0.35.0)
 
 * Multi-LLM (Ollama + LM Studio / OpenAI-compat) + fallback router
 * ReAct tool loop, streaming, hooks, skills, orchestrator
@@ -26,6 +19,7 @@ Built autonomously by Grok.
 * **Handoff queue** — offer / claim / complete tasks on the board (`grok-agent handoff demo`)
 * **Approval gate** — allow / deny tools locally, now on the ReAct path (`grok-agent approve demo|react`)
 * **Approval TUI** — decide pending items with a script or bulk policy (`grok-agent approve tui|queue`)
+* **Live eval profile** — stub in CI; real model only with `--live` + `GROK_LIVE_EVAL=1` (`grok-agent eval demo|live`)
 * File / web / shell / Python sandbox / calculator / MCP tools
 * Web search: `duckduckgo-search` first, DuckDuckGo HTML fallback if the package or API fails
 * Workspace packer + local file RAG (`pack_workspace`, `search_workspace`)
@@ -56,14 +50,16 @@ Terminal: `grok-agent tools demo` → calculator `21*2` = 42, `list_files` shows
 `grok-agent approve react` runs a fake ReAct batch: calc runs, shell is blocked, search stays pending.
 `grok-agent approve tui --seed --script A003=approved,A004=denied` drains the pending queue.
 
+**GIF 4 — live eval stub**  
+`grok-agent eval demo` prints `live-eval[stub] 2/2 passed`. No model process is started.
+
 ```
-┌──────────────────────────────────────────┐
-│  You › grok-agent approve react                   │
-│  calculator → 42                                 │
-│  run_shell → blocked by approval gate            │
-│  web_search → blocked: pending approval required │
-│  saved approvals.json                            │
-└──────────────────────────────────────────┘
+┌───────────────────────────────────────────┐
+│  You › grok-agent eval demo                           │
+│  live-eval[stub] 2/2 passed profile=smoke             │
+│    [PASS] echo-ok                                     │
+│    [PASS] json-status                                 │
+└───────────────────────────────────────────┘
 ```
 
 ## Quick start (1 command)
@@ -79,6 +75,7 @@ grok-agent handoff demo
 grok-agent approve demo
 grok-agent approve react
 grok-agent approve tui --seed --script A003=approved,A004=denied
+grok-agent eval demo
 ```
 
 From source:
@@ -92,12 +89,13 @@ pytest -q
 grok-agent doctor
 ```
 
-Local model (optional — only needed for chat / ReAct):
+Local model (optional — only needed for chat / ReAct / live eval):
 
 ```bash
 ollama serve && ollama pull llama3.2
 # or start LM Studio on http://127.0.0.1:1234/v1
 grok-agent chat -v --stream --router
+GROK_LIVE_EVAL=1 grok-agent eval live --live
 ```
 
 ## Examples
@@ -114,6 +112,7 @@ grok-agent chat -v --stream --router
 | `examples/approve_agent.py` | no | HITL allow / deny / decide |
 | `examples/react_approve_agent.py` | no | ReAct batch behind the gate |
 | `examples/approve_tui_agent.py` | no | scriptable HITL queue |
+| `examples/live_eval_agent.py` | no (unless `--live`) | stub / live eval profile |
 | `examples/workspace_agent.py` | no | pack + local file RAG |
 | `examples/mcp_agent.py` | optional | MCP stdio / HTTP / SSE |
 
