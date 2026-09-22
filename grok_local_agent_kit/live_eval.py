@@ -96,15 +96,31 @@ def stub_complete(prompt: str, case: Optional[LiveCase] = None) -> str:
     return f"stub:{prompt[:80]}"
 
 
-def _score(case: LiveCase, text: str) -> tuple[bool, str]:
+def _live_complete(prompt: str) -> str:
+    from .llm import LLMClient
+
+    client = LLMClient()
+    try:
+        resp = client.chat([{"role": "user", "content": prompt}])
+        content = resp.get("content") if isinstance(resp, dict) else resp
+        return "" if content is None else str(content)
+    finally:
+        closer = getattr(client, "close", None)
+        if callable(closer):
+            closer()
+
+
+def _score(case: LiveCase, text: str) -> tuple:
     clipped = text[: case.max_chars]
     if case.json_key:
+        parsed = None
         try:
             from .structured import extract_json_or_none
 
             parsed = extract_json_or_none(clipped)
         except Exception:
             parsed = None
+        if parsed is None:
             try:
                 parsed = json.loads(clipped)
             except Exception:
@@ -121,6 +137,7 @@ def _score(case: LiveCase, text: str) -> tuple[bool, str]:
 
 def load_profile(path: Union[str, Path]) -> LiveProfile:
     raw = json.loads(Path(path).read_text(encoding="utf-8"))
+    items = raw.get("cases", raw if isinstance(raw, list) else [])
     cases = [
         LiveCase(
             name=item["name"],
@@ -129,9 +146,10 @@ def load_profile(path: Union[str, Path]) -> LiveProfile:
             json_key=item.get("json_key"),
             max_chars=int(item.get("max_chars", 4000)),
         )
-        for item in raw.get("cases", raw if isinstance(raw, list) else [])
+        for item in items
     ]
-    return LiveProfile(name=raw.get("name", Path(path).stem) if isinstance(raw, dict) else "file", cases=cases)
+    name = raw.get("name", Path(path).stem) if isinstance(raw, dict) else "file"
+    return LiveProfile(name=name, cases=cases)
 
 
 def run_profile(
@@ -149,10 +167,7 @@ def run_profile(
         if complete is not None:
             return complete(case.prompt)
         if use_live:
-            from .llm import LLMClient
-
-            client = LLMClient()
-            return str(client.complete(case.prompt))
+            return _live_complete(case.prompt)
         return stub_complete(case.prompt, case)
 
     for case in profile.cases:

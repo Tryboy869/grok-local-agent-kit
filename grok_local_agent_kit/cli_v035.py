@@ -16,18 +16,7 @@ def register(cli) -> None:
 
     _reg034(cli)
 
-    eval_grp = None
-    for cmd in getattr(cli, "commands", {}).values():
-        if getattr(cmd, "name", None) == "eval":
-            eval_grp = cmd
-            break
-    if eval_grp is None:
-
-        @cli.group("eval")
-        def eval_grp():
-            """Offline + opt-in live eval."""
-
-    @eval_grp.command("live")
+    @cli.command("eval-live")
     @click.option("--profile", "profile_path", default="", help="JSON profile path")
     @click.option(
         "--live",
@@ -44,7 +33,7 @@ def register(cli) -> None:
         if not report["ok"]:
             raise SystemExit(1)
 
-    @eval_grp.command("demo")
+    @cli.command("eval-demo")
     def demo_cmd():
         """Print the stub live-eval report (no LLM)."""
         from .live_eval import demo_live_eval
