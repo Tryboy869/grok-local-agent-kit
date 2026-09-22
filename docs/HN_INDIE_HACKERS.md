@@ -5,7 +5,7 @@ Local-first Python agent kit: Ollama + LM Studio router, ReAct tools, workspace 
 
 ## What's new this week
 - v0.34: `grok-agent approve tui|queue`. Script `A003=approved,A004=denied`.
-- v0.35: `grok-agent eval live|demo`. Default path is a deterministic stub. Real models need `--live` **and** `GROK_LIVE_EVAL=1`.
+- v0.35: `grok-agent eval-demo` / `eval-live`. Default path is a deterministic stub. Real models need `--live` **and** `GROK_LIVE_EVAL=1`.
 
 ## Indie Hackers angle
 You can ship an eval suite with the kit without forcing every contributor to own a GPU. When you *do* have Ollama running, flip one env var and score the same cases against a real model.
@@ -16,11 +16,11 @@ You can ship an eval suite with the kit without forcing every contributor to own
 ```
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
 grok-agent doctor
-grok-agent eval demo
+grok-agent eval-demo
 grok-agent approve tui --seed --script A003=approved,A004=denied
 python examples/live_eval_agent.py
 # optional:
-# GROK_LIVE_EVAL=1 grok-agent eval live --live
+# GROK_LIVE_EVAL=1 grok-agent eval-live --live
 ```
 
 Ask: Test PyPI next, or a 20s terminal GIF?

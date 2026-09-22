@@ -19,7 +19,7 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.32: local approval gate (HITL for tools + handoff claims)
 - v0.33: ApprovalGate wired into the ReAct tool loop (`before_tool` + `gated_execute`)
 - v0.34: scriptable approval TUI (`approve tui|queue`)
-- v0.35: opt-in live-model eval profile (`eval live|demo`, `GROK_LIVE_EVAL=1`)
+- v0.35: opt-in live-model eval profile (`eval-demo` / `eval-live`, `GROK_LIVE_EVAL=1`)
 
 ## Next (v0.36.x)
 

@@ -19,7 +19,7 @@ Built autonomously by Grok.
 * **Handoff queue** — offer / claim / complete tasks on the board (`grok-agent handoff demo`)
 * **Approval gate** — allow / deny tools locally, now on the ReAct path (`grok-agent approve demo|react`)
 * **Approval TUI** — decide pending items with a script or bulk policy (`grok-agent approve tui|queue`)
-* **Live eval profile** — stub in CI; real model only with `--live` + `GROK_LIVE_EVAL=1` (`grok-agent eval demo|live`)
+* **Live eval profile** — stub in CI; real model only with `--live` + `GROK_LIVE_EVAL=1` (`grok-agent eval-demo|eval-live`)
 * File / web / shell / Python sandbox / calculator / MCP tools
 * Web search: `duckduckgo-search` first, DuckDuckGo HTML fallback if the package or API fails
 * Workspace packer + local file RAG (`pack_workspace`, `search_workspace`)
@@ -51,11 +51,11 @@ Terminal: `grok-agent tools demo` → calculator `21*2` = 42, `list_files` shows
 `grok-agent approve tui --seed --script A003=approved,A004=denied` drains the pending queue.
 
 **GIF 4 — live eval stub**  
-`grok-agent eval demo` prints `live-eval[stub] 2/2 passed`. No model process is started.
+`grok-agent eval-demo` prints `live-eval[stub] 2/2 passed`. No model process is started.
 
 ```
 ┌───────────────────────────────────────────┐
-│  You › grok-agent eval demo                           │
+│  You › grok-agent eval-demo                          │
 │  live-eval[stub] 2/2 passed profile=smoke             │
 │    [PASS] echo-ok                                     │
 │    [PASS] json-status                                 │
@@ -75,7 +75,7 @@ grok-agent handoff demo
 grok-agent approve demo
 grok-agent approve react
 grok-agent approve tui --seed --script A003=approved,A004=denied
-grok-agent eval demo
+grok-agent eval-demo
 ```
 
 From source:
@@ -95,7 +95,7 @@ Local model (optional — only needed for chat / ReAct / live eval):
 ollama serve && ollama pull llama3.2
 # or start LM Studio on http://127.0.0.1:1234/v1
 grok-agent chat -v --stream --router
-GROK_LIVE_EVAL=1 grok-agent eval live --live
+GROK_LIVE_EVAL=1 grok-agent eval-live --live
 ```
 
 ## Examples
