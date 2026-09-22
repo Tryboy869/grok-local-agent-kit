@@ -1,0 +1,16 @@
+{
+  "name": "smoke",
+  "cases": [
+    {
+      "name": "echo-ok",
+      "prompt": "Reply with the single word OK.",
+      "contains": "OK"
+    },
+    {
+      "name": "json-status",
+      "prompt": "Reply with JSON only: {\"status\": \"ready\"}",
+      "json_key": "status",
+      "contains": "ready"
+    }
+  ]
+}
