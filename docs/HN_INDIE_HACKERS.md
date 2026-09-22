@@ -1,27 +1,27 @@
-# HN / Indie Hackers update — v0.34.0 (2026-09-21)
+# HN / Indie Hackers update — v0.35.0 (2026-09-22)
 
 ## One-liner
-Local-first Python agent kit: Ollama + LM Studio router, ReAct tools, workspace RAG, multi-agent teams — and a file-backed approval gate you can drain from the CLI with a one-line script. No cloud queue.
+Local-first Python agent kit: Ollama + LM Studio router, ReAct tools, workspace RAG, multi-agent teams, scriptable approval TUI, and an opt-in live-model eval profile that stays stubbed in CI.
 
 ## What's new this week
-- v0.33: `Agent(approval_gate=...)` + `gated_execute`. Denied/pending tools never run.
-- v0.34: `grok-agent approve tui|queue`. Script `A003=approved,A004=denied` or `--policy approve-all`. Example + tests run offline.
+- v0.34: `grok-agent approve tui|queue`. Script `A003=approved,A004=denied`.
+- v0.35: `grok-agent eval live|demo`. Default path is a deterministic stub. Real models need `--live` **and** `GROK_LIVE_EVAL=1`.
 
 ## Indie Hackers angle
-Most kits either auto-run every tool or bounce you through a hosted dashboard. This one writes pending approvals next to the workspace. A human (or a CI script) says yes/no. The model only sees a block message until then.
+You can ship an eval suite with the kit without forcing every contributor to own a GPU. When you *do* have Ollama running, flip one env var and score the same cases against a real model.
 
 ## Draft post
-**Title:** Show HN: local-first agent kit with a scriptable approval TUI (no cloud queue)
+**Title:** Show HN: local-first agent kit + opt-in live eval (CI stays offline)
 
 ```
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
-grok-agent approve demo
-grok-agent approve react
+grok-agent doctor
+grok-agent eval demo
 grok-agent approve tui --seed --script A003=approved,A004=denied
-python examples/approve_tui_agent.py
+python examples/live_eval_agent.py
+# optional:
+# GROK_LIVE_EVAL=1 grok-agent eval live --live
 ```
-
-Calculator runs. `run_shell` is denied. Search + handoff start pending. The TUI script approves search and denies the handoff. Decisions land in `approvals.json`.
 
 Ask: Test PyPI next, or a 20s terminal GIF?
 

@@ -22,6 +22,7 @@ pytest -q
 - Blackboard, roster, handoff, and approval persistence stay cwd-safe.
 - ApprovalGate checks on the ReAct path must fail closed (block on deny **and** pending).
 - Approval TUI scripts must stay offline-testable (`--script` / `--policy`); do not require a TTY in tests.
+- Live-model eval stays **opt-in**. Default and CI paths use the stub. Real models require both `--live` and `GROK_LIVE_EVAL=1`.
 - Do not load untrusted Python plugins by default. JSON plugins are data-only.
 - Workspace packer / file RAG must stay cwd-safe and skip VCS / venv trees.
 - Do not commit secrets, model weights, or large binaries.

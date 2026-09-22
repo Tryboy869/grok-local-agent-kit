@@ -1,8 +1,8 @@
 # Status
 
-Current release: **v0.34.0** (scriptable approval TUI).
+Current release: **v0.35.0** (opt-in live-model eval profile).
 
-## Audit 2026-09-21
+## Audit 2026-09-22
 
 | Signal | Value |
 |--------|-------|
@@ -10,7 +10,7 @@ Current release: **v0.34.0** (scriptable approval TUI).
 | Default branch | `main` |
 | License | MIT |
 | Language | Python |
-| Last push | 2026-09-21 |
+| Last push | 2026-09-22 |
 
 Honest growth path:
 1. Publish to Test PyPI.

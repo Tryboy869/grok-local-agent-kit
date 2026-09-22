@@ -19,12 +19,12 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.32: local approval gate (HITL for tools + handoff claims)
 - v0.33: ApprovalGate wired into the ReAct tool loop (`before_tool` + `gated_execute`)
 - v0.34: scriptable approval TUI (`approve tui|queue`)
+- v0.35: opt-in live-model eval profile (`eval live|demo`, `GROK_LIVE_EVAL=1`)
 
-## Next (v0.35.x)
+## Next (v0.36.x)
 
 - Recorded binary GIFs in docs/gifs/
 - PyPI / Test PyPI publish
-- Opt-in live-model eval profile
 - True vec0 virtual table writes when sqlite-vec is present
 - Stronger plugin isolation
 - Interactive Rich/prompt toolkit TUI when stdin is a TTY

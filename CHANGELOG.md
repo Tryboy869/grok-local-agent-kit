@@ -2,6 +2,14 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.35.0] — 2026-09-22
+
+### Added
+- Opt-in live-model eval profile (`live_eval`): stub by default, real LLM only when `GROK_LIVE_EVAL=1` and `--live`
+- CLI: `grok-agent eval live|demo` (demo / default path needs no LLM)
+- Example: `examples/live_eval_agent.py` + `examples/live_eval_profile.json`
+- Tests: `tests/test_v035.py`
+
 ## [0.34.0] — 2026-09-21
 
 ### Added
