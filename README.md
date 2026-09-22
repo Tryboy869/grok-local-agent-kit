@@ -1,5 +1,12 @@
 # grok-local-agent-kit
 
+[![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+[![Offline-first](https://img.shields.io/badge/offline--first-yes-success.svg)](https://github.com/Tryboy869/grok-local-agent-kit)
+[![MCP](https://img.shields.io/badge/MCP-stdio%2FHTTP%2FSSE-informational.svg)](https://modelcontextprotocol.io)
+[![Stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers)
+
 **Open-source toolkit for building local AI agents.**
 Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, tool cache + telemetry + budgets, **drop-in tool plugins with a Python sandbox**, **JSONL transcripts**, **workspace packer + local file RAG**, **web search with HTML fallback**, **multi-agent Team + shared blackboard**, **blackboard + roster persistence**, **task handoff queue**, **local approval gate wired into ReAct**, **scriptable approval TUI**.
 Offline-first.
@@ -50,13 +57,13 @@ Terminal: `grok-agent tools demo` → calculator `21*2` = 42, `list_files` shows
 `grok-agent approve tui --seed --script A003=approved,A004=denied` drains the pending queue.
 
 ```
-┌───────────────────────────────────────────┐
+┌──────────────────────────────────────────┐
 │  You › grok-agent approve react                   │
 │  calculator → 42                                 │
 │  run_shell → blocked by approval gate            │
 │  web_search → blocked: pending approval required │
 │  saved approvals.json                            │
-└───────────────────────────────────────────┘
+└──────────────────────────────────────────┘
 ```
 
 ## Quick start (1 command)
