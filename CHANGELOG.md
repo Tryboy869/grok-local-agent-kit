@@ -2,6 +2,15 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.36.0] — 2026-09-24
+
+### Added
+- Circuit breaker health board for local LLM backends (`HealthBoard`, `BreakerState`)
+- States: closed / open / half-open with cwd-safe JSON persistence
+- CLI: `grok-agent health demo|show|trip|reset` (no live LLM)
+- Example: `examples/health_agent.py`
+- Tests: `tests/test_v036.py`
+
 ## [0.35.0] — 2026-09-22
 
 ### Added
@@ -46,7 +55,3 @@ All notable changes to grok-local-agent-kit are documented here.
 - CLI: `grok-agent handoff demo|show` (no live LLM)
 - Example: `examples/handoff_agent.py`
 - Tests: `tests/test_v031.py`
-
-### Changed
-- README features heading aligned to current version
-- Public exports for handoff helpers

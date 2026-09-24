@@ -1,8 +1,8 @@
 # Status
 
-Current release: **v0.35.0** (opt-in live-model eval profile).
+Current release: **v0.36.0** (circuit breaker health board).
 
-## Audit 2026-09-22
+## Audit 2026-09-24
 
 | Signal | Value |
 |--------|-------|
@@ -10,10 +10,11 @@ Current release: **v0.35.0** (opt-in live-model eval profile).
 | Default branch | `main` |
 | License | MIT |
 | Language | Python |
-| Last push | 2026-09-22 |
+| Last push | 2026-09-24 |
 
 Honest growth path:
-1. Publish to Test PyPI.
-2. Record one 20s GIF (`docs/gifs/`).
-3. Post Show HN from `SHOW_HN.md`.
-4. Answer every issue/PR within 24h.
+1. Wire HealthBoard into MultiLLMRouter.
+2. Publish to Test PyPI.
+3. Record one 20s GIF (`docs/gifs/`).
+4. Post Show HN from `SHOW_HN.md`.
+5. Answer every issue/PR within 24h.

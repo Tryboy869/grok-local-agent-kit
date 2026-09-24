@@ -20,9 +20,11 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.33: ApprovalGate wired into the ReAct tool loop (`before_tool` + `gated_execute`)
 - v0.34: scriptable approval TUI (`approve tui|queue`)
 - v0.35: opt-in live-model eval profile (`eval-demo` / `eval-live`, `GROK_LIVE_EVAL=1`)
+- v0.36: circuit breaker health board for Ollama / LM Studio (`health demo|show|trip|reset`)
 
-## Next (v0.36.x)
+## Next (v0.37.x)
 
+- Wire HealthBoard into MultiLLMRouter.pick / chat
 - Recorded binary GIFs in docs/gifs/
 - PyPI / Test PyPI publish
 - True vec0 virtual table writes when sqlite-vec is present

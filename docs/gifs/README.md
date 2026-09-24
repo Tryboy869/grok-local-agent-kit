@@ -48,3 +48,14 @@ python examples/approve_tui_agent.py
 ```
 
 Expected: two pending rows (web_search, T004); after the script the queue is empty and `approvals.json` records the decisions.
+
+## 6. Health board (v0.36)
+
+```
+grok-agent health demo
+grok-agent health show
+grok-agent health reset lmstudio
+python examples/health_agent.py --demo
+```
+
+Expected: ollama stays closed/allow=ok; lmstudio is open after two refused connections.

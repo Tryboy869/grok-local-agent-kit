@@ -19,10 +19,11 @@ pytest -q
 - Keep the public surface in `grok_local_agent_kit/__init__.py` intentional.
 - Prefer small modules (`cli_v0XX.py`, `test_v0XX.py`) over growing god-files.
 - File tools stay workspace-scoped. Do not weaken `_safe_path`.
-- Blackboard, roster, handoff, and approval persistence stay cwd-safe.
+- Blackboard, roster, handoff, approval, and health persistence stay cwd-safe.
 - ApprovalGate checks on the ReAct path must fail closed (block on deny **and** pending).
 - Approval TUI scripts must stay offline-testable (`--script` / `--policy`); do not require a TTY in tests.
 - Live-model eval stays **opt-in**. Default and CI paths use the stub. Real models require both `--live` and `GROK_LIVE_EVAL=1`.
+- Health board tests must not contact Ollama / LM Studio; use injected clocks (`now=`).
 - Do not load untrusted Python plugins by default. JSON plugins are data-only.
 - Workspace packer / file RAG must stay cwd-safe and skip VCS / venv trees.
 - Do not commit secrets, model weights, or large binaries.
