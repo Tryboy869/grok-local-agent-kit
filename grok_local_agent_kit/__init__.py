@@ -1,6 +1,6 @@
 """Grok Local Agent Kit — local-first AI agents with tools & multi-LLM support."""
 
-__version__ = "0.35.0"
+__version__ = "0.36.0"
 
 from .agent import Agent
 from .config import KitConfig, load_config, write_example_config
@@ -91,6 +91,17 @@ from .live_eval import (
     run_profile,
     stub_complete,
 )
+from .health import (
+    CLOSED,
+    HALF_OPEN,
+    OPEN,
+    BreakerState,
+    HealthBoard,
+    demo_health,
+    format_board as format_health,
+    load_board as load_health,
+    save_board as save_health,
+)
 from .shell import patch_tools as _patch_tools
 from .runtime import patch as _patch_runtime
 from . import cli as _cli_mod
@@ -110,6 +121,7 @@ from .cli_v032 import register as _register_cli_v032
 from .cli_v033 import register as _register_cli_v033
 from .cli_v034 import register as _register_cli_v034
 from .cli_v035 import register as _register_cli_v035
+from .cli_v036 import register as _register_cli_v036
 
 _register_cli_ext(_cli_mod.cli)
 _register_cli_v021(_cli_mod.cli)
@@ -127,6 +139,7 @@ _register_cli_v032(_cli_mod.cli)
 _register_cli_v033(_cli_mod.cli)
 _register_cli_v034(_cli_mod.cli)
 _register_cli_v035(_cli_mod.cli)
+_register_cli_v036(_cli_mod.cli)
 _patch_tools()
 _patch_runtime()
 _register_workspace_tools()
@@ -276,5 +289,14 @@ __all__ = [
     "load_profile",
     "run_profile",
     "stub_complete",
+    "CLOSED",
+    "OPEN",
+    "HALF_OPEN",
+    "BreakerState",
+    "HealthBoard",
+    "demo_health",
+    "format_health",
+    "load_health",
+    "save_health",
     "__version__",
 ]

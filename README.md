@@ -1,7 +1,7 @@
 # grok-local-agent-kit
 
 **Open-source toolkit for building local AI agents.**
-Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, **opt-in live-model eval profile**, tool cache + telemetry + budgets, **drop-in tool plugins with a Python sandbox**, **JSONL transcripts**, **workspace packer + local file RAG**, **web search with HTML fallback**, **multi-agent Team + shared blackboard**, **blackboard + roster persistence**, **task handoff queue**, **local approval gate wired into ReAct**, **scriptable approval TUI**.
+Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, **opt-in live-model eval profile**, tool cache + telemetry + budgets, **drop-in tool plugins with a Python sandbox**, **JSONL transcripts**, **workspace packer + local file RAG**, **web search with HTML fallback**, **multi-agent Team + shared blackboard**, **blackboard + roster persistence**, **task handoff queue**, **local approval gate wired into ReAct**, **scriptable approval TUI**, **circuit breaker health board for local backends**.
 Offline-first.
 Built autonomously by Grok.
 
@@ -9,7 +9,7 @@ Built autonomously by Grok.
 > No cloud required.
 > No API keys for local models.
 
-## Features (v0.35.0)
+## Features (v0.36.0)
 
 * Multi-LLM (Ollama + LM Studio / OpenAI-compat) + fallback router
 * ReAct tool loop, streaming, hooks, skills, orchestrator
@@ -20,6 +20,7 @@ Built autonomously by Grok.
 * **Approval gate** — allow / deny tools locally, now on the ReAct path (`grok-agent approve demo|react`)
 * **Approval TUI** — decide pending items with a script or bulk policy (`grok-agent approve tui|queue`)
 * **Live eval profile** — stub in CI; real model only with `--live` + `GROK_LIVE_EVAL=1` (`grok-agent eval-demo|eval-live`)
+* **Health board** — per-backend circuit breaker, no LLM (`grok-agent health demo|show|trip|reset`)
 * File / web / shell / Python sandbox / calculator / MCP tools
 * Web search: `duckduckgo-search` first, DuckDuckGo HTML fallback if the package or API fails
 * Workspace packer + local file RAG (`pack_workspace`, `search_workspace`)
@@ -53,13 +54,16 @@ Terminal: `grok-agent tools demo` → calculator `21*2` = 42, `list_files` shows
 **GIF 4 — live eval stub**  
 `grok-agent eval-demo` prints `live-eval[stub] 2/2 passed`. No model process is started.
 
+**GIF 5 — health board**  
+`grok-agent health demo` → ollama closed/allow=ok, lmstudio open after two refused connections.
+
 ```
-┌───────────────────────────────────────────┐
-│  You › grok-agent eval-demo                          │
-│  live-eval[stub] 2/2 passed profile=smoke             │
-│    [PASS] echo-ok                                     │
-│    [PASS] json-status                                 │
-└───────────────────────────────────────────┘
+┌──────────────────────────────────────────┐
+│  You › grok-agent health demo                          │
+│  health board:                                         │
+│  - lmstudio: open allow=block fail=3 ok=0              │
+│  - ollama: closed allow=ok fail=0 ok=1                 │
+└──────────────────────────────────────────┘
 ```
 
 ## Quick start (1 command)
@@ -76,6 +80,7 @@ grok-agent approve demo
 grok-agent approve react
 grok-agent approve tui --seed --script A003=approved,A004=denied
 grok-agent eval-demo
+grok-agent health demo
 ```
 
 From source:
@@ -113,6 +118,7 @@ GROK_LIVE_EVAL=1 grok-agent eval-live --live
 | `examples/react_approve_agent.py` | no | ReAct batch behind the gate |
 | `examples/approve_tui_agent.py` | no | scriptable HITL queue |
 | `examples/live_eval_agent.py` | no (unless `--live`) | stub / live eval profile |
+| `examples/health_agent.py` | no | circuit breaker board |
 | `examples/workspace_agent.py` | no | pack + local file RAG |
 | `examples/mcp_agent.py` | optional | MCP stdio / HTTP / SSE |
 
