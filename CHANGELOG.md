@@ -2,6 +2,16 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.37.0] — 2026-09-25
+
+### Added
+- Wire `HealthBoard` into `MultiLLMRouter.pick` / `probe` / `chat`
+- Open breakers are skipped (no ping). Failures trip the board; successes close it
+- Sticky routes drop an endpoint when its breaker opens
+- CLI: `grok-agent route demo` (no live LLM)
+- Example: `examples/route_health_agent.py`
+- Tests: `tests/test_v037.py`
+
 ## [0.36.0] — 2026-09-24
 
 ### Added
