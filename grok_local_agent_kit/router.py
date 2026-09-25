@@ -8,6 +8,11 @@ from typing import Any, Dict, Iterable, List, Optional
 
 from .llm import LLMClient
 
+try:
+    from .health import HealthBoard
+except Exception:  # pragma: no cover
+    HealthBoard = None  # type: ignore
+
 
 @dataclass
 class LLMEndpoint:
@@ -53,12 +58,18 @@ def endpoint_from_env(preferred: Optional[str] = None) -> List[LLMEndpoint]:
 
 
 class MultiLLMRouter:
-    def __init__(self, chain: Optional[Iterable[LLMEndpoint]] = None, sticky: bool = True):
+    def __init__(
+        self,
+        chain: Optional[Iterable[LLMEndpoint]] = None,
+        sticky: bool = True,
+        health: Optional["HealthBoard"] = None,
+    ):
         self.chain: List[LLMEndpoint] = list(chain or endpoint_from_env())
         self.sticky = sticky
         self.active: Optional[LLMEndpoint] = None
         self._clients: Dict[str, LLMClient] = {}
         self.last_error: Optional[str] = None
+        self.health = health
 
     def _client_for(self, ep: LLMEndpoint) -> LLMClient:
         if ep.name not in self._clients:
@@ -67,27 +78,71 @@ class MultiLLMRouter:
             )
         return self._clients[ep.name]
 
+    def _allowed(self, ep: LLMEndpoint, now: Optional[float] = None) -> bool:
+        if self.health is None:
+            return True
+        return bool(self.health.allow(ep.name, now=now))
+
+    def _mark(self, ep: LLMEndpoint, status: str) -> None:
+        if self.health is None:
+            return
+        if status.startswith("ok"):
+            self.health.success(ep.name)
+        else:
+            self.health.failure(ep.name, error=status)
+
     def probe(self) -> List[Dict[str, str]]:
         rows = []
         for ep in self.chain:
+            allowed = self._allowed(ep)
+            if not allowed:
+                rows.append(
+                    {
+                        "name": ep.name,
+                        "provider": ep.provider,
+                        "model": ep.model,
+                        "base_url": ep.base_url or "",
+                        "status": "breaker-open",
+                    }
+                )
+                continue
             client = self._client_for(ep)
             status = client.ping()
-            rows.append({"name": ep.name, "provider": ep.provider, "model": ep.model, "base_url": ep.base_url or "", "status": status})
+            self._mark(ep, status)
+            rows.append(
+                {
+                    "name": ep.name,
+                    "provider": ep.provider,
+                    "model": ep.model,
+                    "base_url": ep.base_url or "",
+                    "status": status,
+                }
+            )
         return rows
 
-    def pick(self) -> tuple[LLMEndpoint, LLMClient]:
+    def pick(self, now: Optional[float] = None) -> tuple[LLMEndpoint, LLMClient]:
         if self.sticky and self.active is not None:
-            return self.active, self._client_for(self.active)
+            if self._allowed(self.active, now=now):
+                return self.active, self._client_for(self.active)
+            self.active = None
         errors: List[str] = []
         for ep in self.chain:
+            if not self._allowed(ep, now=now):
+                errors.append(f"{ep.name}: breaker-open")
+                continue
             client = self._client_for(ep)
             status = client.ping()
+            self._mark(ep, status)
             if status.startswith("ok"):
                 self.active = ep
                 self.last_error = None
                 return ep, client
             errors.append(f"{ep.name}: {status}")
         self.last_error = "; ".join(errors) or "no endpoints configured"
+        for ep in self.chain:
+            if self._allowed(ep, now=now):
+                self.active = ep
+                return ep, self._client_for(ep)
         ep = self.chain[0]
         self.active = ep
         return ep, self._client_for(ep)
@@ -96,17 +151,25 @@ class MultiLLMRouter:
         ep, client = self.pick()
         result = client.chat(messages, tools=tools, tool_choice=tool_choice)
         content = result.get("content") or ""
-        if isinstance(content, str) and content.startswith("[LLM error]") and self.sticky:
+        if isinstance(content, str) and content.startswith("[LLM error]"):
+            self._mark(ep, content)
             self.active = None
             for other in self.chain:
                 if other.name == ep.name:
                     continue
+                if not self._allowed(other):
+                    continue
                 alt = self._client_for(other)
                 status = alt.ping()
+                self._mark(other, status)
                 if not status.startswith("ok"):
                     continue
                 self.active = other
-                return alt.chat(messages, tools=tools, tool_choice=tool_choice)
+                alt_result = alt.chat(messages, tools=tools, tool_choice=tool_choice)
+                alt_result["routed_via"] = other.name
+                return alt_result
+        else:
+            self._mark(ep, "ok")
         result["routed_via"] = ep.name
         return result
 
@@ -122,3 +185,32 @@ def format_probe(rows: List[Dict[str, str]]) -> str:
     for r in rows:
         lines.append(f"- {r['name']} ({r['provider']}/{r['model']}) @ {r['base_url'] or '-'} → {r['status']}")
     return "\n".join(lines)
+
+
+def demo_routed_health() -> str:
+    """Offline story: open breaker skips lmstudio; pick lands on ollama."""
+    from .health import HealthBoard
+
+    board = HealthBoard(threshold=1, cooldown_s=60)
+    board.trip("lmstudio", error="connection refused")
+
+    class _Fake:
+        def __init__(self, name: str, status: str):
+            self.name = name
+            self.status = status
+
+        def ping(self) -> str:
+            return self.status
+
+        def chat(self, *a, **k):
+            return {"content": f"ok via {self.name}", "tool_calls": []}
+
+        def close(self) -> None:
+            return None
+
+    router = MultiLLMRouter(health=board, sticky=False)
+    router._clients["ollama"] = _Fake("ollama", "ok")  # type: ignore[assignment]
+    router._clients["lmstudio"] = _Fake("lmstudio", "ok")  # type: ignore[assignment]
+    ep, _ = router.pick()
+    probe = format_probe(router.probe())
+    return f"picked={ep.name}\n{probe}\nlast_error={router.last_error or '-'}"

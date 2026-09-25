@@ -1,7 +1,7 @@
 # grok-local-agent-kit
 
 **Open-source toolkit for building local AI agents.**
-Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, **opt-in live-model eval profile**, tool cache + telemetry + budgets, **drop-in tool plugins with a Python sandbox**, **JSONL transcripts**, **workspace packer + local file RAG**, **web search with HTML fallback**, **multi-agent Team + shared blackboard**, **blackboard + roster persistence**, **task handoff queue**, **local approval gate wired into ReAct**, **scriptable approval TUI**, **circuit breaker health board for local backends**.
+Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router **with a circuit breaker on the hot path**, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, **opt-in live-model eval profile**, tool cache + telemetry + budgets, **drop-in tool plugins with a Python sandbox**, **JSONL transcripts**, **workspace packer + local file RAG**, **web search with HTML fallback**, **multi-agent Team + shared blackboard**, **blackboard + roster persistence**, **task handoff queue**, **local approval gate wired into ReAct**, **scriptable approval TUI**, **circuit breaker health board for local backends**.
 Offline-first.
 Built autonomously by Grok.
 
@@ -9,9 +9,10 @@ Built autonomously by Grok.
 > No cloud required.
 > No API keys for local models.
 
-## Features (v0.36.0)
+## Features (v0.37.0)
 
 * Multi-LLM (Ollama + LM Studio / OpenAI-compat) + fallback router
+* **Health-aware routing** — open breakers are skipped in `pick` / `probe` / `chat` (`grok-agent route demo`)
 * ReAct tool loop, streaming, hooks, skills, orchestrator
 * **Team + Blackboard** — coordinator / researcher / operator share posts (`grok-agent team demo`)
 * **Persist the board** — JSONL or SQLite (`grok-agent board demo`)
@@ -57,13 +58,17 @@ Terminal: `grok-agent tools demo` → calculator `21*2` = 42, `list_files` shows
 **GIF 5 — health board**  
 `grok-agent health demo` → ollama closed/allow=ok, lmstudio open after two refused connections.
 
+**GIF 6 — health-aware router**  
+`grok-agent route demo` trips LM Studio, then `pick()` lands on Ollama. Probe lists `lmstudio → breaker-open` without pinging it.
+
 ```
-┌──────────────────────────────────────────┐
-│  You › grok-agent health demo                          │
-│  health board:                                         │
-│  - lmstudio: open allow=block fail=3 ok=0              │
-│  - ollama: closed allow=ok fail=0 ok=1                 │
-└──────────────────────────────────────────┘
+┌────────────────────────────────────────────┐
+│  You › grok-agent route demo                           │
+│  picked=ollama                                         │
+│  LLM route probe:                                      │
+│  - ollama (...) → ok                                   │
+│  - lmstudio (...) → breaker-open                       │
+└────────────────────────────────────────────┘
 ```
 
 ## Quick start (1 command)
@@ -81,6 +86,7 @@ grok-agent approve react
 grok-agent approve tui --seed --script A003=approved,A004=denied
 grok-agent eval-demo
 grok-agent health demo
+grok-agent route demo
 ```
 
 From source:
@@ -119,6 +125,7 @@ GROK_LIVE_EVAL=1 grok-agent eval-live --live
 | `examples/approve_tui_agent.py` | no | scriptable HITL queue |
 | `examples/live_eval_agent.py` | no (unless `--live`) | stub / live eval profile |
 | `examples/health_agent.py` | no | circuit breaker board |
+| `examples/route_health_agent.py` | no | router skips an open breaker |
 | `examples/workspace_agent.py` | no | pack + local file RAG |
 | `examples/mcp_agent.py` | optional | MCP stdio / HTTP / SSE |
 
