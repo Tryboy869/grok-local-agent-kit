@@ -1,27 +1,27 @@
-# HN / Indie Hackers update — v0.36.0 (2026-09-24)
+# HN / Indie Hackers update — v0.37.0 (2026-09-25)
 
 ## One-liner
-Local-first Python agent kit: Ollama + LM Studio router, ReAct tools, workspace RAG, multi-agent teams, scriptable approval TUI, opt-in live eval, and a circuit breaker so a dead local backend stops eating requests.
+Local-first Python agent kit: Ollama + LM Studio router that now **refuses traffic to a tripped circuit breaker**, ReAct tools, workspace RAG, multi-agent teams, scriptable approval TUI, opt-in live eval.
 
 ## What's new this week
-- v0.35: `grok-agent eval-demo` / `eval-live`. Stub in CI; real models need `--live` **and** `GROK_LIVE_EVAL=1`.
-- v0.36: `grok-agent health demo|show|trip|reset`. Closed / open / half-open per backend. JSON on disk. Zero LLM.
+- v0.36: standalone health board (`health demo|show|trip|reset`).
+- v0.37: that board is on the hot path. `MultiLLMRouter.pick` / `probe` / `chat` skip open breakers. `grok-agent route demo` proves it with fake clients — no GPU, no daemon.
 
 ## Indie Hackers angle
-Local models flap. The kit now records those flaps without a GPU: two refused connections open the LM Studio breaker, cooldown moves it half-open, a later success closes it. Same file you can tail in a product.
+A dead LM Studio used to sit first in the chain and eat every request. Now two refused connections open the breaker; the next `pick()` never pings it. Same JSON file you can ship in a product.
 
 ## Draft post
-**Title:** Show HN: local-first agent kit + circuit breaker for Ollama / LM Studio
+**Title:** Show HN: local-first agent kit — circuit breaker actually sits on the LLM router
 
 ```
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
 grok-agent doctor
 grok-agent health demo
-grok-agent eval-demo
-python examples/health_agent.py --demo
+grok-agent route demo
+python examples/route_health_agent.py
 ```
 
-Ask: Wire the breaker into MultiLLMRouter next, or Test PyPI?
+Ask: Test PyPI next, or a 20s GIF of `route demo`?
 
 ## Links
 - Repo: https://github.com/Tryboy869/grok-local-agent-kit
