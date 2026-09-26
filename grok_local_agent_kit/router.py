@@ -4,14 +4,20 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass
-from typing import Any, Dict, Iterable, List, Optional
+from pathlib import Path
+from typing import Any, Dict, Iterable, List, Optional, Union
 
 from .llm import LLMClient
 
 try:
-    from .health import HealthBoard
+    from .health import HealthBoard, load_board as load_health, save_board as save_health
 except Exception:  # pragma: no cover
     HealthBoard = None  # type: ignore
+    load_health = None  # type: ignore
+    save_health = None  # type: ignore
+
+PathLike = Union[str, Path]
+DEFAULT_HEALTH_PATH = "health.json"
 
 
 @dataclass
@@ -63,6 +69,7 @@ class MultiLLMRouter:
         chain: Optional[Iterable[LLMEndpoint]] = None,
         sticky: bool = True,
         health: Optional["HealthBoard"] = None,
+        persist_path: Optional[PathLike] = None,
     ):
         self.chain: List[LLMEndpoint] = list(chain or endpoint_from_env())
         self.sticky = sticky
@@ -70,6 +77,28 @@ class MultiLLMRouter:
         self._clients: Dict[str, LLMClient] = {}
         self.last_error: Optional[str] = None
         self.health = health
+        self.persist_path: Optional[str] = str(persist_path) if persist_path else None
+
+    def attach_persist(self, path: PathLike, load_existing: bool = True) -> Path:
+        """Bind this router to a cwd-safe health.json and optionally hydrate the board."""
+        self.persist_path = str(path)
+        if load_existing and load_health is not None:
+            loaded = load_health(path)
+            if self.health is None:
+                self.health = loaded
+            else:
+                for name, br in loaded.breakers.items():
+                    self.health.breakers.setdefault(name, br)
+        elif self.health is None and HealthBoard is not None:
+            self.health = HealthBoard()
+        return self.persist()
+
+    def persist(self) -> Path:
+        if not self.persist_path:
+            raise ValueError("no persist_path set; call attach_persist() first")
+        if self.health is None or save_health is None:
+            raise ValueError("no HealthBoard attached")
+        return save_health(self.health, self.persist_path)
 
     def _client_for(self, ep: LLMEndpoint) -> LLMClient:
         if ep.name not in self._clients:
@@ -90,6 +119,8 @@ class MultiLLMRouter:
             self.health.success(ep.name)
         else:
             self.health.failure(ep.name, error=status)
+        if self.persist_path and save_health is not None:
+            save_health(self.health, self.persist_path)
 
     def probe(self) -> List[Dict[str, str]]:
         rows = []
@@ -214,3 +245,40 @@ def demo_routed_health() -> str:
     ep, _ = router.pick()
     probe = format_probe(router.probe())
     return f"picked={ep.name}\n{probe}\nlast_error={router.last_error or '-'}"
+
+
+def demo_persisted_route(path: PathLike = DEFAULT_HEALTH_PATH) -> str:
+    """Offline story: pick() writes health.json; a second router reloads it."""
+    from .health import HealthBoard, format_board, load_board
+
+    board = HealthBoard(threshold=1, cooldown_s=60)
+    router = MultiLLMRouter(health=board, sticky=False, persist_path=path)
+
+    class _Fake:
+        def __init__(self, name: str, status: str):
+            self.name = name
+            self.status = status
+
+        def ping(self) -> str:
+            return self.status
+
+        def chat(self, *a, **k):
+            return {"content": f"ok via {self.name}", "tool_calls": []}
+
+        def close(self) -> None:
+            return None
+
+    router._clients["ollama"] = _Fake("ollama", "ok")  # type: ignore[assignment]
+    router._clients["lmstudio"] = _Fake("lmstudio", "connection refused")  # type: ignore[assignment]
+    ep, _ = router.pick()
+    dest = router.persist()
+    reloaded = load_board(dest)
+    second = MultiLLMRouter(sticky=False)
+    second.attach_persist(dest)
+    assert second.health is not None
+    assert second.health.breaker("lmstudio").state == "open"
+    return (
+        f"picked={ep.name}\n"
+        f"wrote={dest}\n"
+        f"{format_board(reloaded)}"
+    )
