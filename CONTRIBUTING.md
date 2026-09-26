@@ -25,6 +25,7 @@ pytest -q
 - Live-model eval stays **opt-in**. Default and CI paths use the stub. Real models require both `--live` and `GROK_LIVE_EVAL=1`.
 - Health board tests must not contact Ollama / LM Studio; use injected clocks (`now=`).
 - Router tests that cover HealthBoard must inject fake clients; never ping a live daemon.
+- Routed health persistence must reuse `health.save_board` / `load_board` (same `health.json`).
 - Do not load untrusted Python plugins by default. JSON plugins are data-only.
 - Workspace packer / file RAG must stay cwd-safe and skip VCS / venv trees.
 - Do not commit secrets, model weights, or large binaries.
