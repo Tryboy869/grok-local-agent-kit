@@ -248,7 +248,7 @@ def demo_routed_health() -> str:
 
 
 def demo_persisted_route(path: PathLike = DEFAULT_HEALTH_PATH) -> str:
-    """Offline story: pick() writes health.json; a second router reloads it."""
+    """Offline story: probe() writes health.json; a second router reloads it."""
     from .health import HealthBoard, format_board, load_board
 
     board = HealthBoard(threshold=1, cooldown_s=60)
@@ -270,6 +270,7 @@ def demo_persisted_route(path: PathLike = DEFAULT_HEALTH_PATH) -> str:
 
     router._clients["ollama"] = _Fake("ollama", "ok")  # type: ignore[assignment]
     router._clients["lmstudio"] = _Fake("lmstudio", "connection refused")  # type: ignore[assignment]
+    router.probe()
     ep, _ = router.pick()
     dest = router.persist()
     reloaded = load_board(dest)
