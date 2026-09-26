@@ -21,7 +21,7 @@ class _Fake:
         return None
 
 
-def test_pick_writes_health_json(tmp_path, monkeypatch):
+def test_probe_writes_health_json(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     dest = Path("health.json")
     from grok_local_agent_kit.health import HealthBoard
@@ -30,6 +30,7 @@ def test_pick_writes_health_json(tmp_path, monkeypatch):
     router = MultiLLMRouter(health=board, sticky=False, persist_path=dest)
     router._clients["ollama"] = _Fake("ollama", "ok")
     router._clients["lmstudio"] = _Fake("lmstudio", "connection refused")
+    router.probe()
     ep, _ = router.pick()
     assert ep.name == "ollama"
     assert dest.exists()
@@ -47,7 +48,7 @@ def test_attach_persist_reloads(tmp_path, monkeypatch):
     first = MultiLLMRouter(health=board, sticky=False, persist_path=dest)
     first._clients["ollama"] = _Fake("ollama", "ok")
     first._clients["lmstudio"] = _Fake("lmstudio", "down")
-    first.pick()
+    first.probe()
 
     second = MultiLLMRouter(sticky=False)
     second.attach_persist(dest)
