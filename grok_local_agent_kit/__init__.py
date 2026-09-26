@@ -1,6 +1,6 @@
 """Grok Local Agent Kit — local-first AI agents with tools & multi-LLM support."""
 
-__version__ = "0.37.0"
+__version__ = "0.38.0"
 
 from .agent import Agent
 from .config import KitConfig, load_config, write_example_config
@@ -13,7 +13,7 @@ from .mcp_http import HTTPMCPClient, probe_http_mcp
 from .mcp_sse import SSEMCPClient, probe_sse_mcp
 from .memory import forget, recall, remember
 from .orchestrator import Orchestrator
-from .router import MultiLLMRouter, format_probe, demo_routed_health
+from .router import MultiLLMRouter, format_probe, demo_routed_health, demo_persisted_route
 from .session import list_sessions, load_session, save_session
 from .skills import load_skills
 from .tools import execute_tool, get_default_tools
@@ -123,6 +123,7 @@ from .cli_v034 import register as _register_cli_v034
 from .cli_v035 import register as _register_cli_v035
 from .cli_v036 import register as _register_cli_v036
 from .cli_v037 import register as _register_cli_v037
+from .cli_v038 import register as _register_cli_v038
 
 _register_cli_ext(_cli_mod.cli)
 _register_cli_v021(_cli_mod.cli)
@@ -142,6 +143,7 @@ _register_cli_v034(_cli_mod.cli)
 _register_cli_v035(_cli_mod.cli)
 _register_cli_v036(_cli_mod.cli)
 _register_cli_v037(_cli_mod.cli)
+_register_cli_v038(_cli_mod.cli)
 _patch_tools()
 _patch_runtime()
 _register_workspace_tools()
@@ -164,6 +166,7 @@ __all__ = [
     "load_mcp_config",
     "MultiLLMRouter",
     "demo_routed_health",
+    "demo_persisted_route",
     "Orchestrator",
     "UsageStats",
     "estimate_tokens",
