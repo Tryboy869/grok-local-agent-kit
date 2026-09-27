@@ -23,8 +23,9 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.36: circuit breaker health board for Ollama / LM Studio (`health demo|show|trip|reset`)
 - v0.37: HealthBoard wired into MultiLLMRouter.pick / probe / chat (`route demo`)
 - v0.38: persist routed health decisions onto `health.json` (`route persist`)
+- v0.39: portable kit snapshot (`snapshot demo|show|write`)
 
-## Next (v0.39.x)
+## Next (v0.40.x)
 
 - Recorded binary GIFs in docs/gifs/
 - PyPI / Test PyPI publish

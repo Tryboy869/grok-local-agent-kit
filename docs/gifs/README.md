@@ -59,3 +59,13 @@ python examples/health_agent.py --demo
 ```
 
 Expected: ollama stays closed/allow=ok; lmstudio is open after two refused connections.
+
+## 7. Kit snapshot (v0.39)
+
+```
+grok-agent snapshot demo
+grok-agent snapshot show
+python examples/snapshot_agent.py
+```
+
+Expected: `kit-snapshot.json` is written; stdout lists version, Python, tool names, and whether health/roster/board files exist. No LLM process is started.

@@ -2,6 +2,15 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.39.0] — 2026-09-27
+
+### Added
+- Portable kit snapshot (`Snapshot`, `collect`, `write_snapshot`, `load_snapshot`)
+- Captures version, Python, platform, default tools, and presence of health/roster/board/config files
+- CLI: `grok-agent snapshot demo|show|write` (no live LLM)
+- Example: `examples/snapshot_agent.py`
+- Tests: `tests/test_v039.py`
+
 ## [0.38.0] — 2026-09-26
 
 ### Added

@@ -1,29 +1,26 @@
-# HN / Indie Hackers update — v0.38.0 (2026-09-26)
+# HN / Indie Hackers update — v0.39.0 (2026-09-27)
 
 ## One-liner
-Local-first Python agent kit: Ollama + LM Studio router that **writes circuit-breaker decisions to health.json**, so the next process skips a dead backend without pinging it again.
+Local-first Python agent kit: one command dumps a portable snapshot of version, tools, and whether health/roster/board files exist — no model required.
 
 ## What's new this week
-- v0.36: standalone health board (`health demo|show|trip|reset`).
-- v0.37: that board is on the hot path. `pick` / `probe` / `chat` skip open breakers.
-- v0.38: those decisions persist. `MultiLLMRouter.attach_persist("health.json")` hydrates a new process. `grok-agent route persist` proves it with fake clients.
+- v0.36–0.38: circuit breaker on the router, then persist those decisions to `health.json`.
+- v0.39: `grok-agent snapshot demo` writes `kit-snapshot.json`. Same facts a maintainer would paste into an issue.
 
 ## Indie Hackers angle
-A crashed LM Studio used to burn every request in a new Python process. Now the first process trips the breaker and dumps `health.json`. The next CLI invocation never pings it. Same file the `health` CLI already uses.
+Support threads stall on "what version / which tools / is health.json even there?". Snapshot is a one-file answer you can attach without starting Ollama.
 
 ## Draft post
-**Title:** Show HN: local-first agent kit — router health now survives process restart
+**Title:** Show HN: local-first agent kit — dump a portable snapshot without a model
 
 ```
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
 grok-agent doctor
-grok-agent health demo
-grok-agent route demo
-grok-agent route persist
-python examples/persist_route_agent.py
+grok-agent snapshot demo
+python examples/snapshot_agent.py
 ```
 
-Ask: Test PyPI next, or a 20s GIF of `route persist`?
+Ask: Test PyPI next, or a 20s GIF of snapshot + route persist?
 
 ## Links
 - Repo: https://github.com/Tryboy869/grok-local-agent-kit
