@@ -1,6 +1,6 @@
 """Grok Local Agent Kit — local-first AI agents with tools & multi-LLM support."""
 
-__version__ = "0.38.0"
+__version__ = "0.39.0"
 
 from .agent import Agent
 from .config import KitConfig, load_config, write_example_config
@@ -102,6 +102,14 @@ from .health import (
     load_board as load_health,
     save_board as save_health,
 )
+from .snapshot import (
+    Snapshot,
+    collect as collect_snapshot,
+    demo_snapshot,
+    format_snapshot,
+    load_snapshot,
+    write_snapshot,
+)
 from .shell import patch_tools as _patch_tools
 from .runtime import patch as _patch_runtime
 from . import cli as _cli_mod
@@ -124,6 +132,7 @@ from .cli_v035 import register as _register_cli_v035
 from .cli_v036 import register as _register_cli_v036
 from .cli_v037 import register as _register_cli_v037
 from .cli_v038 import register as _register_cli_v038
+from .cli_v039 import register as _register_cli_v039
 
 _register_cli_ext(_cli_mod.cli)
 _register_cli_v021(_cli_mod.cli)
@@ -144,6 +153,7 @@ _register_cli_v035(_cli_mod.cli)
 _register_cli_v036(_cli_mod.cli)
 _register_cli_v037(_cli_mod.cli)
 _register_cli_v038(_cli_mod.cli)
+_register_cli_v039(_cli_mod.cli)
 _patch_tools()
 _patch_runtime()
 _register_workspace_tools()
@@ -304,5 +314,11 @@ __all__ = [
     "format_health",
     "load_health",
     "save_health",
+    "Snapshot",
+    "collect_snapshot",
+    "demo_snapshot",
+    "format_snapshot",
+    "load_snapshot",
+    "write_snapshot",
     "__version__",
 ]
