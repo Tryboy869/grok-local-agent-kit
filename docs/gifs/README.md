@@ -69,3 +69,13 @@ python examples/snapshot_agent.py
 ```
 
 Expected: `kit-snapshot.json` is written; stdout lists version, Python, tool names, and whether health/roster/board files exist. No LLM process is started.
+
+## 8. Model catalog (v0.40)
+
+```
+grok-agent models demo
+grok-agent models list
+python examples/catalog_agent.py
+```
+
+Expected: `catalog.json` lists reachable backends and model names. A down daemon is marked `down` with an error string; the command still exits 0.
