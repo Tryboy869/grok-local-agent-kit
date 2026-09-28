@@ -1,26 +1,29 @@
-# HN / Indie Hackers update — v0.39.0 (2026-09-27)
+# HN / Indie Hackers update — v0.40.0 (2026-09-28)
 
 ## One-liner
-Local-first Python agent kit: one command dumps a portable snapshot of version, tools, and whether health/roster/board files exist — no model required.
+Local-first Python agent kit: list the models actually sitting on your Ollama / LM Studio box and persist them to `catalog.json` — tests inject fake HTTP so CI never pings a daemon.
 
 ## What's new this week
-- v0.36–0.38: circuit breaker on the router, then persist those decisions to `health.json`.
-- v0.39: `grok-agent snapshot demo` writes `kit-snapshot.json`. Same facts a maintainer would paste into an issue.
+- v0.36–0.38: circuit breaker on the router, persist to `health.json`.
+- v0.39: portable kit snapshot.
+- v0.40: `grok-agent models demo` writes `catalog.json` with reachable backends + model names.
 
 ## Indie Hackers angle
-Support threads stall on "what version / which tools / is health.json even there?". Snapshot is a one-file answer you can attach without starting Ollama.
+"Which model is installed?" is the first support question after "is Ollama running?". The catalog answers both without opening a chat session.
 
 ## Draft post
-**Title:** Show HN: local-first agent kit — dump a portable snapshot without a model
+**Title:** Show HN: local-first agent kit — dump the models on your machine without chatting
 
 ```
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
 grok-agent doctor
-grok-agent snapshot demo
-python examples/snapshot_agent.py
+grok-agent models demo
+python examples/catalog_agent.py
+python examples/chat_agent.py
+python examples/automation_agent.py
 ```
 
-Ask: Test PyPI next, or a 20s GIF of snapshot + route persist?
+Ask: Wire catalog.pick into the router next, or Test PyPI?
 
 ## Links
 - Repo: https://github.com/Tryboy869/grok-local-agent-kit

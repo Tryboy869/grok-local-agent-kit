@@ -2,6 +2,16 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.40.0] — 2026-09-28
+
+### Added
+- Local model catalog for Ollama (`/api/tags`) and LM Studio (`/v1/models`)
+- Injectable HTTP fetch so CI never contacts a live daemon
+- Persist `catalog.json`; `Catalog.pick()` prefers a name prefix
+- CLI: `grok-agent models demo|list|refresh`
+- Example: `examples/catalog_agent.py`
+- Tests: `tests/test_v040.py`
+
 ## [0.39.0] — 2026-09-27
 
 ### Added

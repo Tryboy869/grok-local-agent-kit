@@ -1,6 +1,6 @@
 """Grok Local Agent Kit — local-first AI agents with tools & multi-LLM support."""
 
-__version__ = "0.39.0"
+__version__ = "0.40.0"
 
 from .agent import Agent
 from .config import KitConfig, load_config, write_example_config
@@ -110,6 +110,15 @@ from .snapshot import (
     load_snapshot,
     write_snapshot,
 )
+from .catalog import (
+    Catalog,
+    ModelEntry,
+    collect as collect_catalog,
+    demo_catalog,
+    format_catalog,
+    load_catalog,
+    write_catalog,
+)
 from .shell import patch_tools as _patch_tools
 from .runtime import patch as _patch_runtime
 from . import cli as _cli_mod
@@ -133,6 +142,7 @@ from .cli_v036 import register as _register_cli_v036
 from .cli_v037 import register as _register_cli_v037
 from .cli_v038 import register as _register_cli_v038
 from .cli_v039 import register as _register_cli_v039
+from .cli_v040 import register as _register_cli_v040
 
 _register_cli_ext(_cli_mod.cli)
 _register_cli_v021(_cli_mod.cli)
@@ -154,6 +164,7 @@ _register_cli_v036(_cli_mod.cli)
 _register_cli_v037(_cli_mod.cli)
 _register_cli_v038(_cli_mod.cli)
 _register_cli_v039(_cli_mod.cli)
+_register_cli_v040(_cli_mod.cli)
 _patch_tools()
 _patch_runtime()
 _register_workspace_tools()
@@ -320,5 +331,12 @@ __all__ = [
     "format_snapshot",
     "load_snapshot",
     "write_snapshot",
+    "Catalog",
+    "ModelEntry",
+    "collect_catalog",
+    "demo_catalog",
+    "format_catalog",
+    "load_catalog",
+    "write_catalog",
     "__version__",
 ]
