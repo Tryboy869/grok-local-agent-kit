@@ -1,7 +1,7 @@
 # grok-local-agent-kit
 
 **Open-source toolkit for building local AI agents.**
-Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router **with a circuit breaker on the hot path**, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, **opt-in live-model eval profile**, tool cache + telemetry + budgets, **drop-in tool plugins with a Python sandbox**, **JSONL transcripts**, **workspace packer + local file RAG**, **web search with HTML fallback**, **multi-agent Team + shared blackboard**, **blackboard + roster persistence**, **task handoff queue**, **local approval gate wired into ReAct**, **scriptable approval TUI**, **circuit breaker health board for local backends**, **routed health persisted to health.json**, **portable kit snapshot**, **local model catalog**.
+Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router **with a circuit breaker on the hot path**, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, **opt-in live-model eval profile**, tool cache + telemetry + budgets, **drop-in tool plugins with a Python sandbox**, **JSONL transcripts**, **workspace packer + local file RAG**, **web search with HTML fallback**, **multi-agent Team + shared blackboard**, **blackboard + roster persistence**, **task handoff queue**, **local approval gate wired into ReAct**, **scriptable approval TUI**, **circuit breaker health board for local backends**, **routed health persisted to health.json**, **portable kit snapshot**, **local model catalog**, **router defaults from Catalog.pick**.
 Offline-first.
 Built autonomously by Grok.
 
@@ -9,13 +9,14 @@ Built autonomously by Grok.
 > No cloud required.
 > No API keys for local models.
 
-## Features (v0.40.0)
+## Features (v0.41.0)
 
 * Multi-LLM (Ollama + LM Studio / OpenAI-compat) + fallback router
 * **Health-aware routing** — open breakers are skipped in `pick` / `probe` / `chat` (`grok-agent route demo`)
 * **Persisted route health** — `_mark` writes `health.json`; a new process hydrates it (`grok-agent route persist`)
 * **Kit snapshot** — version, tools, file presence in one JSON (`grok-agent snapshot demo`)
 * **Model catalog** — list Ollama tags + LM Studio `/v1/models`, persist `catalog.json` (`grok-agent models demo`)
+* **Catalog → router** — `Catalog.pick` rewrites endpoint models (`grok-agent route catalog`)
 * ReAct tool loop, streaming, hooks, skills, orchestrator
 * **Team + Blackboard** — coordinator / researcher / operator share posts (`grok-agent team demo`)
 * **Persist the board** — JSONL or SQLite (`grok-agent board demo`)
@@ -73,14 +74,19 @@ Terminal: `grok-agent tools demo` → calculator `21*2` = 42, `list_files` shows
 **GIF 9 — model catalog**  
 `grok-agent models demo` probes Ollama `/api/tags` and LM Studio `/v1/models`, writes `catalog.json`. Down backends are marked `down` instead of crashing.
 
+**GIF 10 — catalog → router**  
+`grok-agent route catalog` replaces placeholder endpoint models with `Catalog.pick` names (`llama3.2:latest`, `qwen2.5-7b`). No live chat.
+
 ```
 ┌───────────────────────────────────────────┐
-│  You › grok-agent models demo                               │
-│  wrote=.../catalog.json                                     │
-│  model-catalog 2026-09-28T14:00:00Z models=2                 │
-│    ollama: up count=1                                       │
-│      ollama:llama3.2:latest                                  │
-│    lmstudio: down err=Connection refused                     │
+│  You › grok-agent route catalog                              │
+│  catalog-route                                               │
+│  before:                                                     │
+│    ollama model=llama3.2                                     │
+│    lmstudio model=local-model                                │
+│  changes:                                                    │
+│    ollama: llama3.2 -> llama3.2:latest                        │
+│    lmstudio: local-model -> qwen2.5-7b                        │
 └───────────────────────────────────────────┘
 ```
 
@@ -91,6 +97,7 @@ curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main
 grok-agent doctor
 grok-agent tools demo
 grok-agent models demo
+grok-agent route catalog
 grok-agent snapshot demo
 grok-agent team demo
 grok-agent board demo
@@ -131,6 +138,7 @@ GROK_LIVE_EVAL=1 grok-agent eval-live --live
 |---|---|---|
 | `examples/tools_demo_agent.py` | no | calculator, list_files, system info |
 | `examples/catalog_agent.py` | no | local Ollama / LM Studio model list |
+| `examples/catalog_route_agent.py` | no | Catalog.pick → router models |
 | `examples/snapshot_agent.py` | no | portable kit snapshot JSON |
 | `examples/chat_agent.py` | yes | interactive ReAct chat |
 | `examples/automation_agent.py` | yes | one-shot goal with tools |
