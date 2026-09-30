@@ -1,6 +1,6 @@
 """Grok Local Agent Kit — local-first AI agents with tools & multi-LLM support."""
 
-__version__ = "0.40.0"
+__version__ = "0.41.0"
 
 from .agent import Agent
 from .config import KitConfig, load_config, write_example_config
@@ -119,6 +119,7 @@ from .catalog import (
     load_catalog,
     write_catalog,
 )
+from .catalog_route import apply_catalog, demo_catalog_route
 from .shell import patch_tools as _patch_tools
 from .runtime import patch as _patch_runtime
 from . import cli as _cli_mod
@@ -143,6 +144,7 @@ from .cli_v037 import register as _register_cli_v037
 from .cli_v038 import register as _register_cli_v038
 from .cli_v039 import register as _register_cli_v039
 from .cli_v040 import register as _register_cli_v040
+from .cli_v041 import register as _register_cli_v041
 
 _register_cli_ext(_cli_mod.cli)
 _register_cli_v021(_cli_mod.cli)
@@ -165,6 +167,7 @@ _register_cli_v037(_cli_mod.cli)
 _register_cli_v038(_cli_mod.cli)
 _register_cli_v039(_cli_mod.cli)
 _register_cli_v040(_cli_mod.cli)
+_register_cli_v041(_cli_mod.cli)
 _patch_tools()
 _patch_runtime()
 _register_workspace_tools()
@@ -188,6 +191,8 @@ __all__ = [
     "MultiLLMRouter",
     "demo_routed_health",
     "demo_persisted_route",
+    "apply_catalog",
+    "demo_catalog_route",
     "Orchestrator",
     "UsageStats",
     "estimate_tokens",
