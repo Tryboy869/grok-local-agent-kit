@@ -25,12 +25,12 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.38: persist routed health decisions onto `health.json` (`route persist`)
 - v0.39: portable kit snapshot (`snapshot demo|show|write`)
 - v0.40: local model catalog (`models demo|list|refresh`, `catalog.json`)
+- v0.41: wire catalog.pick into MultiLLMRouter defaults (`route catalog`)
 
-## Next (v0.41.x)
+## Next (v0.42.x)
 
 - Recorded binary GIFs in docs/gifs/
 - PyPI / Test PyPI publish
-- Wire catalog.pick into MultiLLMRouter defaults
 - True vec0 virtual table writes when sqlite-vec is present
 - Stronger plugin isolation
 - Interactive Rich/prompt toolkit TUI when stdin is a TTY

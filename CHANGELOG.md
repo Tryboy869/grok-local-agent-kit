@@ -2,6 +2,15 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.41.0] — 2026-09-30
+
+### Added
+- Wire `Catalog.pick()` into `MultiLLMRouter` endpoint models (`apply_catalog`)
+- Offline demo `demo_catalog_route()` — placeholder models become discovered names
+- CLI: `grok-agent route catalog`
+- Example: `examples/catalog_route_agent.py`
+- Tests: `tests/test_v041.py`
+
 ## [0.40.0] — 2026-09-28
 
 ### Added

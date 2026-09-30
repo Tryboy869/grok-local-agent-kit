@@ -1,6 +1,6 @@
 # Show HN: grok-local-agent-kit
 
-Local-first Python toolkit for AI agents. Ollama + LM Studio, ReAct tools, workspace RAG, multi-agent teams, a file-backed approval TUI, opt-in live eval, a circuit breaker on the multi-LLM router that survives process restart, a portable kit snapshot, and a **local model catalog** that lists what is actually installed.
+Local-first Python toolkit for AI agents. Ollama + LM Studio, ReAct tools, workspace RAG, multi-agent teams, a file-backed approval TUI, opt-in live eval, a circuit breaker on the multi-LLM router that survives process restart, a portable kit snapshot, a local model catalog, and a **router that adopts the models actually installed on the box**.
 
 **What it does**
 
@@ -9,6 +9,7 @@ Local-first Python toolkit for AI agents. Ollama + LM Studio, ReAct tools, works
 - Routed decisions persist to the same `health.json` the health CLI uses
 - `grok-agent snapshot demo` writes `kit-snapshot.json`
 - `grok-agent models demo` writes `catalog.json` (Ollama tags + LM Studio /v1/models)
+- `grok-agent route catalog` rewrites endpoint models via `Catalog.pick`
 - ReAct tool loop: files, web, shell, calculator, Python sandbox, MCP (stdio / HTTP / SSE)
 - A local approval gate sits on that loop: denied or pending tools never execute
 - Scriptable TUI: `grok-agent approve tui --script A003=approved,A004=denied`
@@ -27,6 +28,7 @@ curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main
 grok-agent doctor
 grok-agent tools demo
 grok-agent models demo
+grok-agent route catalog
 grok-agent snapshot demo
 grok-agent eval-demo
 grok-agent health demo
