@@ -26,8 +26,9 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.39: portable kit snapshot (`snapshot demo|show|write`)
 - v0.40: local model catalog (`models demo|list|refresh`, `catalog.json`)
 - v0.41: wire catalog.pick into MultiLLMRouter defaults (`route catalog`)
+- v0.42: offline scripted agent loop (`offline demo`, chat + automation examples)
 
-## Next (v0.42.x)
+## Next (v0.43.x)
 
 - Recorded binary GIFs in docs/gifs/
 - PyPI / Test PyPI publish

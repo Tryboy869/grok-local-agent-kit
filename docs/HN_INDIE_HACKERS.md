@@ -1,29 +1,30 @@
-# HN / Indie Hackers update — v0.41.0 (2026-09-30)
+# HN / Indie Hackers update — v0.42.0 (2026-10-01)
 
 ## One-liner
-Local-first Python agent kit: the multi-LLM router now uses the models actually installed on your machine (`Catalog.pick` → endpoint.model), not a hardcoded `llama3.2` / `local-model`.
+Local-first Python agent kit: the real tool loop (list files, write a note) now runs with zero model servers via a scripted LLM, and the same Agent class still routes to Ollama or LM Studio when they are up.
 
-## What's new this week
-- v0.40: `grok-agent models demo` writes `catalog.json`.
-- v0.41: `grok-agent route catalog` rewrites router defaults from that catalog. Offline demo, no chat process.
+## What's new
+- v0.42: `grok-agent offline demo` and `examples/offline_chat_agent.py` / `examples/offline_automation_agent.py`.
+- `Agent(llm=...)` so tests and CI never touch a daemon.
+- Still: multi-LLM router, web search, workspace file tools, MCP attach, catalog-aware model pick.
 
 ## Indie Hackers angle
-Support ticket #1 after "is Ollama running?" is "why is it calling llama3.2 when I only pulled qwen?". The catalog + router binding closes that loop.
+The first 10 minutes of a local-agent repo are "install Ollama, pull a model, hope tool calling works." This release makes the loop demonstrable before any of that. Live backends stay optional.
 
 ## Draft post
-**Title:** Show HN: local agent kit — router picks the model you actually installed
+**Title:** Show HN: local agent kit — tool loop runs with no model server
 
 ```
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
-grok-agent doctor
-grok-agent models demo
-grok-agent route catalog
-python examples/catalog_route_agent.py
+grok-agent offline demo
+python examples/offline_chat_agent.py
+python examples/offline_automation_agent.py
+# when a daemon is up:
 python examples/chat_agent.py
 python examples/automation_agent.py
 ```
 
-Ask: Test PyPI next, or recorded GIFs?
+Ask: recorded GIFs next, or a Test PyPI release?
 
 ## Links
 - Repo: https://github.com/Tryboy869/grok-local-agent-kit
