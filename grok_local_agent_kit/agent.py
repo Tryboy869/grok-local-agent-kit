@@ -54,8 +54,9 @@ class Agent:
         hooks: Optional[HookBus] = None,
         parallel_tools: bool = True,
         max_parallel_tools: int = 4,
+        llm: Optional[Any] = None,
     ):
-        self.llm = LLMClient(
+        self.llm = llm if llm is not None else LLMClient(
             model=model, provider=provider, base_url=base_url, temperature=temperature
         )
         self.system_prompt = system_prompt
