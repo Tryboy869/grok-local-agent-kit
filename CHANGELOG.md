@@ -2,6 +2,25 @@
 
 All notable changes to grok-local-agent-kit are documented here.
 
+## [0.43.0] — 2026-10-02
+
+### Added
+- Declarative workflow runner (`Workflow`, `run_workflow`, `load_workflow`) — file ops, injectable web search, MCP echo
+- Offline demo chains a chat-style list, an automation write, a search fixture, and an MCP call (no daemon)
+- CLI: `grok-agent workflow demo` and `grok-agent workflow run PATH`
+- Example: `examples/workflow_agent.py` and `examples/workflows/mvp.json`
+- Tests: `tests/test_v043.py` (cwd-safe paths, no network)
+- GIF storyboard in `docs/gifs/workflow-demo.md` (binary capture still optional)
+- HN / Indie Hackers update draft in `docs/HN_INDIE_HACKERS.md`
+
+## [0.42.0] — 2026-10-01
+
+### Added
+- Offline scripted agent loop (`ScriptedLLM`, `run_offline`, `demo_offline`)
+- CLI: `grok-agent offline demo`
+- Examples: `examples/offline_chat_agent.py`, `examples/offline_automation_agent.py`
+- Tests: `tests/test_v042.py`
+
 ## [0.41.0] — 2026-09-30
 
 ### Added

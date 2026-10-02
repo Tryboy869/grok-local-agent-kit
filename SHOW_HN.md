@@ -45,3 +45,10 @@ grok-agent chat -v --stream --router
 ```
 
 Repo: https://github.com/Tryboy869/grok-local-agent-kit
+
+
+## Follow-up (v0.43, 2026-10-02)
+
+Show HN: Local agent kit – JSON workflows for files, search, and MCP (no daemon)
+
+`grok-agent workflow demo` runs four real steps offline. Chat/automation examples still target Ollama or LM Studio when you want a model. One-command install via `scripts/install.sh`. GIF storyboard: `docs/gifs/workflow-demo.md`.

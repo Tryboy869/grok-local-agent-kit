@@ -1,6 +1,6 @@
 """Grok Local Agent Kit — local-first AI agents with tools & multi-LLM support."""
 
-__version__ = "0.42.0"
+__version__ = "0.43.0"
 
 from .agent import Agent
 from .config import KitConfig, load_config, write_example_config
@@ -121,6 +121,7 @@ from .catalog import (
 )
 from .catalog_route import apply_catalog, demo_catalog_route
 from .offline import ScriptedLLM, demo_offline, run_offline
+from .workflow import Workflow, demo_workflow, load_workflow, run_workflow
 from .shell import patch_tools as _patch_tools
 from .runtime import patch as _patch_runtime
 from . import cli as _cli_mod
@@ -147,6 +148,7 @@ from .cli_v039 import register as _register_cli_v039
 from .cli_v040 import register as _register_cli_v040
 from .cli_v041 import register as _register_cli_v041
 from .cli_v042 import register as _register_cli_v042
+from .cli_v043 import register as _register_cli_v043
 
 _register_cli_ext(_cli_mod.cli)
 _register_cli_v021(_cli_mod.cli)
@@ -171,6 +173,7 @@ _register_cli_v039(_cli_mod.cli)
 _register_cli_v040(_cli_mod.cli)
 _register_cli_v041(_cli_mod.cli)
 _register_cli_v042(_cli_mod.cli)
+_register_cli_v043(_cli_mod.cli)
 _patch_tools()
 _patch_runtime()
 _register_workspace_tools()
@@ -349,5 +352,9 @@ __all__ = [
     "ScriptedLLM",
     "demo_offline",
     "run_offline",
+    "Workflow",
+    "demo_workflow",
+    "load_workflow",
+    "run_workflow",
     "__version__",
 ]

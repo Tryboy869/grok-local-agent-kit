@@ -28,9 +28,15 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.41: wire catalog.pick into MultiLLMRouter defaults (`route catalog`)
 - v0.42: offline scripted agent loop (`offline demo`, chat + automation examples)
 
-## Next (v0.43.x)
+## Shipped (v0.43.0)
 
-- Recorded binary GIFs in docs/gifs/
+- Declarative workflow runner: file ops + injectable web search + MCP echo
+- `grok-agent workflow demo|run` and `examples/workflow_agent.py`
+- Storyboard for the workflow GIF (`docs/gifs/workflow-demo.md`)
+
+## Next (v0.44.x)
+
+- Recorded binary GIFs in docs/gifs/ (storyboard landed in v0.43)
 - PyPI / Test PyPI publish
 - True vec0 virtual table writes when sqlite-vec is present
 - Stronger plugin isolation

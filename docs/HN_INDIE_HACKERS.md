@@ -30,3 +30,28 @@ Ask: recorded GIFs next, or a Test PyPI release?
 - Repo: https://github.com/Tryboy869/grok-local-agent-kit
 - Show HN draft: `SHOW_HN.md`
 - Roadmap: `ROADMAP.md`
+
+
+## Update — 2026-10-02 (v0.43)
+
+### Hacker News (comment or follow-up Show HN)
+
+Title: Show HN: Local agent kit – workflow runner, no API key (v0.43)
+
+I shipped a small but real step on grok-local-agent-kit: a JSON workflow runner that chains workspace file ops, an injectable web search, and an MCP echo without Ollama or LM Studio running.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
+grok-agent workflow demo
+python examples/workflow_agent.py
+```
+
+Chat and automation examples are still there (`examples/chat_agent.py`, `examples/automation_agent.py`) when a local model is up. Multi-LLM routing (Ollama, then LM Studio) is unchanged: `grok-agent route demo`.
+
+What I am not claiming: no PyPI publish yet, no recorded GIF in-tree (storyboard only), stars are 1. Feedback welcome on the tool surface.
+
+Repo: https://github.com/Tryboy869/grok-local-agent-kit
+
+### Indie Hackers
+
+Shipped v0.43 of the local agent kit today. The new piece is a workflow runner you can demo with one command and no cloud key: list files, write a note, fake a search, echo via an MCP-shaped call. Install is still one curl. Next honest milestone is Test PyPI plus a 12s GIF. Not monetizing this; it is the open-source wedge for Nexus Studio's local tooling.

@@ -42,3 +42,11 @@ pytest -q
 ## Code of conduct
 
 See `CODE_OF_CONDUCT.md`. Security reports: `SECURITY.md`.
+
+
+## v0.43 workflow runner
+
+- New workflow tools stay cwd-safe (`_safe` must reject `..`).
+- `web_search` and `mcp_call` in workflows must accept injected callables. Tests must not hit the network or spawn an MCP server.
+- Add a CLI command only via `cli_v0XX.py` and register it from `__init__.py`.
+- Demo output must be deterministic enough to assert `ok=True` and `wrote=True`.

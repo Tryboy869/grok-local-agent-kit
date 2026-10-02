@@ -1,7 +1,7 @@
 # grok-local-agent-kit
 
 **Open-source toolkit for building local AI agents.**
-Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router **with a circuit breaker on the hot path**, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, **opt-in live-model eval profile**, tool cache + telemetry + budgets, **drop-in tool plugins with a Python sandbox**, **JSONL transcripts**, **workspace packer + local file RAG**, **web search with HTML fallback**, **multi-agent Team + shared blackboard**, **blackboard + roster persistence**, **task handoff queue**, **local approval gate wired into ReAct**, **scriptable approval TUI**, **circuit breaker health board for local backends**, **routed health persisted to health.json**, **portable kit snapshot**, **local model catalog**, **router defaults from Catalog.pick**.
+Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router **with a circuit breaker on the hot path**, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, **opt-in live-model eval profile**, tool cache + telemetry + budgets, **drop-in tool plugins with a Python sandbox**, **JSONL transcripts**, **workspace packer + local file RAG**, **web search with HTML fallback**, **multi-agent Team + shared blackboard**, **blackboard + roster persistence**, **task handoff queue**, **local approval gate wired into ReAct**, **scriptable approval TUI**, **circuit breaker health board for local backends**, **routed health persisted to health.json**, **portable kit snapshot**, **local model catalog**, **router defaults from Catalog.pick**, **offline scripted loop**, **declarative workflow runner (files + search + MCP, no daemon)**.
 Offline-first.
 Built autonomously by Grok.
 
@@ -9,7 +9,7 @@ Built autonomously by Grok.
 > No cloud required.
 > No API keys for local models.
 
-## Features (v0.41.0)
+## Features (v0.43.0)
 
 * Multi-LLM (Ollama + LM Studio / OpenAI-compat) + fallback router
 * **Health-aware routing** — open breakers are skipped in `pick` / `probe` / `chat` (`grok-agent route demo`)
@@ -17,6 +17,8 @@ Built autonomously by Grok.
 * **Kit snapshot** — version, tools, file presence in one JSON (`grok-agent snapshot demo`)
 * **Model catalog** — list Ollama tags + LM Studio `/v1/models`, persist `catalog.json` (`grok-agent models demo`)
 * **Catalog → router** — `Catalog.pick` rewrites endpoint models (`grok-agent route catalog`)
+* **Offline scripted loop** — list + write with a fake LLM (`grok-agent offline demo`)
+* **Workflow runner** — JSON steps for file ops, web search, MCP echo (`grok-agent workflow demo`)
 * ReAct tool loop, streaming, hooks, skills, orchestrator
 * **Team + Blackboard** — coordinator / researcher / operator share posts (`grok-agent team demo`)
 * **Persist the board** — JSONL or SQLite (`grok-agent board demo`)
@@ -110,6 +112,8 @@ grok-agent eval-demo
 grok-agent health demo
 grok-agent route demo
 grok-agent route persist
+grok-agent offline demo
+grok-agent workflow demo
 ```
 
 From source:
@@ -155,6 +159,29 @@ GROK_LIVE_EVAL=1 grok-agent eval-live --live
 | `examples/persist_route_agent.py` | no | router writes / reloads health.json |
 | `examples/workspace_agent.py` | no | pack + local file RAG |
 | `examples/mcp_agent.py` | optional | MCP stdio / HTTP / SSE |
+| `examples/workflow_agent.py` | no | files + search fixture + MCP echo |
+| `examples/offline_chat_agent.py` | no | scripted chat loop |
+| `examples/offline_automation_agent.py` | no | scripted write |
+
+
+## Demo storyboard (GIF)
+
+Binary GIFs are not checked in yet (record them locally; script below). Until then, this is the 12-second terminal storyboard for `docs/gifs/workflow-demo.gif`:
+
+1. `00:00` prompt: `grok-agent workflow demo`
+2. `00:02` step 1 `list_files` prints `inbox.txt`
+3. `00:04` step 2 `write_file` creates `automation-note.txt`
+4. `00:07` step 3 `web_search` returns the offline fixture (Ollama + LM Studio)
+5. `00:10` step 4 `mcp_call` echoes the listing as JSON
+6. `00:12` line `wrote=True` — no cloud key, no daemon
+
+Record:
+
+```bash
+# asciinema rec docs/gifs/workflow-demo.cast
+grok-agent workflow demo
+# agg docs/gifs/workflow-demo.cast docs/gifs/workflow-demo.gif
+```
 
 ## Docs
 

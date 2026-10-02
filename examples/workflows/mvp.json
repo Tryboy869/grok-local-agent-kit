@@ -1,0 +1,26 @@
+{
+  "name": "mvp-chat-and-automation",
+  "meta": {
+    "providers": ["ollama", "lmstudio"],
+    "needs_llm": false
+  },
+  "steps": [
+    {"tool": "list_files", "arguments": {"path": "."}, "save_as": "listing"},
+    {
+      "tool": "write_file",
+      "arguments": {
+        "path": "automation-note.txt",
+        "content": "ready-to-run automation step\n"
+      }
+    },
+    {
+      "tool": "web_search",
+      "arguments": {"query": "local agent mcp ollama"}
+    },
+    {
+      "tool": "mcp_call",
+      "arguments": {"name": "echo", "arguments": {"listing": "{{listing}}"}}
+    },
+    {"tool": "read_file", "arguments": {"path": "automation-note.txt"}}
+  ]
+}
