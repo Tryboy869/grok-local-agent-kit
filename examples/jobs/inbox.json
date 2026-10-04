@@ -1,0 +1,23 @@
+{
+  "jobs": [
+    {
+      "name": "inbox-digest",
+      "every_s": 3600,
+      "enabled": true,
+      "workflow": {
+        "name": "inbox-digest",
+        "steps": [
+          {"tool": "list_files", "arguments": {"path": "."}, "save_as": "listing"},
+          {
+            "tool": "write_file",
+            "arguments": {
+              "path": "digest.txt",
+              "content": "local automation digest\n{{listing}}\n"
+            }
+          },
+          {"tool": "web_search", "arguments": {"query": "ollama lm studio local agents"}}
+        ]
+      }
+    }
+  ]
+}
