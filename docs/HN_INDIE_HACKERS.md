@@ -1,27 +1,25 @@
-# HN / Indie Hackers update — v0.42.0 (2026-10-01)
+# HN / Indie Hackers update — v0.44.0 (2026-10-04)
 
 ## One-liner
-Local-first Python agent kit: the real tool loop (list files, write a note) now runs with zero model servers via a scripted LLM, and the same Agent class still routes to Ollama or LM Studio when they are up.
+Local-first Python agent kit: a file-backed job ledger runs declarative workflows (files, injectable search, MCP echo) with no daemon, while chat and automation examples still route to Ollama or LM Studio when they are up.
 
 ## What's new
-- v0.42: `grok-agent offline demo` and `examples/offline_chat_agent.py` / `examples/offline_automation_agent.py`.
-- `Agent(llm=...)` so tests and CI never touch a daemon.
-- Still: multi-LLM router, web search, workspace file tools, MCP attach, catalog-aware model pick.
+- v0.44: `grok-agent jobs demo` and `examples/jobs_agent.py`.
+- Due jobs only. Second tick at the same clock is a no-op. State lands in `jobs-state.json`.
+- Still: multi-LLM router, web search, workspace file tools, MCP attach, workflow runner, catalog-aware model pick.
 
 ## Indie Hackers angle
-The first 10 minutes of a local-agent repo are "install Ollama, pull a model, hope tool calling works." This release makes the loop demonstrable before any of that. Live backends stay optional.
+The first 10 minutes of a local-agent repo are "install Ollama, pull a model, hope tool calling works." Jobs and workflows are demonstrable before any of that. Live backends stay optional.
 
 ## Draft post
-**Title:** Show HN: local agent kit — tool loop runs with no model server
+**Title:** Show HN: local agent kit — scheduled workflows, no model server
 
 ```
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
-grok-agent offline demo
-python examples/offline_chat_agent.py
-python examples/offline_automation_agent.py
-# when a daemon is up:
-python examples/chat_agent.py
-python examples/automation_agent.py
+grok-agent jobs demo
+python examples/jobs_agent.py
+python examples/chat_agent.py          # needs Ollama or LM Studio
+python examples/automation_agent.py    # needs a local model
 ```
 
 Ask: recorded GIFs next, or a Test PyPI release?
@@ -31,27 +29,27 @@ Ask: recorded GIFs next, or a Test PyPI release?
 - Show HN draft: `SHOW_HN.md`
 - Roadmap: `ROADMAP.md`
 
-
-## Update — 2026-10-02 (v0.43)
+## Update — 2026-10-04 (v0.44)
 
 ### Hacker News (comment or follow-up Show HN)
 
-Title: Show HN: Local agent kit – workflow runner, no API key (v0.43)
+Title: Show HN: Local agent kit – scheduled jobs without a daemon (v0.44)
 
-I shipped a small but real step on grok-local-agent-kit: a JSON workflow runner that chains workspace file ops, an injectable web search, and an MCP echo without Ollama or LM Studio running.
+v0.44 of grok-local-agent-kit adds a file-backed job ledger. A job is a JSON workflow (list files, write a note, injectable web search, MCP echo). `tick` runs only what is due. The clock is injectable, so CI never sleeps and never starts Ollama.
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
-grok-agent workflow demo
-python examples/workflow_agent.py
+grok-agent jobs demo
+python examples/jobs_agent.py
+# when a local model is up:
+python examples/chat_agent.py
+python examples/automation_agent.py
 ```
 
-Chat and automation examples are still there (`examples/chat_agent.py`, `examples/automation_agent.py`) when a local model is up. Multi-LLM routing (Ollama, then LM Studio) is unchanged: `grok-agent route demo`.
-
-What I am not claiming: no PyPI publish yet, no recorded GIF in-tree (storyboard only), stars are 1. Feedback welcome on the tool surface.
+Routing is unchanged: Ollama then LM Studio, circuit breaker on the hot path (`grok-agent route demo`). Not on PyPI yet. No recorded GIF in-tree (storyboard only).
 
 Repo: https://github.com/Tryboy869/grok-local-agent-kit
 
 ### Indie Hackers
 
-Shipped v0.43 of the local agent kit today. The new piece is a workflow runner you can demo with one command and no cloud key: list files, write a note, fake a search, echo via an MCP-shaped call. Install is still one curl. Next honest milestone is Test PyPI plus a 12s GIF. Not monetizing this; it is the open-source wedge for Nexus Studio's local tooling.
+Shipped v0.44 today. The wedge is still local agents with no cloud key. New piece: a job ledger that runs the workflow runner on an interval and remembers the last tick in `jobs-state.json`. One curl install. Chat agent and automation agent examples stay ready when Ollama or LM Studio is running. Next honest milestone is still Test PyPI plus a 12s GIF. Not monetizing this.

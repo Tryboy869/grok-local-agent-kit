@@ -34,9 +34,15 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - `grok-agent workflow demo|run` and `examples/workflow_agent.py`
 - Storyboard for the workflow GIF (`docs/gifs/workflow-demo.md`)
 
-## Next (v0.44.x)
+## Shipped (v0.44.0)
 
-- Recorded binary GIFs in docs/gifs/ (storyboard landed in v0.43)
+- File-backed job ledger: due workflows, injectable clock, `jobs-state.json`
+- `grok-agent jobs demo|tick` and `examples/jobs_agent.py`
+- Storyboard for the jobs GIF (`docs/gifs/jobs-demo.md`)
+
+## Next (v0.45.x)
+
+- Recorded binary GIFs in docs/gifs/ (storyboards landed in v0.43 and v0.44)
 - PyPI / Test PyPI publish
 - True vec0 virtual table writes when sqlite-vec is present
 - Stronger plugin isolation
