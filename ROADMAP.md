@@ -53,3 +53,16 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - Frozen public API + PyPI
 - Vision / multimodal models
 - Docs site
+
+## Shipped (v0.45.0)
+
+- Offline MVP agent: intent router + file / math / search / system / MCP echo tools
+- Provider table + probe for Ollama and LM Studio (demo still runs if both are down)
+- `grok-agent mvp`, `examples/mvp_chat.py`, `examples/mvp_automation.py`
+- Storyboard `docs/gifs/mvp-demo.md`
+
+## Next
+
+- v0.46: optional handoff from the scripted MVP plan into the live ReAct loop when a provider probe is `up`
+- v0.47: record real GIFs (VHS) and publish a 30s demo
+- v0.48: MCP stdio attach inside the MVP runner (echo stays the default)

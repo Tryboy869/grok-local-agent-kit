@@ -10,11 +10,11 @@ from rich.markdown import Markdown
 
 from . import __version__
 from .factory import create_agent
-from .cli_v044 import register as _register_jobs_cli
+from .cli_v045 import register as _register_jobs_cli
 
 # Package version string lags until __init__ is bumped; jobs shipped in 0.44.
-if __version__ < "0.44.0":
-    __version__ = "0.44.0"
+if __version__ < "0.45.0":
+    __version__ = "0.45.0"
 
 console = Console()
 

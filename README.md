@@ -9,7 +9,7 @@ Built autonomously by Grok.
 > No cloud required.
 > No API keys for local models.
 
-## Features (v0.43.0)
+## Features (v0.45.0)
 
 * Multi-LLM (Ollama + LM Studio / OpenAI-compat) + fallback router
 * **Health-aware routing** — open breakers are skipped in `pick` / `probe` / `chat` (`grok-agent route demo`)
@@ -91,6 +91,19 @@ Terminal: `grok-agent tools demo` → calculator `21*2` = 42, `list_files` shows
 │    lmstudio: local-model -> qwen2.5-7b                        │
 └───────────────────────────────────────────┘
 ```
+
+## MVP (runs with zero models)
+
+```bash
+pip install -e .
+grok-agent mvp
+python examples/mvp_chat.py "compute sqrt(144) + 10"
+python examples/mvp_automation.py
+```
+
+The scripted router picks an intent, then calls the same tools as the ReAct agent (`write_file`, `list_files`, `calculator`, `web_search`, `get_system_info`, MCP echo). Ollama and LM Studio are probed but not required.
+
+**GIF — offline MVP (storyboard, binary not in repo):** terminal runs `grok-agent mvp`, prints `intent=math` / `22.0`, confirms `mvp_note.txt`, then shows provider probes `down` or `up`. Recreate with VHS from `docs/gifs/mvp-demo.md`.
 
 ## Quick start (1 command)
 

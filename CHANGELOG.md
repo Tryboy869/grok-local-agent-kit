@@ -1,3 +1,11 @@
+## [0.45.0] - 2026-10-06
+
+### Added
+- Offline MVP runner: intent routing (files, math, search, system, MCP echo) plus the shared tool registry.
+- Multi-LLM provider table for Ollama (`:11434`) and LM Studio (`:1234/v1`) with a non-fatal probe.
+- `grok-agent mvp`, `examples/mvp_chat.py`, `examples/mvp_automation.py`.
+- GIF storyboard `docs/gifs/mvp-demo.md`.
+
 # Changelog
 
 All notable changes to grok-local-agent-kit are documented here.
