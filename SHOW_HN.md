@@ -1,27 +1,26 @@
-# Show HN: grok-local-agent-kit
+# Show HN: grok-local-agent-kit — local AI agents (Ollama, MCP, offline workflows)
 
-Local-first Python toolkit for AI agents. Ollama + LM Studio, ReAct tools, workspace RAG, multi-agent teams, a file-backed approval TUI, opt-in live eval, a circuit breaker on the multi-LLM router that survives process restart, a portable kit snapshot, a local model catalog, and a **router that adopts the models actually installed on the box**.
+Local-first Python toolkit for AI agents. Talks to Ollama or LM Studio, runs a ReAct tool loop, packs a workspace for local RAG, and can orchestrate a small multi-agent team — all without a cloud API key.
 
-**What it does**
+Repo: https://github.com/Tryboy869/grok-local-agent-kit
+License: MIT. Python >= 3.10. Current package version: 0.45.0.
 
-- Talks to Ollama or LM Studio (OpenAI-compat) with a multi-LLM fallback router
-- `HealthBoard` on `pick` / `probe` / `chat`: open breakers are not pinged
-- Routed decisions persist to the same `health.json` the health CLI uses
-- `grok-agent snapshot demo` writes `kit-snapshot.json`
-- `grok-agent models demo` writes `catalog.json` (Ollama tags + LM Studio /v1/models)
-- `grok-agent route catalog` rewrites endpoint models via `Catalog.pick`
-- ReAct tool loop: files, web, shell, calculator, Python sandbox, MCP (stdio / HTTP / SSE)
-- A local approval gate sits on that loop: denied or pending tools never execute
-- Scriptable TUI: `grok-agent approve tui --script A003=approved,A004=denied`
-- Opt-in live eval: `grok-agent eval-demo` (stub) or `GROK_LIVE_EVAL=1 grok-agent eval-live --live`
-- Health + route + snapshot + catalog demos need **zero** live chat
-- Web search that still works if the DDG Python package flakes (HTML fallback)
-- Workspace packer + local file RAG — no network
-- Multi-agent `Team` with a shared blackboard, persisted roster, handoff queue
-- Drop-in plugins: JSON tools always load; Python plugins are opt-in only
-- Local HTTP API, SQLite memory (optional sqlite-vec), eval harness, budgets, transcripts
+## What it does
 
-**Try it**
+- Multi-LLM router (Ollama + OpenAI-compatible / LM Studio) with a circuit breaker that skips open backends on pick / probe / chat
+- Health decisions persist to `health.json` and survive process restart
+- ReAct tool loop, drop-in JSON tools, opt-in sandboxed Python plugins
+- MCP over stdio / HTTP / SSE
+- SQLite session memory, optional sqlite-vec
+- Workspace packer + local file RAG (no network)
+- Web search with HTML fallback when you opt in
+- Multi-agent Team, shared blackboard, roster, task handoff queue
+- File-backed approval gate and a small approval TUI
+- Offline workflow runner and a file-backed job ledger
+- Offline eval harness plus an opt-in live-model profile
+- Local HTTP API, JSONL transcripts, budgets, telemetry, portable kit snapshot
+
+## Try it
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
@@ -34,21 +33,32 @@ grok-agent eval-demo
 grok-agent health demo
 grok-agent route demo
 grok-agent route persist
+grok-agent workflow demo
 grok-agent approve tui --seed --script A003=approved,A004=denied
 ```
 
-Chat needs Ollama or LM Studio:
+From source:
+
+```bash
+git clone https://github.com/Tryboy869/grok-local-agent-kit.git
+cd grok-local-agent-kit
+python3 -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev]"
+pytest -q
+grok-agent doctor
+```
+
+Chat needs a local model:
 
 ```bash
 ollama pull llama3.2
 grok-agent chat -v --stream --router
 ```
 
-Repo: https://github.com/Tryboy869/grok-local-agent-kit
+## What it is not
 
+Not a hosted agent product. Not a Grok / xAI API client. Demos that do not need a model run offline; chat and live eval need Ollama or LM Studio on the machine.
 
-## Follow-up (v0.43, 2026-10-02)
+## Ask
 
-Show HN: Local agent kit – JSON workflows for files, search, and MCP (no daemon)
-
-`grok-agent workflow demo` runs four real steps offline. Chat/automation examples still target Ollama or LM Studio when you want a model. One-command install via `scripts/install.sh`. GIF storyboard: `docs/gifs/workflow-demo.md`.
+Looking for people who already run Ollama locally and want a small MIT toolkit rather than another cloud agent framework. Issues and PRs welcome: https://github.com/Tryboy869/grok-local-agent-kit/issues
