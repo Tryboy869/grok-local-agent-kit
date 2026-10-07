@@ -1,0 +1,10 @@
+{
+  "name": "local-mvp",
+  "steps": [
+    {"id": "chat", "goal": "write a note that the chat agent is ready"},
+    {"id": "math", "goal": "compute sqrt(144) + 10"},
+    {"id": "system", "goal": "what is the python version"},
+    {"id": "search", "goal": "search local AI agents"},
+    {"id": "mcp", "goal": "mcp ping the playbook"}
+  ]
+}

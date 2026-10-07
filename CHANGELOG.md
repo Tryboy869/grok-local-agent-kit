@@ -1,3 +1,14 @@
+## [0.46.0] - 2026-10-07
+
+### Added
+- Playbook runner (`run_playbook`, `load_playbook`) sequences the offline MVP: files, math, system, search, MCP echo.
+- Handoff descriptor: `mode=react` when Ollama or LM Studio probe is up; `mode=scripted` otherwise. No chat socket is opened.
+- CLI: `grok-agent playbook demo` and `grok-agent playbook run PATH`.
+- Examples: `examples/playbook_agent.py`, `examples/playbooks/local_mvp.json`.
+- Tests: `tests/test_v046.py` (injected probes, no network).
+- GIF storyboard `docs/gifs/playbook-demo.md`.
+- HN / Indie Hackers draft `docs/HN_UPDATE_v046.md`.
+
 ## [0.45.0] - 2026-10-06
 
 ### Added

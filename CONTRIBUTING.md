@@ -21,7 +21,7 @@ pytest -q
 - File tools stay workspace-scoped. Do not weaken `_safe_path`.
 - Blackboard, roster, handoff, approval, health, snapshot, and catalog persistence stay cwd-safe.
 - Kit snapshots stay cwd-safe and must not embed secrets or model weights.
-- Model catalog tests must inject `fetch=`; never hit a live Ollama / LM Studio in CI.
+- Playbook tests must inject `probes=`; do not require Ollama or LM Studio. A handoff descriptor must not open a chat socket.
 - ApprovalGate checks on the ReAct path must fail closed (block on deny **and** pending).
 - Approval TUI scripts must stay offline-testable (`--script` / `--policy`); do not require a TTY in tests.
 - Live-model eval stays **opt-in**. Default and CI paths use the stub. Real models require both `--live` and `GROK_LIVE_EVAL=1`.

@@ -1,6 +1,6 @@
 """Grok Local Agent Kit — local-first AI agents with tools & multi-LLM support."""
 
-__version__ = "0.45.0"
+__version__ = "0.46.0"
 
 from .agent import Agent
 from .config import KitConfig, load_config, write_example_config
@@ -360,3 +360,4 @@ __all__ = [
 ]
 
 from .mvp import demo_mvp, probe_providers, run_mvp, route_intent
+from .playbook import demo_playbook, handoff_plan, load_playbook, run_playbook

@@ -1,6 +1,6 @@
 # Status
 
-Current release line: **v0.44** (file-backed job ledger that runs workflows offline; jobs CLI registered on `grok-agent`).
+Current release line: **v0.46** (playbook runner: chat + automation + search + MCP, optional ReAct handoff descriptor).
 
 ## Audit 2026-10-06
 

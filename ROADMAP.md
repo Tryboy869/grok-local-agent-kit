@@ -61,8 +61,17 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - `grok-agent mvp`, `examples/mvp_chat.py`, `examples/mvp_automation.py`
 - Storyboard `docs/gifs/mvp-demo.md`
 
+## Shipped (v0.46.0)
+
+- Playbook runner sequences chat, math, system, search, and MCP echo without a model
+- Optional ReAct handoff descriptor when an injected or live probe is `up` (no chat socket opened)
+- `grok-agent playbook demo|run`, `examples/playbook_agent.py`, `examples/playbooks/local_mvp.json`
+- Storyboard `docs/gifs/playbook-demo.md`
+- HN / Indie Hackers draft `docs/HN_UPDATE_v046.md`
+
 ## Next
 
-- v0.46: optional handoff from the scripted MVP plan into the live ReAct loop when a provider probe is `up`
-- v0.47: record real GIFs (VHS) and publish a 30s demo
-- v0.48: MCP stdio attach inside the MVP runner (echo stays the default)
+- v0.47: actually call the live ReAct loop when handoff mode is `react` (still opt-in)
+- v0.48: record real GIFs (VHS) and publish a 30s demo
+- v0.49: MCP stdio attach inside the MVP runner (echo stays the default)
+- PyPI / Test PyPI publish
