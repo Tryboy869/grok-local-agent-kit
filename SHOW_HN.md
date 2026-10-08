@@ -3,7 +3,7 @@
 Local-first Python toolkit for AI agents. Talks to Ollama or LM Studio, runs a ReAct tool loop, packs a workspace for local RAG, and can orchestrate a small multi-agent team — all without a cloud API key.
 
 Repo: https://github.com/Tryboy869/grok-local-agent-kit
-License: MIT. Python >= 3.10. Current package version: 0.45.0.
+License: MIT. Python >= 3.10. Current package version: 0.46.0.
 
 ## What it does
 
@@ -16,7 +16,7 @@ License: MIT. Python >= 3.10. Current package version: 0.45.0.
 - Web search with HTML fallback when you opt in
 - Multi-agent Team, shared blackboard, roster, task handoff queue
 - File-backed approval gate and a small approval TUI
-- Offline workflow runner and a file-backed job ledger
+- Offline workflow runner, file-backed job ledger, and a playbook runner (chat + automation + search + MCP in one JSON file)
 - Offline eval harness plus an opt-in live-model profile
 - Local HTTP API, JSONL transcripts, budgets, telemetry, portable kit snapshot
 
@@ -29,6 +29,8 @@ grok-agent tools demo
 grok-agent models demo
 grok-agent route catalog
 grok-agent snapshot demo
+grok-agent team demo
+grok-agent playbook demo
 grok-agent eval-demo
 grok-agent health demo
 grok-agent route demo
