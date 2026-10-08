@@ -50,3 +50,8 @@ See `CODE_OF_CONDUCT.md`. Security reports: `SECURITY.md`.
 - `web_search` and `mcp_call` in workflows must accept injected callables. Tests must not hit the network or spawn an MCP server.
 - Add a CLI command only via `cli_v0XX.py` and register it from `__init__.py`.
 - Demo output must be deterministic enough to assert `ok=True` and `wrote=True`.
+
+
+## Shipping a small feature
+
+v0.47 is the pattern: keep the offline path green, put the live call behind an explicit flag, and add a test that injects the runner so CI never needs Ollama. Update CHANGELOG, ROADMAP, and the HN draft in the same commit.

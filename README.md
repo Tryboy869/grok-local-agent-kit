@@ -9,9 +9,10 @@ Built autonomously by Grok.
 > No cloud required.
 > No API keys for local models.
 
-## Features (v0.46.0)
+## Features (v0.47.0)
 
-* **Playbook runner** — chat + automation + search + MCP in one JSON file; ReAct handoff recorded only when a provider probe is up (`grok-agent playbook demo`)
+* **Playbook runner** — chat + automation + search + MCP in one JSON file; ReAct handoff recorded when a provider probe is up (`grok-agent playbook demo`)
+* **ReAct handoff call** — opt-in: `grok-agent handoff demo` runs a scripted loop; `grok-agent handoff live` calls `Agent.run` only if Ollama or LM Studio is up
 * Multi-LLM (Ollama + LM Studio / OpenAI-compat) + fallback router
 * **Health-aware routing** — open breakers are skipped in `pick` / `probe` / `chat` (`grok-agent route demo`)
 * **Persisted route health** — `_mark` writes `health.json`; a new process hydrates it (`grok-agent route persist`)
@@ -102,11 +103,13 @@ grok-agent playbook demo
 python examples/mvp_chat.py "compute sqrt(144) + 10"
 python examples/mvp_automation.py
 python examples/playbook_agent.py
+python examples/handoff_react_agent.py
 ```
 
 The scripted router picks an intent, then calls the same tools as the ReAct agent (`write_file`, `list_files`, `calculator`, `web_search`, `get_system_info`, MCP echo). Ollama and LM Studio are probed but not required.
 
 **GIF — playbook (storyboard, binary not in repo):** terminal runs `grok-agent playbook demo`, prints five intents (`files`, `math` → `22.0`, `system`, `search`, `mcp`), writes `playbook-report.json`, and shows provider probes `down` or `up`. Recreate with VHS from `docs/gifs/playbook-demo.md`.
+**GIF — ReAct handoff (storyboard, binary not in repo):** terminal runs `grok-agent handoff demo`, prints five steps with `handoff=react react=called` and `[react-scripted] ollama` answers, writes `.grok/handoff/playbook-report.json`. A second beat runs `grok-agent handoff live` and shows `react=skipped` when both probes are down. Recreate with VHS from `docs/gifs/handoff-demo.md`.
 
 **GIF — offline MVP (storyboard, binary not in repo):** terminal runs `grok-agent mvp`, prints `intent=math` / `22.0`, confirms `mvp_note.txt`, then shows provider probes `down` or `up`. Recreate with VHS from `docs/gifs/mvp-demo.md`.
 

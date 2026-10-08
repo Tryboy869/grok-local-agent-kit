@@ -1,3 +1,14 @@
+## [0.47.0] - 2026-10-08
+
+### Added
+- `execute_handoff` calls the ReAct loop when the playbook handoff mode is `react`.
+- Injected callable for tests and `scripted_react` for an offline demo. `live=True` calls `Agent.run` (Ollama or LM Studio) and records failures instead of raising.
+- CLI: `grok-agent handoff demo` and `grok-agent handoff live`.
+- Example: `examples/handoff_react_agent.py`.
+- Tests: `tests/test_v047.py` (no network).
+- GIF storyboard `docs/gifs/handoff-demo.md`.
+- HN / Indie Hackers draft `docs/HN_UPDATE_v047.md`.
+
 ## [0.46.0] - 2026-10-07
 
 ### Added

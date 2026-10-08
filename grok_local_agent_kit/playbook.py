@@ -1,8 +1,8 @@
 """Playbook runner: sequence MVP goals and optionally hand off to a live model.
 
-The scripted path never needs Ollama or LM Studio. If a caller injects a probe
-where a provider is up, the step also records a ReAct handoff descriptor.
-Nothing in this module opens a chat socket.
+The scripted path never needs Ollama or LM Studio. A probe that is up records
+a ReAct handoff. v0.47 calls that loop only when the caller passes a react
+callable or live=True. The default demo still opens no chat socket.
 """
 
 from __future__ import annotations
@@ -28,8 +28,11 @@ def load_playbook(path: Path) -> Dict[str, Any]:
     return data
 
 
+ReactFn = Callable[[Dict[str, Any]], str]
+
+
 def handoff_plan(prompt: str, probes: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
-    """Describe a live ReAct handoff when a local provider is up. Never calls it."""
+    """Describe a live ReAct handoff when a local provider is up."""
     for name in ("ollama", "lmstudio"):
         row = probes.get(name) or {}
         if row.get("status") == "up":
@@ -52,11 +55,95 @@ def handoff_plan(prompt: str, probes: Dict[str, Dict[str, Any]]) -> Dict[str, An
     }
 
 
+def scripted_react(plan: Dict[str, Any]) -> str:
+    """Offline stand-in for the ReAct loop. Used by demos and tests."""
+    provider = plan.get("provider") or "none"
+    prompt = plan.get("prompt") or ""
+    return f"[react-scripted] {provider} :: {prompt}"
+
+
+def _live_react(plan: Dict[str, Any]) -> Dict[str, Any]:
+    """Opt-in call into Agent.run. Failures stay in the report; they do not raise."""
+    try:
+        from .agent import create_agent
+
+        provider = "openai" if plan.get("provider") == "lmstudio" else "ollama"
+        agent = create_agent(
+            model=plan.get("model"),
+            provider=provider,
+            base_url=plan.get("base_url"),
+        )
+        try:
+            answer = agent.run(str(plan.get("prompt") or ""))
+        finally:
+            agent.close()
+        return {
+            "executed": True,
+            "mode": "react",
+            "answer": answer,
+            "error": None,
+            "reason": "live agent.run",
+        }
+    except Exception as exc:  # pragma: no cover - depends on a local daemon
+        return {
+            "executed": False,
+            "mode": "react",
+            "answer": None,
+            "error": str(exc),
+            "reason": "live agent failed",
+        }
+
+
+def execute_handoff(
+    plan: Dict[str, Any],
+    react: Optional[ReactFn] = None,
+    live: bool = False,
+) -> Dict[str, Any]:
+    """Call the ReAct loop only when mode is react and a runner is provided."""
+    if plan.get("mode") != "react":
+        return {
+            "executed": False,
+            "mode": plan.get("mode") or "scripted",
+            "answer": None,
+            "error": None,
+            "reason": plan.get("reason") or "no local provider up",
+        }
+    if react is not None:
+        try:
+            answer = react(plan)
+        except Exception as exc:
+            return {
+                "executed": False,
+                "mode": "react",
+                "answer": None,
+                "error": str(exc),
+                "reason": "injected react failed",
+            }
+        return {
+            "executed": True,
+            "mode": "react",
+            "answer": str(answer),
+            "error": None,
+            "reason": "injected react callable",
+        }
+    if live:
+        return _live_react(plan)
+    return {
+        "executed": False,
+        "mode": "react",
+        "answer": None,
+        "error": None,
+        "reason": "descriptor only; pass react= or live=True",
+    }
+
+
 def run_playbook(
     playbook: Dict[str, Any],
     workspace: Path,
     search: Optional[SearchFn] = None,
     probes: Optional[Dict[str, Dict[str, Any]]] = None,
+    react: Optional[ReactFn] = None,
+    live: bool = False,
 ) -> Dict[str, Any]:
     """Run every goal through the MVP router and write playbook-report.json."""
     workspace = Path(workspace)
@@ -68,6 +155,7 @@ def run_playbook(
         goal = str(step["goal"])
         result = run_mvp(goal, workspace, search=search)
         handoff = handoff_plan(goal, probes)
+        called = execute_handoff(handoff, react=react, live=live)
         steps_out.append(
             {
                 "id": str(step.get("id") or f"step-{index + 1}"),
@@ -76,13 +164,16 @@ def run_playbook(
                 "ok": bool(result["ok"]),
                 "answer": result["answer"],
                 "handoff": handoff,
+                "react": called,
             }
         )
+    called_n = sum(1 for row in steps_out if row["react"]["executed"])
     report = {
         "name": str(playbook.get("name") or "playbook"),
         "ok": all(row["ok"] for row in steps_out),
         "providers": {name: probes.get(name, {}).get("status", "unknown") for name in PROVIDERS},
         "handoff_mode": steps_out[-1]["handoff"]["mode"] if steps_out else "scripted",
+        "react_called": called_n,
         "steps": steps_out,
     }
     (workspace / "playbook-report.json").write_text(
@@ -113,13 +204,25 @@ def format_report(report: Dict[str, Any]) -> str:
     ]
     for step in report["steps"]:
         first = str(step["answer"]).splitlines()[0][:100] if step["answer"] else ""
+        react = step.get("react") or {}
+        called = "called" if react.get("executed") else "skipped"
         lines.append(
             f"- {step['id']} intent={step['intent']} ok={step['ok']} "
-            f"handoff={step['handoff']['mode']} :: {first}"
+            f"handoff={step['handoff']['mode']} react={called} :: {first}"
         )
     return "\n".join(lines)
 
 
 def demo_playbook(workspace: Path, probes: Optional[Dict[str, Dict[str, Any]]] = None) -> str:
     report = run_playbook(builtin_playbook(), workspace, probes=probes)
+    return format_report(report)
+
+
+def demo_react(workspace: Path, probes: Optional[Dict[str, Dict[str, Any]]] = None) -> str:
+    """Call the ReAct seam with the offline stand-in. No daemon required."""
+    probes = probes or {
+        "ollama": {"status": "up", "model": "llama3.2"},
+        "lmstudio": {"status": "down"},
+    }
+    report = run_playbook(builtin_playbook(), workspace, probes=probes, react=scripted_react)
     return format_report(report)

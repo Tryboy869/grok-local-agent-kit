@@ -69,9 +69,17 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - Storyboard `docs/gifs/playbook-demo.md`
 - HN / Indie Hackers draft `docs/HN_UPDATE_v046.md`
 
+## Shipped (v0.47.0)
+
+- Opt-in ReAct execution: `execute_handoff` runs an injected callable or `Agent.run` when `live=True`
+- Scripted path unchanged when no runner is passed (v0.46 tests still pass)
+- `grok-agent handoff demo|live`, `examples/handoff_react_agent.py`
+- Storyboard `docs/gifs/handoff-demo.md`
+- HN / Indie Hackers draft `docs/HN_UPDATE_v047.md`
+
 ## Next
 
-- v0.47: actually call the live ReAct loop when handoff mode is `react` (still opt-in)
 - v0.48: record real GIFs (VHS) and publish a 30s demo
 - v0.49: MCP stdio attach inside the MVP runner (echo stays the default)
+- v0.50: stream handoff tokens into the playbook report
 - PyPI / Test PyPI publish
