@@ -55,3 +55,5 @@ See `CODE_OF_CONDUCT.md`. Security reports: `SECURITY.md`.
 ## Shipping a small feature
 
 v0.47 is the pattern: keep the offline path green, put the live call behind an explicit flag, and add a test that injects the runner so CI never needs Ollama. Update CHANGELOG, ROADMAP, and the HN draft in the same commit.
+
+- Session pack tests must inject `search=` and must not probe the network unless the test passes `probe=False`.

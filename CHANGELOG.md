@@ -1,3 +1,14 @@
+## [0.48.0] - 2026-10-09
+
+### Added
+- Session pack (`run_pack`, `load_pack`, `demo_pack`) batches chat, file automation, search, and MCP echo through the offline MVP router.
+- Writes `SESSION.md` and `pack-report.json`. Provider probe is opt-in and never fails the demo.
+- CLI: `grok-agent pack demo` and `grok-agent pack run --file PATH`.
+- Examples: `examples/session_pack.py`, `examples/packs/local_session.json`.
+- Tests: `tests/test_v048.py` (no network).
+- GIF storyboard `docs/gifs/pack-demo.md`.
+- HN / Indie Hackers draft `docs/HN_UPDATE_v048.md`.
+
 ## [0.47.0] - 2026-10-08
 
 ### Added

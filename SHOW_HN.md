@@ -1,44 +1,37 @@
-# Show HN: grok-local-agent-kit — local AI agents (Ollama, MCP, offline workflows)
+# Show HN: grok-local-agent-kit — local AI agents (Ollama, MCP, session pack)
 
-Local-first Python toolkit for AI agents. Talks to Ollama or LM Studio, runs a ReAct tool loop, packs a workspace for local RAG, and can orchestrate a small multi-agent team — all without a cloud API key.
+Title:
 
-Repo: https://github.com/Tryboy869/grok-local-agent-kit
-License: MIT. Python >= 3.10. Current package version: 0.46.0.
-Audit: 2026-10-09. Public stars at audit time: 1. Forks: 0. No paid promotion, no star exchange.
+Show HN: grok-local-agent-kit – local AI agents on Ollama/LM Studio (session pack, no cloud)
 
-## What it does
+Body:
 
-- Multi-LLM router (Ollama + OpenAI-compatible / LM Studio) with a circuit breaker that skips open backends on pick / probe / chat
-- Health decisions persist to `health.json` and survive process restart
-- ReAct tool loop, drop-in JSON tools, opt-in sandboxed Python plugins
+I built an offline-first Python toolkit for local agents. It talks to Ollama or LM Studio (OpenAI-compatible), runs a ReAct tool loop, and can fall back across models with a circuit breaker that survives restart.
+
+What is in the box today (v0.48):
+
+- `grok-agent pack demo` runs chat math, a file write, a search fixture, and MCP echo, then writes SESSION.md — no model
+- `grok-agent playbook demo` and `grok-agent handoff demo` still run offline; live handoff is opt-in
+- CLI: `grok-agent doctor`, chat, tools, model catalog, health-aware router
 - MCP over stdio / HTTP / SSE
-- SQLite session memory, optional sqlite-vec
 - Workspace packer + local file RAG (no network)
-- Web search with HTML fallback when you opt in
-- Multi-agent Team, shared blackboard, roster, task handoff queue
-- File-backed approval gate and a small approval TUI
-- Offline workflow runner, file-backed job ledger, and a playbook runner (chat + automation + search + MCP in one JSON file)
-- Offline eval harness plus an opt-in live-model profile
-- Local HTTP API, JSONL transcripts, budgets, telemetry, portable kit snapshot
+- Multi-agent team, shared blackboard, handoff queue
+- Local approval gate (denied tools never run) and a scriptable TUI
+- JSON workflows and a file-backed job ledger that runs them offline
+- Optional SQLite memory, eval harness, budgets, JSONL transcripts
 
-## Try it
+No API key is required for local models. Demos that do not chat (`doctor`, `pack demo`, `playbook demo`, `mvp`, `tools demo`) run without a model.
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
 grok-agent doctor
-grok-agent tools demo
-grok-agent models demo
-grok-agent route catalog
-grok-agent snapshot demo
-grok-agent team demo
-grok-agent playbook demo
-grok-agent eval-demo
-grok-agent health demo
-grok-agent route demo
-grok-agent route persist
-grok-agent workflow demo
-grok-agent approve tui --seed --script A003=approved,A004=denied
+grok-agent pack demo
+grok-agent mvp
 ```
+
+Repo: https://github.com/Tryboy869/grok-local-agent-kit
+License: MIT. Python >= 3.10. Current package version: 0.48.0.
+Audit: 2026-10-09. Public stars at audit time: 1. Forks: 0. No paid promotion, no star exchange.
 
 From source:
 

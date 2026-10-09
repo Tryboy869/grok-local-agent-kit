@@ -77,9 +77,17 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - Storyboard `docs/gifs/handoff-demo.md`
 - HN / Indie Hackers draft `docs/HN_UPDATE_v047.md`
 
+## Shipped (v0.48.0)
+
+- Session pack batches chat, automation, search, and MCP echo without a model
+- `grok-agent pack demo|run`, `examples/session_pack.py`, `examples/packs/local_session.json`
+- Brief files: `SESSION.md` and `pack-report.json`
+- Storyboard `docs/gifs/pack-demo.md`
+- HN / Indie Hackers draft `docs/HN_UPDATE_v048.md`
+
 ## Next
 
-- v0.48: record real GIFs (VHS) and publish a 30s demo
-- v0.49: MCP stdio attach inside the MVP runner (echo stays the default)
-- v0.50: stream handoff tokens into the playbook report
+- v0.49: record a real VHS GIF from `docs/gifs/pack-demo.md` and publish a 30s demo
+- v0.50: MCP stdio attach inside the pack runner (echo stays the default)
+- v0.51: stream handoff tokens into the session brief
 - PyPI / Test PyPI publish

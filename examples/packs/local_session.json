@@ -1,0 +1,8 @@
+{
+  "goals": [
+    {"id": "chat", "role": "chat", "prompt": "compute sqrt(144) + 10"},
+    {"id": "automation", "role": "automation", "prompt": "write a note that the local agent ran"},
+    {"id": "research", "role": "research", "prompt": "search local AI agents"},
+    {"id": "mcp", "role": "mcp", "prompt": "mcp echo ping from the session pack"}
+  ]
+}
