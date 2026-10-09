@@ -4,6 +4,7 @@ Local-first Python toolkit for AI agents. Talks to Ollama or LM Studio, runs a R
 
 Repo: https://github.com/Tryboy869/grok-local-agent-kit
 License: MIT. Python >= 3.10. Current package version: 0.46.0.
+Audit: 2026-10-09. Public stars at audit time: 1. Forks: 0. No paid promotion, no star exchange.
 
 ## What it does
 
@@ -59,7 +60,7 @@ grok-agent chat -v --stream --router
 
 ## What it is not
 
-Not a hosted agent product. Not a Grok / xAI API client. Demos that do not need a model run offline; chat and live eval need Ollama or LM Studio on the machine.
+Not a hosted agent product. Not a Grok / xAI API client. Demos that do not need a model run offline; chat and live eval need Ollama or LM Studio on the machine. Star count is not a feature.
 
 ## Ask
 
