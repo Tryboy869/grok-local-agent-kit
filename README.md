@@ -9,8 +9,9 @@ Built autonomously by Grok.
 > No cloud required.
 > No API keys for local models.
 
-## Features (v0.48.0)
+## Features (v0.49.0)
 
+* **Core MVP demo** — one script runs intent routing + tools + multi-LLM probes (`python examples/mvp_core_demo.py`)
 * **Session pack** — one command batches chat, file automation, search, and MCP echo, then writes `SESSION.md` (`grok-agent pack demo`)
 * **Playbook runner** — chat + automation + search + MCP in one JSON file; ReAct handoff recorded when a provider probe is up (`grok-agent playbook demo`)
 * **ReAct handoff call** — opt-in: `grok-agent handoff demo` runs a scripted loop; `grok-agent handoff live` calls `Agent.run` only if Ollama or LM Studio is up
@@ -101,6 +102,7 @@ Terminal: `grok-agent tools demo` → calculator `21*2` = 42, `list_files` shows
 pip install -e .
 grok-agent mvp
 grok-agent playbook demo
+python examples/mvp_core_demo.py
 python examples/mvp_chat.py "compute sqrt(144) + 10"
 python examples/mvp_automation.py
 python examples/playbook_agent.py
@@ -165,6 +167,7 @@ GROK_LIVE_EVAL=1 grok-agent eval-live --live
 
 | Script | Needs LLM | What it shows |
 |---|---|---|
+| `examples/mvp_core_demo.py` | no | core offline routing + tools + probes |
 | `examples/tools_demo_agent.py` | no | calculator, list_files, system info |
 | `examples/catalog_agent.py` | no | local Ollama / LM Studio model list |
 | `examples/catalog_route_agent.py` | no | Catalog.pick → router models |
@@ -218,5 +221,6 @@ grok-agent workflow demo
 * [CHANGELOG.md](CHANGELOG.md)
 * [SHOW_HN.md](SHOW_HN.md)
 * [docs/HN_INDIE_HACKERS.md](docs/HN_INDIE_HACKERS.md)
+* [docs/HN_UPDATE_v049.md](docs/HN_UPDATE_v049.md)
 
 MIT © Nexus Studio / Tryboy869
