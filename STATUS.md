@@ -1,8 +1,8 @@
 # Status
 
-Current release line: **v0.48.0** (session pack: chat + automation + search + MCP echo).
+Current release line: **v0.49.0** (core MVP demo: offline routing + tools + multi-LLM probes).
 
-## Audit 2026-10-08
+## Audit 2026-10-11
 
 | Signal | Value |
 |--------|-------|
@@ -14,19 +14,19 @@ Current release line: **v0.48.0** (session pack: chat + automation + search + MC
 | Stars | 1 |
 | Forks | 0 |
 | Open issues | 2 |
-| Package version | 0.48.0 |
-| CLI | `grok-agent pack demo` |
-| Feature | `run_pack` batches chat, automation, search, and MCP echo and writes SESSION.md |
+| Package version | 0.49.0 |
+| CLI | `grok-agent mvp` / `python examples/mvp_core_demo.py` |
+| Feature | Core offline MVP demo with intent routing, shared tool registry, and provider probes |
 
-Bootstrap not required. The kit already has a CLI, examples, tests, CONTRIBUTING, and ROADMAP. This commit extends the existing playbook instead of replacing the tree.
+Bootstrap not required. The kit already has a full CLI, examples, tests, CONTRIBUTING, ROADMAP, CI, and docs. This is the main repo.
 
 No second repo was created. `local-grok-agent-kit` exists as a tiny sibling and is not the main kit.
 
 Honest growth path (no fake stars, no bought engagement):
 
 1. Publish to Test PyPI then PyPI (`grok-local-agent-kit`).
-2. Record one short GIF from `docs/gifs/pack-demo.md`.
-3. Post `docs/HN_UPDATE_v048.md` on a weekday morning US time.
+2. Record one short GIF from `docs/gifs/mvp-demo.md` or pack-demo.
+3. Post the refreshed `SHOW_HN.md` on a weekday morning US time.
 4. Cross-post r/LocalLLaMA and Indie Hackers with the same facts.
 5. Answer every issue and PR within 24h.
 
