@@ -9,8 +9,9 @@ Built autonomously by Grok.
 > No cloud required.
 > No API keys for local models.
 
-## Features (v0.49.0)
+## Features (v0.50.0)
 
+* **Enhanced offline core** — improved intent routing + ready-to-run chat & automation examples (`python examples/enhanced_chat_agent.py --offline`, `python examples/enhanced_automation_agent.py`)
 * **Core MVP demo** — one script runs intent routing + tools + multi-LLM probes (`python examples/mvp_core_demo.py`)
 * **Session pack** — one command batches chat, file automation, search, and MCP echo, then writes `SESSION.md` (`grok-agent pack demo`)
 * **Playbook runner** — chat + automation + search + MCP in one JSON file; ReAct handoff recorded when a provider probe is up (`grok-agent playbook demo`)
@@ -77,7 +78,11 @@ Terminal: `grok-agent tools demo` → calculator `21*2` = 42, `list_files` shows
 **GIF 8 — kit snapshot**  
 `grok-agent snapshot demo` writes `kit-snapshot.json` with version, tools, and file presence. No LLM.
 
-**GIF 9 — model catalog**  
+**GIF 10 — enhanced offline core**  
+`python examples/enhanced_automation_agent.py` → intent routing, write_file, calculator (21*2 + sqrt), list_files, search fixture, system info. No model required.
+
+**GIF 11 — enhanced chat (offline fallback)**  
+`python examples/enhanced_chat_agent.py --offline` → multi-LLM probes (down), then MVP goals. Switch to live once Ollama/LM Studio is up.  
 `grok-agent models demo` probes Ollama `/api/tags` and LM Studio `/v1/models`, writes `catalog.json`. Down backends are marked `down` instead of crashing.
 
 **GIF 10 — catalog → router**  
@@ -123,28 +128,12 @@ The scripted router picks an intent, then calls the same tools as the ReAct agen
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
 grok-agent doctor
-grok-agent pack demo
-grok-agent tools demo
-grok-agent models demo
-grok-agent route catalog
-grok-agent snapshot demo
-grok-agent team demo
-grok-agent board demo
-grok-agent roster demo
-grok-agent handoff demo
-grok-agent approve demo
-grok-agent approve react
-grok-agent approve tui --seed --script A003=approved,A004=denied
-grok-agent eval-demo
-grok-agent health demo
-grok-agent route demo
-grok-agent route persist
-grok-agent offline demo
-grok-agent workflow demo
+python examples/mvp_core_demo.py
+python examples/enhanced_automation_agent.py
+python examples/enhanced_chat_agent.py --offline
 ```
 
 From source:
-
 ```bash
 git clone https://github.com/Tryboy869/grok-local-agent-kit.git
 cd grok-local-agent-kit
@@ -152,6 +141,7 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 pytest -q
 grok-agent doctor
+python examples/enhanced_automation_agent.py
 ```
 
 Local model (optional — only needed for chat / ReAct / live eval):
@@ -167,6 +157,8 @@ GROK_LIVE_EVAL=1 grok-agent eval-live --live
 
 | Script | Needs LLM | What it shows |
 |---|---|---|
+| `examples/enhanced_automation_agent.py` | no | polished offline automation: routing + file/math/system/search |
+| `examples/enhanced_chat_agent.py` | optional (`--offline`) | chat with multi-LLM probe + offline MVP fallback |
 | `examples/mvp_core_demo.py` | no | core offline routing + tools + probes |
 | `examples/tools_demo_agent.py` | no | calculator, list_files, system info |
 | `examples/catalog_agent.py` | no | local Ollama / LM Studio model list |
@@ -221,6 +213,6 @@ grok-agent workflow demo
 * [CHANGELOG.md](CHANGELOG.md)
 * [SHOW_HN.md](SHOW_HN.md)
 * [docs/HN_INDIE_HACKERS.md](docs/HN_INDIE_HACKERS.md)
-* [docs/HN_UPDATE_v049.md](docs/HN_UPDATE_v049.md)
+* [docs/HN_UPDATE_v050.md](docs/HN_UPDATE_v050.md)
 
 MIT © Nexus Studio / Tryboy869

@@ -55,8 +55,15 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
     intent = route_intent(prompt)
     if intent == "math":
         expr = "sqrt(144) + 10"
-        if "sqrt" not in prompt.lower() and any(ch.isdigit() for ch in prompt):
-            expr = prompt
+        lower = prompt.lower()
+        if "sqrt" in lower or any(op in prompt for op in ("+", "-", "*", "/", "**")):
+            # Try to extract a simple expression
+            import re
+            m = re.search(r"([0-9\.\+\-\*\/\(\)\s]+)", prompt)
+            if m and any(ch.isdigit() for ch in m.group(1)):
+                expr = m.group(1).strip()
+            elif any(ch.isdigit() for ch in prompt):
+                expr = prompt
         return [{"tool": "calculator", "arguments": {"expression": expr}}]
     if intent == "system":
         return [{"tool": "get_system_info", "arguments": {}}]

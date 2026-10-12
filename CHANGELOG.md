@@ -1,3 +1,14 @@
+## [0.50.0] - 2026-10-12
+
+### Added
+- Enhanced offline core: improved math expression extraction in MVP intent routing.
+- Ready-to-run examples: `examples/enhanced_chat_agent.py` (offline fallback + multi-LLM probes) and `examples/enhanced_automation_agent.py` (full automation without a model).
+- README updates: clearer one-command path, new GIF storyboards, expanded examples table.
+- Docs: `docs/HN_UPDATE_v050.md` for HN / Indie Hackers.
+
+### Changed
+- Version bump; core MVP remains the recommended first demo.
+
 ## [0.49.0] - 2026-10-10
 
 ### Added

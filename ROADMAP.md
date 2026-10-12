@@ -85,9 +85,17 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - Storyboard `docs/gifs/pack-demo.md`
 - HN / Indie Hackers draft `docs/HN_UPDATE_v048.md`
 
+## Shipped (v0.50.0)
+
+- Enhanced offline core MVP with better math expression extraction in intent routing
+- Ready-to-run examples: `examples/enhanced_chat_agent.py` (probes + offline fallback) and `examples/enhanced_automation_agent.py`
+- README: clearer 1-command install path and new GIF storyboards
+- HN / Indie Hackers draft `docs/HN_UPDATE_v050.md`
+
 ## Next
 
-- v0.49: record a real VHS GIF from `docs/gifs/pack-demo.md` and publish a 30s demo
-- v0.50: MCP stdio attach inside the pack runner (echo stays the default)
-- v0.51: stream handoff tokens into the session brief
+- v0.51: record real VHS GIFs for the enhanced demos
+- v0.52: MCP stdio attach inside the pack runner (echo stays the default)
+- v0.53: stream handoff tokens into the session brief
 - PyPI / Test PyPI publish
+- Stronger plugin isolation and optional interactive TUI
