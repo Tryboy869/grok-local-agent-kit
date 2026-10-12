@@ -9,6 +9,7 @@ failing the demo when they are not.
 from __future__ import annotations
 
 import json
+import re
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -56,14 +57,14 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
     if intent == "math":
         expr = "sqrt(144) + 10"
         lower = prompt.lower()
-        if "sqrt" in lower or any(op in prompt for op in ("+", "-", "*", "/", "**")):
-            # Try to extract a simple expression
-            import re
-            m = re.search(r"([0-9\.\+\-\*\/\(\)\s]+)", prompt)
-            if m and any(ch.isdigit() for ch in m.group(1)):
-                expr = m.group(1).strip()
-            elif any(ch.isdigit() for ch in prompt):
-                expr = prompt
+        # Strip common leading words then take the rest if it looks like math
+        cleaned = re.sub(r"^(compute|calculate|calc|somme|sum of)\s+", "", prompt, flags=re.I).strip()
+        if any(ch.isdigit() for ch in cleaned) and any(op in cleaned for op in "+-*/()"):
+            expr = cleaned
+        elif "sqrt" in lower:
+            expr = "sqrt(144) + 10"
+        elif any(ch.isdigit() for ch in prompt):
+            expr = prompt
         return [{"tool": "calculator", "arguments": {"expression": expr}}]
     if intent == "system":
         return [{"tool": "get_system_info", "arguments": {}}]
