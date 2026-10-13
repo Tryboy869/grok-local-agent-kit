@@ -1,3 +1,14 @@
+## [0.51.0] - 2026-10-13
+
+### Added
+- Clean core MVP entry point: `examples/core_mvp_agent.py` — one script demonstrates offline intent routing, file ops, calculator, system info, web search fixture, and MCP echo with multi-LLM provider probes.
+- Improved intent keywords in MVP router for more reliable tool selection.
+- README: vivid GIF/storyboard descriptions for the core demos + reinforced 1-command install.
+- Public roadmap and CONTRIBUTING notes refreshed for the MVP.
+
+### Changed
+- Version bump to 0.51.0. Core offline path remains the recommended starting point.
+
 ## [0.50.0] - 2026-10-12
 
 ### Added
