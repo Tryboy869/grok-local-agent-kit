@@ -9,10 +9,10 @@ Built autonomously by Grok.
 > No cloud required.
 > No API keys for local models.
 
-## Features (v0.50.0)
+## Features (v0.51.0)
 
 * **Enhanced offline core** — improved intent routing + ready-to-run chat & automation examples (`python examples/enhanced_chat_agent.py --offline`, `python examples/enhanced_automation_agent.py`)
-* **Core MVP demo** — one script runs intent routing + tools + multi-LLM probes (`python examples/mvp_core_demo.py`)
+* **Core MVP demo** — one script runs intent routing + tools + multi-LLM probes (`python examples/core_mvp_agent.py` or `python examples/mvp_core_demo.py`)
 * **Session pack** — one command batches chat, file automation, search, and MCP echo, then writes `SESSION.md` (`grok-agent pack demo`)
 * **Playbook runner** — chat + automation + search + MCP in one JSON file; ReAct handoff recorded when a provider probe is up (`grok-agent playbook demo`)
 * **ReAct handoff call** — opt-in: `grok-agent handoff demo` runs a scripted loop; `grok-agent handoff live` calls `Agent.run` only if Ollama or LM Studio is up
@@ -22,112 +22,15 @@ Built autonomously by Grok.
 * **Kit snapshot** — version, tools, file presence in one JSON (`grok-agent snapshot demo`)
 * **Model catalog** — list Ollama tags + LM Studio `/v1/models`, persist `catalog.json` (`grok-agent models demo`)
 * **Catalog → router** — `Catalog.pick` rewrites endpoint models (`grok-agent route catalog`)
-* **Offline scripted loop** — list + write with a fake LLM (`grok-agent offline demo`)
-* **Workflow runner** — JSON steps for file ops, web search, MCP echo (`grok-agent workflow demo`)
-* ReAct tool loop, streaming, hooks, skills, orchestrator
-* **Team + Blackboard** — coordinator / researcher / operator share posts (`grok-agent team demo`)
-* **Persist the board** — JSONL or SQLite (`grok-agent board demo`)
-* **Persist the roster** — who is on the team + optional per-member LLM bindings (`grok-agent roster demo`)
-* **Handoff queue** — offer / claim / complete tasks on the board (`grok-agent handoff demo`)
-* **Approval gate** — allow / deny tools locally, now on the ReAct path (`grok-agent approve demo|react`)
-* **Approval TUI** — decide pending items with a script or bulk policy (`grok-agent approve tui|queue`)
-* **Live eval profile** — stub in CI; real model only with `--live` + `GROK_LIVE_EVAL=1` (`grok-agent eval-demo|eval-live`)
-* **Health board** — per-backend circuit breaker, no LLM (`grok-agent health demo|show|trip|reset`)
-* File / web / shell / Python sandbox / calculator / MCP tools
-* Web search: `duckduckgo-search` first, DuckDuckGo HTML fallback if the package or API fails
-* Workspace packer + local file RAG (`pack_workspace`, `search_workspace`)
-* MCP Streamable HTTP session ids (`Mcp-Session-Id`) + JSON-RPC `-32800` cancel
-* Offline eval harness (`grok-agent eval`)
-* Local HTTP API + optional bearer auth, planner, guardrails, cancel tokens
-* Workspace watcher, JSON extract, LLM-free TOML recipes
-* Tool-result TTL cache, telemetry, tool-call budgets, retry helper
-* Optional sqlite-vec (`GROK_VEC_BACKEND`, `grok-agent vec`)
-* Drop-in plugins — JSON always; **Python only when opted in**
-* Transcripts — local JSONL logs
-* `grok-agent tools list|demo` — inspect tools **without a live LLM**
 
-## Demo storyboard
-
-Binary GIFs are not generated in this environment. Recreate them with [VHS](https://github.com/charmbracelet/vhs) or `script` + `agg`. Storyboards: `docs/gifs/README.md`.
-
-**GIF 1 — tools (no LLM)**  
-Terminal: `grok-agent tools demo` → calculator `21*2` = 42, `list_files` shows the workspace.
-
-**GIF 2 — team + board**  
-`grok-agent team demo` then `grok-agent board demo --path board.jsonl` → posts survive restart via `board show`.
-
-**GIF 3 — roster + handoff + approvals on ReAct**  
-`grok-agent roster demo` writes `roster.json`.  
-`grok-agent handoff demo` offers tasks.  
-`grok-agent approve demo` allow-lists `calculator`, denies `shell`.  
-`grok-agent approve react` runs a fake ReAct batch: calc runs, shell is blocked, search stays pending.
-`grok-agent approve tui --seed --script A003=approved,A004=denied` drains the pending queue.
-
-**GIF 4 — live eval stub**  
-`grok-agent eval-demo` prints `live-eval[stub] 2/2 passed`. No model process is started.
-
-**GIF 5 — health board**  
-`grok-agent health demo` → ollama closed/allow=ok, lmstudio open after two refused connections.
-
-**GIF 6 — health-aware router**  
-`grok-agent route demo` trips LM Studio, then `pick()` lands on Ollama. Probe lists `lmstudio → breaker-open` without pinging it.
-
-**GIF 7 — persisted route health**  
-`grok-agent route persist` writes `health.json`. A second router loads it and still blocks LM Studio.
-
-**GIF 8 — kit snapshot**  
-`grok-agent snapshot demo` writes `kit-snapshot.json` with version, tools, and file presence. No LLM.
-
-**GIF 10 — enhanced offline core**  
-`python examples/enhanced_automation_agent.py` → intent routing, write_file, calculator (21*2 + sqrt), list_files, search fixture, system info. No model required.
-
-**GIF 11 — enhanced chat (offline fallback)**  
-`python examples/enhanced_chat_agent.py --offline` → multi-LLM probes (down), then MVP goals. Switch to live once Ollama/LM Studio is up.  
-`grok-agent models demo` probes Ollama `/api/tags` and LM Studio `/v1/models`, writes `catalog.json`. Down backends are marked `down` instead of crashing.
-
-**GIF 10 — catalog → router**  
-`grok-agent route catalog` replaces placeholder endpoint models with `Catalog.pick` names (`llama3.2:latest`, `qwen2.5-7b`). No live chat.
-
-```
-┌───────────────────────────────────────────┐
-│  You › grok-agent route catalog                              │
-│  catalog-route                                               │
-│  before:                                                     │
-│    ollama model=llama3.2                                     │
-│    lmstudio model=local-model                                │
-│  changes:                                                    │
-│    ollama: llama3.2 -> llama3.2:latest                        │
-│    lmstudio: local-model -> qwen2.5-7b                        │
-└───────────────────────────────────────────┘
-```
-
-## MVP (runs with zero models)
-
-```bash
-pip install -e .
-grok-agent mvp
-grok-agent playbook demo
-python examples/mvp_core_demo.py
-python examples/mvp_chat.py "compute sqrt(144) + 10"
-python examples/mvp_automation.py
-python examples/playbook_agent.py
-python examples/handoff_react_agent.py
-```
-
-The scripted router picks an intent, then calls the same tools as the ReAct agent (`write_file`, `list_files`, `calculator`, `web_search`, `get_system_info`, MCP echo). Ollama and LM Studio are probed but not required.
-
-**GIF — playbook (storyboard, binary not in repo):** terminal runs `grok-agent playbook demo`, prints five intents (`files`, `math` → `22.0`, `system`, `search`, `mcp`), writes `playbook-report.json`, and shows provider probes `down` or `up`. Recreate with VHS from `docs/gifs/playbook-demo.md`.
-**GIF — ReAct handoff (storyboard, binary not in repo):** terminal runs `grok-agent handoff demo`, prints five steps with `handoff=react react=called` and `[react-scripted] ollama` answers, writes `.grok/handoff/playbook-report.json`. A second beat runs `grok-agent handoff live` and shows `react=skipped` when both probes are down. Recreate with VHS from `docs/gifs/handoff-demo.md`.
-
-**GIF — session pack (storyboard, binary not in repo):** terminal runs `grok-agent pack demo`, prints four goals (math `22.0`, file write, search fixture, MCP echo), then `SESSION.md`. Recreate with VHS from `docs/gifs/pack-demo.md`.
-
-**GIF — offline MVP (storyboard, binary not in repo):** terminal runs `grok-agent mvp`, prints `intent=math` / `22.0`, confirms `mvp_note.txt`, then shows provider probes `down` or `up`. Recreate with VHS from `docs/gifs/mvp-demo.md`.
+**GIF — core MVP (storyboard):** terminal runs `python examples/core_mvp_agent.py`. It prints provider probes (Ollama / LM Studio: down or up), then walks five scenarios: files (writes a note), math (`15 * 3 + sqrt(81)`), system info, web search fixture, and MCP echo. Each step shows the detected intent and truncated tool output. Ends with “Core MVP finished. No cloud, no API keys required.” Recreate with VHS from `docs/gifs/core-mvp.md` (binary GIF optional).
 
 ## Quick start (1 command)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
 grok-agent doctor
+python examples/core_mvp_agent.py
 python examples/mvp_core_demo.py
 python examples/enhanced_automation_agent.py
 python examples/enhanced_chat_agent.py --offline
@@ -157,6 +60,7 @@ GROK_LIVE_EVAL=1 grok-agent eval-live --live
 
 | Script | Needs LLM | What it shows |
 |---|---|---|
+| `examples/core_mvp_agent.py` | no | clean core offline routing + tools + probes |
 | `examples/enhanced_automation_agent.py` | no | polished offline automation: routing + file/math/system/search |
 | `examples/enhanced_chat_agent.py` | optional (`--offline`) | chat with multi-LLM probe + offline MVP fallback |
 | `examples/mvp_core_demo.py` | no | core offline routing + tools + probes |
@@ -186,7 +90,6 @@ GROK_LIVE_EVAL=1 grok-agent eval-live --live
 | `examples/offline_chat_agent.py` | no | scripted chat loop |
 | `examples/offline_automation_agent.py` | no | scripted write |
 
-
 ## Demo storyboard (GIF)
 
 Binary GIFs are not checked in yet (record them locally; script below). Until then, this is the 12-second terminal storyboard for `docs/gifs/workflow-demo.gif`:
@@ -214,5 +117,6 @@ grok-agent workflow demo
 * [SHOW_HN.md](SHOW_HN.md)
 * [docs/HN_INDIE_HACKERS.md](docs/HN_INDIE_HACKERS.md)
 * [docs/HN_UPDATE_v050.md](docs/HN_UPDATE_v050.md)
+* [docs/HN_UPDATE_v051.md](docs/HN_UPDATE_v051.md)
 
 MIT © Nexus Studio / Tryboy869
