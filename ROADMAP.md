@@ -27,75 +27,17 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.40: local model catalog (`models demo|list|refresh`, `catalog.json`)
 - v0.41: wire catalog.pick into MultiLLMRouter defaults (`route catalog`)
 - v0.42: offline scripted agent loop (`offline demo`, chat + automation examples)
-
-## Shipped (v0.43.0)
-
-- Declarative workflow runner: file ops + injectable web search + MCP echo
-- `grok-agent workflow demo|run` and `examples/workflow_agent.py`
-- Storyboard for the workflow GIF (`docs/gifs/workflow-demo.md`)
-
-## Shipped (v0.44.0)
-
-- File-backed job ledger: due workflows, injectable clock, `jobs-state.json`
-- `grok-agent jobs demo|tick` and `examples/jobs_agent.py`
-- Storyboard for the jobs GIF (`docs/gifs/jobs-demo.md`)
-
-## Next (v0.45.x)
-
-- Recorded binary GIFs in docs/gifs/ (storyboards landed in v0.43 and v0.44)
-- PyPI / Test PyPI publish
-- True vec0 virtual table writes when sqlite-vec is present
-- Stronger plugin isolation
-- Interactive Rich/prompt toolkit TUI when stdin is a TTY
-
-## v1.0
-
-- Frozen public API + PyPI
-- Vision / multimodal models
-- Docs site
-
-## Shipped (v0.45.0)
-
-- Offline MVP agent: intent router + file / math / search / system / MCP echo tools
-- Provider table + probe for Ollama and LM Studio (demo still runs if both are down)
-- `grok-agent mvp`, `examples/mvp_chat.py`, `examples/mvp_automation.py`
-- Storyboard `docs/gifs/mvp-demo.md`
-
-## Shipped (v0.46.0)
-
-- Playbook runner sequences chat, math, system, search, and MCP echo without a model
-- Optional ReAct handoff descriptor when an injected or live probe is `up` (no chat socket opened)
-- `grok-agent playbook demo|run`, `examples/playbook_agent.py`, `examples/playbooks/local_mvp.json`
-- Storyboard `docs/gifs/playbook-demo.md`
-- HN / Indie Hackers draft `docs/HN_UPDATE_v046.md`
-
-## Shipped (v0.47.0)
-
-- Opt-in ReAct execution: `execute_handoff` runs an injected callable or `Agent.run` when `live=True`
-- Scripted path unchanged when no runner is passed (v0.46 tests still pass)
-- `grok-agent handoff demo|live`, `examples/handoff_react_agent.py`
-- Storyboard `docs/gifs/handoff-demo.md`
-- HN / Indie Hackers draft `docs/HN_UPDATE_v047.md`
-
-## Shipped (v0.48.0)
-
-- Session pack batches chat, automation, search, and MCP echo without a model
-- `grok-agent pack demo|run`, `examples/session_pack.py`, `examples/packs/local_session.json`
-- Brief files: `SESSION.md` and `pack-report.json`
-- Storyboard `docs/gifs/pack-demo.md`
-- HN / Indie Hackers draft `docs/HN_UPDATE_v048.md`
-
-## Shipped (v0.50.0)
-
-- Enhanced offline core MVP with better math expression extraction in intent routing
-- Ready-to-run examples: `examples/enhanced_chat_agent.py` (probes + offline fallback) and `examples/enhanced_automation_agent.py`
-- README: clearer 1-command install path and new GIF storyboards
-- HN / Indie Hackers draft `docs/HN_UPDATE_v050.md`
+- v0.43: declarative workflow runner (files + search + MCP, no daemon)
+- v0.44-v0.49: session pack, playbook, handoff ReAct call, core MVP demos
+- v0.50: enhanced offline core + ready-to-run examples
+- v0.51: clean core MVP agent example + docs polish
 
 ## Next
 
-- v0.51: record real VHS GIFs for the enhanced demos
-- v0.52: MCP stdio attach inside the pack runner (echo stays the default)
-- v0.53: stream handoff tokens into the session brief
+- v0.51: core MVP example + clearer demos (shipped)
+- v0.52: record real VHS GIFs for core demos
+- v0.53: MCP stdio attach inside the pack runner
+- v0.54: stream handoff tokens into the session brief
 - PyPI / Test PyPI publish
 - Stronger plugin isolation and optional interactive TUI
+- Community recipes and skill packs

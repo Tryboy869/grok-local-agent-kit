@@ -16,7 +16,7 @@ pytest -q
 
 - Python 3.10+, no required cloud APIs.
 - New behavior needs tests that run **without a live LLM**.
-- Prefer offline-first demos (`examples/enhanced_*.py`, `mvp_core_demo.py`) so newcomers can try the kit immediately.
+- Prefer offline-first demos (`examples/enhanced_*.py`, `mvp_core_demo.py`, `core_mvp_agent.py`) so newcomers can try the kit immediately.
 - Keep the public surface in `grok_local_agent_kit/__init__.py` intentional.
 - Prefer small modules (`cli_v0XX.py`, `test_v0XX.py`) over growing god-files.
 - File tools stay workspace-scoped. Do not weaken `_safe_path`.
@@ -44,7 +44,6 @@ pytest -q
 
 See `CODE_OF_CONDUCT.md`. Security reports: `SECURITY.md`.
 
-
 ## v0.43 workflow runner
 
 - New workflow tools stay cwd-safe (`_safe` must reject `..`).
@@ -52,9 +51,13 @@ See `CODE_OF_CONDUCT.md`. Security reports: `SECURITY.md`.
 - Add a CLI command only via `cli_v0XX.py` and register it from `__init__.py`.
 - Demo output must be deterministic enough to assert `ok=True` and `wrote=True`.
 
-
 ## Shipping a small feature
 
 v0.47 is the pattern: keep the offline path green, put the live call behind an explicit flag, and add a test that injects the runner so CI never needs Ollama. Update CHANGELOG, ROADMAP, and the HN draft in the same commit.
 
 - Session pack tests must inject `search=` and must not probe the network unless the test passes `probe=False`.
+
+## MVP core
+
+New contributors: start with `python examples/core_mvp_agent.py` or `python examples/mvp_core_demo.py`.
+These exercise routing + tools without any local model. Add tests that also run offline.
