@@ -9,9 +9,9 @@ Built autonomously by Grok.
 > No cloud required.
 > No API keys for local models.
 
-## Features (v0.51.0)
+## Features (v0.52.0)
 
-* **Enhanced offline core** — improved intent routing + ready-to-run chat & automation examples (`python examples/enhanced_chat_agent.py --offline`, `python examples/enhanced_automation_agent.py`)
+* **Smarter offline core** — improved intent routing (regex math detection + expanded keywords) + ready-to-run chat & automation examples (`python examples/enhanced_chat_agent.py --offline`, `python examples/enhanced_automation_agent.py`)
 * **Core MVP demo** — one script runs intent routing + tools + multi-LLM probes (`python examples/core_mvp_agent.py` or `python examples/mvp_core_demo.py`)
 * **Session pack** — one command batches chat, file automation, search, and MCP echo, then writes `SESSION.md` (`grok-agent pack demo`)
 * **Playbook runner** — chat + automation + search + MCP in one JSON file; ReAct handoff recorded when a provider probe is up (`grok-agent playbook demo`)
@@ -118,5 +118,6 @@ grok-agent workflow demo
 * [docs/HN_INDIE_HACKERS.md](docs/HN_INDIE_HACKERS.md)
 * [docs/HN_UPDATE_v050.md](docs/HN_UPDATE_v050.md)
 * [docs/HN_UPDATE_v051.md](docs/HN_UPDATE_v051.md)
+* [docs/HN_UPDATE_v052.md](docs/HN_UPDATE_v052.md)
 
 MIT © Nexus Studio / Tryboy869
