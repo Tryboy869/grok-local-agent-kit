@@ -31,13 +31,13 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.44-v0.49: session pack, playbook, handoff ReAct call, core MVP demos
 - v0.50: enhanced offline core + ready-to-run examples
 - v0.51: clean core MVP agent example + docs polish
+- v0.52: smarter offline intent routing (regex math detection + expanded keywords)
 
 ## Next
 
-- v0.51: core MVP example + clearer demos (shipped)
-- v0.52: record real VHS GIFs for core demos
-- v0.53: MCP stdio attach inside the pack runner
-- v0.54: stream handoff tokens into the session brief
+- v0.53: record real VHS GIFs for core demos
+- v0.54: MCP stdio attach inside the pack runner
+- v0.55: stream handoff tokens into the session brief
 - PyPI / Test PyPI publish
 - Stronger plugin isolation and optional interactive TUI
 - Community recipes and skill packs
