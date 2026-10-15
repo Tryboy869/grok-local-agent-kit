@@ -60,14 +60,23 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
     if intent == "math":
         expr = "sqrt(144) + 10"
         lower = prompt.lower()
-        # Strip common leading words then take the rest if it looks like math
-        cleaned = re.sub(r"^(compute|calculate|calc|somme|sum of)\s+", "", prompt, flags=re.I).strip()
-        if any(ch.isdigit() for ch in cleaned) and any(op in cleaned for op in "+-*/()"):
-            expr = cleaned
-        elif "sqrt" in lower:
-            expr = "sqrt(144) + 10"
+        # Prefer a cleaned expression that looks like math
+        cleaned = re.sub(
+            r"^(compute|calculate|calc|somme|sum of|what is|what's|evaluate)\s+",
+            "",
+            prompt,
+            flags=re.I,
+        ).strip()
+        # Extract the first math-like substring if the whole prompt is noisy
+        m = re.search(r"([0-9.+\-*/()^sqrt\s]+)", cleaned, re.I)
+        candidate = (m.group(1).strip() if m else cleaned).strip()
+        if any(ch.isdigit() for ch in candidate) and any(op in candidate for op in "+-*/()"):
+            expr = candidate
+        elif "sqrt" in lower and any(ch.isdigit() for ch in lower):
+            expr = re.sub(r".*?(sqrt\s*\([^)]+\)[^a-zA-Z0-9]*)", r"\1", lower)
+            expr = expr or "sqrt(144) + 10"
         elif any(ch.isdigit() for ch in prompt):
-            expr = prompt
+            expr = cleaned or prompt
         return [{"tool": "calculator", "arguments": {"expression": expr}}]
     if intent == "system":
         return [{"tool": "get_system_info", "arguments": {}}]

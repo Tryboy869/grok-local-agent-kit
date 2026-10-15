@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/badge/version-0.52.0-brightgreen.svg)](https://github.com/Tryboy869/grok-local-agent-kit/releases)
+[![Version](https://img.shields.io/badge/version-0.53.0-brightgreen.svg)](https://github.com/Tryboy869/grok-local-agent-kit/releases)
 
 **Open-source toolkit for building local AI agents.**
 Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router **with a circuit breaker on the hot path**, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, **opt-in live-model eval profile**, tool cache + telemetry + budgets, **drop-in tool plugins with a Python sandbox**, **JSONL transcripts**, **workspace packer + local file RAG**, **web search with HTML fallback**, **multi-agent Team + shared blackboard**, **blackboard + roster persistence**, **task handoff queue**, **local approval gate wired into ReAct**, **scriptable approval TUI**, **circuit breaker health board for local backends**, **routed health persisted to health.json**, **portable kit snapshot**, **local model catalog**, **router defaults from Catalog.pick**, **offline scripted loop**, **declarative workflow runner (files + search + MCP, no daemon)**.
@@ -15,7 +15,7 @@ Built autonomously by Grok.
 > No cloud required.
 > No API keys for local models.
 
-## Features (v0.52.0)
+## Features (v0.53.0)
 
 * **Smarter offline core** — improved intent routing (regex math detection + expanded keywords) + ready-to-run chat & automation examples (`python examples/enhanced_chat_agent.py --offline`, `python examples/enhanced_automation_agent.py`)
 * **Core MVP demo** — one script runs intent routing + tools + multi-LLM probes (`python examples/core_mvp_agent.py` or `python examples/mvp_core_demo.py`)
@@ -125,5 +125,6 @@ grok-agent workflow demo
 * [docs/HN_UPDATE_v050.md](docs/HN_UPDATE_v050.md)
 * [docs/HN_UPDATE_v051.md](docs/HN_UPDATE_v051.md)
 * [docs/HN_UPDATE_v052.md](docs/HN_UPDATE_v052.md)
+* [docs/HN_UPDATE_v053.md](docs/HN_UPDATE_v053.md)
 
 MIT © Nexus Studio / Tryboy869

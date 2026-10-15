@@ -1,3 +1,13 @@
+## [0.53.0] - 2026-10-15
+
+### Added
+- More robust math expression extraction in the offline MVP router (strips leading verbs, extracts first math-like substring).
+- Continued polish of the core offline path so `python examples/core_mvp_agent.py` and enhanced examples stay reliable with zero models.
+- Docs: `docs/HN_UPDATE_v053.md` prepared for Hacker News / Indie Hackers.
+
+### Changed
+- Version bump to 0.53.0. Offline-first core remains the recommended starting point.
+
 ## [0.52.0] - 2026-10-14
 
 ### Added
