@@ -1,3 +1,14 @@
+## [0.55.0] - 2026-10-18
+
+### Added
+- Enhanced core agent routing in MVP path (expanded keywords, better math detection, trace alias).
+- New ready-to-run example: `examples/core_agent_demo.py` — demonstrates routing + web search, file ops, calculator, system info, MCP echo + multi-LLM probes. Fully offline.
+- README updates: version badge, new GIF storyboard description, one-command install reinforced, examples table.
+- Public roadmap and CONTRIBUTING kept current; HN/Indie Hackers update prepared.
+
+### Changed
+- Version bump to 0.55.0. Offline-first core remains the recommended starting point (`python examples/core_agent_demo.py`).
+
 ## [0.54.0] - 2026-10-17
 
 ### Added
@@ -8,13 +19,3 @@
 
 ### Changed
 - Version bump to 0.54.0. Offline-first MVP remains the recommended starting point (`python examples/core_mvp_agent.py` or `grok-agent mvp`).
-
-## [0.53.0] - 2026-10-15
-
-### Added
-- More robust math expression extraction in the offline MVP router (strips leading verbs, extracts first math-like substring).
-- Continued polish of the core offline path so `python examples/core_mvp_agent.py` and enhanced examples stay reliable with zero models.
-- Docs: `docs/HN_UPDATE_v053.md` prepared for Hacker News / Indie Hackers.
-
-### Changed
-- Version bump to 0.53.0. Offline-first core remains the recommended starting point.

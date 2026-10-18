@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/badge/version-0.54.0-brightgreen.svg)](https://github.com/Tryboy869/grok-local-agent-kit/releases)
+[![Version](https://img.shields.io/badge/version-0.55.0-brightgreen.svg)](https://github.com/Tryboy869/grok-local-agent-kit/releases)
 
 **Open-source toolkit for building local AI agents.**
 Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router **with a circuit breaker on the hot path**, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, **opt-in live-model eval profile**, tool cache + telemetry + budgets, **drop-in tool plugins with a Python sandbox**, **JSONL transcripts**, **workspace packer + local file RAG**, **web search with HTML fallback**, **multi-agent Team + shared blackboard**, **blackboard + roster persistence**, **task handoff queue**, **local approval gate wired into ReAct**, **scriptable approval TUI**, **circuit breaker health board for local backends**, **routed health persisted to health.json**, **portable kit snapshot**, **local model catalog**, **router defaults from Catalog.pick**, **offline scripted loop**, **declarative workflow runner (files + search + MCP, no daemon)**.
@@ -15,8 +15,9 @@ Built autonomously by Grok.
 > No cloud required.
 > No API keys for local models.
 
-## Features (v0.54.0)
+## Features (v0.55.0)
 
+* **Enhanced core agent** — improved intent routing + real tools (web search, file ops, calculator, system info, MCP echo) + multi-LLM probes. New ready-to-run demo: `python examples/core_agent_demo.py`
 * **Smarter offline core** — improved intent routing (regex math detection + expanded keywords) + ready-to-run chat & automation examples (`python examples/enhanced_chat_agent.py --offline`, `python examples/enhanced_automation_agent.py`)
 * **Core MVP demo** — one script runs intent routing + tools + multi-LLM probes (`python examples/core_mvp_agent.py` or `python examples/mvp_core_demo.py`)
 * **Session pack** — one command batches chat, file automation, search, and MCP echo, then writes `SESSION.md` (`grok-agent pack demo`)
@@ -29,13 +30,14 @@ Built autonomously by Grok.
 * **Model catalog** — list Ollama tags + LM Studio `/v1/models`, persist `catalog.json` (`grok-agent models demo`)
 * **Catalog → router** — `Catalog.pick` rewrites endpoint models (`grok-agent route catalog`)
 
-**GIF — core MVP (storyboard):** terminal runs `python examples/core_mvp_agent.py`. It prints provider probes (Ollama / LM Studio: down or up), then walks five scenarios: files (writes a note), math (`15 * 3 + sqrt(81)`), system info, web search fixture, and MCP echo. Each step shows the detected intent and truncated tool output. Ends with “Core MVP finished. No cloud, no API keys required.” Recreate with VHS from `docs/gifs/core-mvp.md` (binary GIF optional).
+**GIF — core agent demo (storyboard):** terminal runs `python examples/core_agent_demo.py`. Prints multi-LLM probes (Ollama / LM Studio status), then processes goals: file write, math calculation, system info, web search (fixture), MCP echo. Each shows detected intent and truncated tool output. Ends with success message. Recreate with VHS from docs/gifs (binary GIF optional).
 
 ## Quick start (1 command)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
 grok-agent doctor
+python examples/core_agent_demo.py
 python examples/core_mvp_agent.py
 python examples/mvp_core_demo.py
 python examples/enhanced_automation_agent.py
@@ -50,7 +52,7 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 pytest -q
 grok-agent doctor
-python examples/enhanced_automation_agent.py
+python examples/core_agent_demo.py
 ```
 
 Local model (optional — only needed for chat / ReAct / live eval):
@@ -66,6 +68,7 @@ GROK_LIVE_EVAL=1 grok-agent eval-live --live
 
 | Script | Needs LLM | What it shows |
 |---|---|---|
+| `examples/core_agent_demo.py` | no | enhanced core routing + tools + probes |
 | `examples/core_mvp_agent.py` | no | clean core offline routing + tools + probes |
 | `examples/enhanced_automation_agent.py` | no | polished offline automation: routing + file/math/system/search |
 | `examples/enhanced_chat_agent.py` | optional (`--offline`) | chat with multi-LLM probe + offline MVP fallback |
@@ -98,21 +101,22 @@ GROK_LIVE_EVAL=1 grok-agent eval-live --live
 
 ## Demo storyboard (GIF)
 
-Binary GIFs are not checked in yet (record them locally; script below). Until then, this is the 12-second terminal storyboard for `docs/gifs/workflow-demo.gif`:
+Binary GIFs are not checked in yet (record them locally; script below). Until then, this is the terminal storyboard for the core agent:
 
-1. `00:00` prompt: `grok-agent workflow demo`
-2. `00:02` step 1 `list_files` prints `inbox.txt`
-3. `00:04` step 2 `write_file` creates `automation-note.txt`
-4. `00:07` step 3 `web_search` returns the offline fixture (Ollama + LM Studio)
-5. `00:10` step 4 `mcp_call` echoes the listing as JSON
-6. `00:12` line `wrote=True` — no cloud key, no daemon
+1. `00:00` prompt: `python examples/core_agent_demo.py`
+2. `00:02` multi-LLM probes: Ollama and LM Studio status
+3. `00:04` file write goal → intent=files, writes mvp_note.txt
+4. `00:07` math goal → calculator result
+5. `00:10` search goal → fixture results
+6. `00:12` MCP echo → JSON payload
+7. Ends with “Core agent demo complete. Offline-first, no API keys.”
 
 Record:
 
 ```bash
-# asciinema rec docs/gifs/workflow-demo.cast
-grok-agent workflow demo
-# agg docs/gifs/workflow-demo.cast docs/gifs/workflow-demo.gif
+# asciinema rec docs/gifs/core-agent-demo.cast
+python examples/core_agent_demo.py
+# agg docs/gifs/core-agent-demo.cast docs/gifs/core-agent-demo.gif
 ```
 
 ## Docs
@@ -122,10 +126,7 @@ grok-agent workflow demo
 * [CHANGELOG.md](CHANGELOG.md)
 * [SHOW_HN.md](SHOW_HN.md)
 * [docs/HN_INDIE_HACKERS.md](docs/HN_INDIE_HACKERS.md)
-* [docs/HN_UPDATE_v050.md](docs/HN_UPDATE_v050.md)
-* [docs/HN_UPDATE_v051.md](docs/HN_UPDATE_v051.md)
-* [docs/HN_UPDATE_v052.md](docs/HN_UPDATE_v052.md)
-* [docs/HN_UPDATE_v053.md](docs/HN_UPDATE_v053.md)
 * [docs/HN_UPDATE_v054.md](docs/HN_UPDATE_v054.md)
+* [docs/HN_UPDATE_v055.md](docs/HN_UPDATE_v055.md)
 
 MIT © Nexus Studio / Tryboy869

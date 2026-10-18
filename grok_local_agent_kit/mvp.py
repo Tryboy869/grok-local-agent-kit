@@ -37,19 +37,19 @@ PROVIDERS: Dict[str, Dict[str, str]] = {
 
 def route_intent(prompt: str) -> str:
     """Pick a single intent. Order matters: more specific phrases win."""
-    text = (prompt or "").lower()
+    text = (prompt or "").lower().strip()
     # MCP first (explicit)
-    if any(k in text for k in ("mcp", "tool server", "echo server")):
+    if any(k in text for k in ("mcp", "tool server", "echo server", "mcp_call")):
         return "mcp"
     # Math: keywords or expression-like
-    math_kw = ("calcul", "sqrt", "compute", "somme", "sum of", "plus", "minus", "times", "multiply")
-    if any(k in text for k in math_kw) or re.search(r"\b\d+\s*[+\-*/]\s*\d+", text):
+    math_kw = ("calcul", "sqrt", "compute", "somme", "sum of", "plus", "minus", "times", "multiply", "evaluate", "math")
+    if any(k in text for k in math_kw) or re.search(r"\b\d+\s*[+\-*/]\s*\d+", text) or re.search(r"sqrt\s*\(", text):
         return "math"
-    if any(k in text for k in ("system", "os ", "python version", "cpu", "memory", "hostname")):
+    if any(k in text for k in ("system", "os ", "python version", "cpu", "memory", "hostname", "sysinfo")):
         return "system"
-    if any(k in text for k in ("search", "web", "look up", "recherche", "find online", "google")):
+    if any(k in text for k in ("search", "web", "look up", "recherche", "find online", "google", "lookup")):
         return "search"
-    if any(k in text for k in ("file", "fichier", "write", "list dir", "écris", "ecris", "create note", "save")):
+    if any(k in text for k in ("file", "fichier", "write", "list dir", "écris", "ecris", "create note", "save", "list files")):
         return "files"
     return "files"
 
@@ -62,7 +62,7 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
         lower = prompt.lower()
         # Prefer a cleaned expression that looks like math
         cleaned = re.sub(
-            r"^(compute|calculate|calc|somme|sum of|what is|what's|evaluate)\s+",
+            r"^(compute|calculate|calc|somme|sum of|what is|what's|evaluate|math)\s+",
             "",
             prompt,
             flags=re.I,
@@ -86,10 +86,11 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
     if intent == "mcp":
         return [{"tool": "mcp_echo", "arguments": {"name": "ping", "arguments": {"text": prompt}}}]
     # files: write a note then list the workspace
+    note = prompt.strip()[:200] or "local agent note"
     return [
         {
             "tool": "write_file",
-            "arguments": {"path": "mvp_note.txt", "content": prompt.strip() + "\n"},
+            "arguments": {"path": "mvp_note.txt", "content": note + "\n"},
         },
         {"tool": "list_files", "arguments": {"path": "."}},
     ]
@@ -137,6 +138,7 @@ def run_mvp(
         "intent": intent,
         "provider_table": list(PROVIDERS),
         "steps": trace,
+        "trace": trace,  # alias for callers
         "answer": answer,
         "ok": all(not str(s["output"]).startswith("Tool ") for s in trace),
     }
