@@ -2,16 +2,17 @@
 
 Title:
 
-Show HN: grok-local-agent-kit v0.54 – local AI agents on Ollama/LM Studio (offline MVP, real tools, no cloud)
+Show HN: grok-local-agent-kit v0.55 – enhanced core local AI agents on Ollama/LM Studio (offline MVP, real tools, no cloud)
 
 Body:
 
 I built an offline-first Python toolkit for local agents. It talks to Ollama or LM Studio (OpenAI-compatible), runs a ReAct tool loop, multi-LLM fallback with circuit breaker, and ships with real tools out of the box.
 
-What is in the box today (v0.54.0):
+What is in the box today (v0.55.0):
 
 - One-command install + `grok-agent doctor`
-- Offline core MVP that needs **no model**: `python examples/core_mvp_agent.py` or `python examples/mvp_core_demo.py` (intent routing + write_file, calculator, list_files, system info, MCP echo, multi-LLM probes)
+- Enhanced offline core MVP that needs **no model**: `python examples/core_agent_demo.py` (improved intent routing + write_file, calculator, list_files, system info, web search fixture, MCP echo, multi-LLM probes)
+- Also: `python examples/core_mvp_agent.py` or `python examples/mvp_core_demo.py`
 - Ready-to-run examples: `examples/chat_agent.py` (interactive ReAct) and `examples/automation_agent.py` (one-shot goals)
 - Enhanced offline demos: `examples/enhanced_chat_agent.py --offline` and `examples/enhanced_automation_agent.py`
 - Session pack, playbook, handoff, workflows, multi-agent team + blackboard, local approval gate + TUI
@@ -22,11 +23,11 @@ No API key required for local models. Most demos run completely offline.
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
 grok-agent doctor
-python examples/core_mvp_agent.py
+python examples/core_agent_demo.py
 ```
 
 Repo: https://github.com/Tryboy869/grok-local-agent-kit
-License: MIT. Python >= 3.10. Current version: 0.54.0.
+License: MIT. Python >= 3.10. Current version: 0.55.0.
 Stars at time of writing: 1. No paid promotion, no star exchange.
 
 From source:
@@ -38,7 +39,7 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 pytest -q
 grok-agent doctor
-python examples/core_mvp_agent.py
+python examples/core_agent_demo.py
 ```
 
 With a local model (optional):
