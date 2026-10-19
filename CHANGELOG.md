@@ -1,3 +1,14 @@
+## [0.56.0] - 2026-10-19
+
+### Added
+- Polished core MVP agent path with clearer intent routing and multi-tool demos.
+- New ready-to-run examples: `examples/ready_chat_agent.py` and `examples/ready_automation_agent.py` (offline-first, tools + multi-LLM probes).
+- README: reinforced 1-command install, vivid GIF/storyboard descriptions for core/chat/automation demos, expanded examples table.
+- Updated CONTRIBUTING.md and public ROADMAP.md; prepared HN/Indie Hackers update for v0.56.
+
+### Changed
+- Version bump to 0.56.0. Recommended entry point remains offline: `python examples/core_agent_demo.py` or the new ready examples.
+
 ## [0.55.0] - 2026-10-18
 
 ### Added
