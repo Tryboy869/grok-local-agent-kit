@@ -1,3 +1,13 @@
+## [0.57.0] - 2026-10-20
+
+### Added
+- Datetime intent routing in the offline MVP core (`route_intent` / `plan_for`) — keywords for time/date trigger `get_datetime`.
+- New ready-to-run multi-tool example: `examples/ready_multi_tool_agent.py` — chains datetime, math, files, search fixture, and system info. Fully offline, includes multi-LLM probes.
+- README / docs: updated examples table and GIF storyboard notes for the multi-tool demo.
+
+### Changed
+- Version bump to 0.57.0. Offline demos remain the recommended starting point.
+
 ## [0.56.0] - 2026-10-19
 
 ### Added
@@ -19,14 +29,3 @@
 
 ### Changed
 - Version bump to 0.55.0. Offline-first core remains the recommended starting point (`python examples/core_agent_demo.py`).
-
-## [0.54.0] - 2026-10-17
-
-### Added
-- Clearer multi-LLM routing documentation and provider health probes for Ollama + LM Studio in the core agent path.
-- Ready-to-run examples reinforced: `examples/chat_agent.py` (interactive ReAct) and `examples/automation_agent.py` (one-shot tool goal).
-- README: one-command install front-and-center, vivid GIF/storyboard descriptions for chat and automation demos.
-- Public CONTRIBUTING.md and ROADMAP.md kept current; new HN/Indie Hackers update draft.
-
-### Changed
-- Version bump to 0.54.0. Offline-first MVP remains the recommended starting point (`python examples/core_mvp_agent.py` or `grok-agent mvp`).
