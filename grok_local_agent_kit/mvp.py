@@ -45,6 +45,8 @@ def route_intent(prompt: str) -> str:
     math_kw = ("calcul", "sqrt", "compute", "somme", "sum of", "plus", "minus", "times", "multiply", "evaluate", "math")
     if any(k in text for k in math_kw) or re.search(r"\b\d+\s*[+\-*/]\s*\d+", text) or re.search(r"sqrt\s*\(", text):
         return "math"
+    if any(k in text for k in ("date", "time", "datetime", "heure", "aujourd'hui", "today", "clock", "what time")):
+        return "datetime"
     if any(k in text for k in ("system", "os ", "python version", "cpu", "memory", "hostname", "sysinfo")):
         return "system"
     if any(k in text for k in ("search", "web", "look up", "recherche", "find online", "google", "lookup")):
@@ -78,6 +80,8 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
         elif any(ch.isdigit() for ch in prompt):
             expr = cleaned or prompt
         return [{"tool": "calculator", "arguments": {"expression": expr}}]
+    if intent == "datetime":
+        return [{"tool": "get_datetime", "arguments": {}}]
     if intent == "system":
         return [{"tool": "get_system_info", "arguments": {}}]
     if intent == "search":
