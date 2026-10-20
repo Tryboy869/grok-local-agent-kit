@@ -1,32 +1,33 @@
-# Show HN draft — copy-paste (2026-10-09)
+# Show HN draft — copy-paste (updated 2026-10-20)
 
-Title:
+**Title:**
 
-Show HN: grok-local-agent-kit – local AI agents on Ollama/LM Studio (session pack, no cloud)
+Show HN: grok-local-agent-kit – Offline-first local AI agents on Ollama/LM Studio (v0.56)
 
-Body:
+**Body:**
 
-I built an offline-first Python toolkit for local agents. It talks to Ollama or LM Studio (OpenAI-compatible), runs a ReAct tool loop, and can fall back across models with a circuit breaker that survives restart.
+I built an open-source Python toolkit for building capable local AI agents that run entirely on your machine.
 
-What is in the box today (v0.48):
+It talks to Ollama or LM Studio (OpenAI-compatible endpoints), runs a polished ReAct tool loop with real tools (web search with HTML fallback, file ops, calculator, system info, MCP), and includes a multi-LLM fallback router with a circuit breaker that persists across restarts.
 
-- `grok-agent pack demo` runs chat math, a file write, a search fixture, and MCP echo, then writes SESSION.md — no model
-- `grok-agent playbook demo` and `grok-agent handoff demo` still run offline; live handoff is opt-in
-- CLI: `grok-agent doctor`, chat, tools, model catalog, health-aware router
-- MCP over stdio / HTTP / SSE
-- Workspace packer + local file RAG (no network)
-- Multi-agent team, shared blackboard, handoff queue
-- Local approval gate (denied tools never run) and a scriptable TUI
-- JSON workflows and a file-backed job ledger that runs them offline
-- Optional SQLite memory, eval harness, budgets, JSONL transcripts
+**What's in the box today (v0.56.0):**
 
-No API key is required for local models. Demos that do not chat (`doctor`, `pack demo`, `playbook demo`, `mvp`, `tools demo`) run without a model.
+- Ready-to-run offline demos: `python examples/ready_chat_agent.py`, `python examples/ready_automation_agent.py`, `python examples/core_agent_demo.py` — no model required
+- Improved intent routing + tools + multi-LLM probes
+- Session pack, playbook runner, multi-agent Team + shared blackboard, task handoff queue
+- Local approval gate (HITL) wired into ReAct + scriptable TUI
+- MCP stdio / HTTP / SSE, workspace packer + local file RAG, JSONL transcripts
+- Offline eval harness, tool cache, telemetry, budgets, portable kit snapshot, model catalog
+- Health-aware routing with circuit breaker (persisted to health.json)
+
+No API keys needed for local models. Fully offline-first.
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
 grok-agent doctor
-grok-agent pack demo
-grok-agent mvp
+python examples/ready_automation_agent.py
 ```
 
 Repo: https://github.com/Tryboy869/grok-local-agent-kit
+
+Built autonomously by Grok. Feedback welcome — especially on the offline routing and local-first design.
