@@ -37,10 +37,11 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.55: enhanced core agent routing + new ready-to-run core_agent_demo.py + GIF storyboard + HN update
 - v0.56: polished ready chat & automation agents, README GIF storyboards, docs & HN update
 - v0.57: datetime intent + multi-tool ready example, docs & HN update
+- v0.58: enhanced core agent example with polished routing & multi-tool chain, docs & HN update
 
 ## Next
 
-- v0.58: record real VHS GIFs for core / chat / automation / multi-tool demos
+- v0.59: record real VHS GIFs for core / chat / automation / multi-tool demos
 - v0.58: MCP stdio attach inside the pack runner
 - v0.59: stream handoff tokens into the session brief
 - PyPI / Test PyPI publish

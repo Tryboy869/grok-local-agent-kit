@@ -1,3 +1,13 @@
+## [0.58.0] - 2026-10-21
+
+### Added
+- Enhanced core agent example: `examples/enhanced_core_agent.py` — smarter offline routing, clearer multi-tool chain (datetime, math, files, search fixture, system, MCP), multi-LLM probes.
+- Improved intent handling notes and demo storyboard in README.
+
+### Changed
+- Version bump to 0.58.0. Offline-first core remains the recommended entry point.
+
+
 ## [0.57.0] - 2026-10-20
 
 ### Added
