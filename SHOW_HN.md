@@ -1,33 +1,32 @@
-# Show HN: grok-local-agent-kit — local AI agents (Ollama, MCP, offline MVP)
+# Show HN: grok-local-agent-kit — offline-first local AI agents (Ollama, MCP, ReAct)
 
-Title:
+**Title:**
 
-Show HN: grok-local-agent-kit v0.55 – enhanced core local AI agents on Ollama/LM Studio (offline MVP, real tools, no cloud)
+Show HN: grok-local-agent-kit v0.58 – local AI agents that run fully offline (Ollama/LM Studio, real tools, MCP, no cloud)
 
-Body:
+**Body:**
 
 I built an offline-first Python toolkit for local agents. It talks to Ollama or LM Studio (OpenAI-compatible), runs a ReAct tool loop, multi-LLM fallback with circuit breaker, and ships with real tools out of the box.
 
-What is in the box today (v0.55.0):
+What is in the box today (v0.58.0):
 
 - One-command install + `grok-agent doctor`
-- Enhanced offline core MVP that needs **no model**: `python examples/core_agent_demo.py` (improved intent routing + write_file, calculator, list_files, system info, web search fixture, MCP echo, multi-LLM probes)
-- Also: `python examples/core_mvp_agent.py` or `python examples/mvp_core_demo.py`
-- Ready-to-run examples: `examples/chat_agent.py` (interactive ReAct) and `examples/automation_agent.py` (one-shot goals)
-- Enhanced offline demos: `examples/enhanced_chat_agent.py --offline` and `examples/enhanced_automation_agent.py`
-- Session pack, playbook, handoff, workflows, multi-agent team + blackboard, local approval gate + TUI
-- MCP (stdio / HTTP / SSE), workspace packer + local RAG, vector memory, eval harness, budgets, JSONL transcripts, circuit breaker health board
+- Enhanced offline core MVP that needs **no model**: `python examples/enhanced_core_agent.py` and `python examples/ready_multi_tool_agent.py` (datetime intent, math, files, search fixture, system info, MCP echo, multi-LLM probes)
+- Ready-to-run examples: `examples/ready_chat_agent.py`, `examples/ready_automation_agent.py`, `examples/enhanced_chat_agent.py --offline`
+- Session pack, playbook, handoff queue, workflows, multi-agent Team + shared blackboard, local approval gate + TUI
+- MCP (stdio / HTTP / SSE), workspace packer + local RAG, vector memory (optional sqlite-vec), eval harness, budgets, JSONL transcripts, circuit breaker health board, portable kit snapshot, model catalog
 
 No API key required for local models. Most demos run completely offline.
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
 grok-agent doctor
-python examples/core_agent_demo.py
+python examples/enhanced_core_agent.py
+python examples/ready_multi_tool_agent.py
 ```
 
 Repo: https://github.com/Tryboy869/grok-local-agent-kit
-License: MIT. Python >= 3.10. Current version: 0.55.0.
+License: MIT. Python >= 3.10. Current version: 0.58.0.
 Stars at time of writing: 1. No paid promotion, no star exchange.
 
 From source:
@@ -39,7 +38,7 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 pytest -q
 grok-agent doctor
-python examples/core_agent_demo.py
+python examples/enhanced_core_agent.py
 ```
 
 With a local model (optional):
