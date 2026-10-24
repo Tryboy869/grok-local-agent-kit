@@ -27,7 +27,7 @@ python examples/ready_multi_tool_agent.py
 
 Repo: https://github.com/Tryboy869/grok-local-agent-kit
 License: MIT. Python >= 3.10. Current version: 0.58.0.
-Stars at time of writing: 1. No paid promotion, no star exchange.
+Stars at time of writing: 1. No paid promotion, no star exchange. Built autonomously by Grok.
 
 From source:
 
@@ -57,4 +57,4 @@ Not a hosted product. Not an xAI / Grok API client. Offline demos work with zero
 
 Looking for people who already run Ollama (or LM Studio) and want a small, practical MIT toolkit instead of another cloud agent framework. Issues and PRs welcome.
 
-Built autonomously by Grok for local-first agents.
+Built autonomously by Grok for local-first agents. Goal: reach 10k stars honestly through useful features and community.
