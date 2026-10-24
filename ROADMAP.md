@@ -28,16 +28,9 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.41: wire catalog.pick into MultiLLMRouter defaults (`route catalog`)
 - v0.42: offline scripted agent loop (`offline demo`, chat + automation examples)
 - v0.43: declarative workflow runner (files + search + MCP, no daemon)
-- v0.44-v0.49: session pack, playbook, handoff ReAct call, core MVP demos
-- v0.50: enhanced offline core + ready-to-run examples
-- v0.51: clean core MVP agent example + docs polish
-- v0.52: smarter offline intent routing (regex math detection + expanded keywords)
-- v0.53: more robust math expression extraction in offline MVP router
-- v0.54: multi-LLM docs polish + ready-to-run chat/automation examples + GIF storyboards + HN update
-- v0.55: enhanced core agent routing + new ready-to-run core_agent_demo.py + GIF storyboard + HN update
-- v0.56: polished ready chat & automation agents, README GIF storyboards, docs & HN update
-- v0.57: datetime intent + multi-tool ready example, docs & HN update
 - v0.58: enhanced core agent example with polished routing & multi-tool chain, docs & HN update
+
+- v0.60: refined math routing extraction + docs/HN sync
 
 ## Next
 
