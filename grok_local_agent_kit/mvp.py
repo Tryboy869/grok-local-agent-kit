@@ -64,13 +64,14 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
         lower = prompt.lower()
         # Prefer a cleaned expression that looks like math
         cleaned = re.sub(
-            r"^(compute|calculate|calc|somme|sum of|what is|what's|evaluate|math)\s+",
+            r"^(compute|calculate|calc|somme|sum of|what is|what's|evaluate|math|please)\s+",
             "",
             prompt,
             flags=re.I,
         ).strip()
+        cleaned = re.sub(r"\s*\?+\s*$", "", cleaned)
         # Extract the first math-like substring if the whole prompt is noisy
-        m = re.search(r"([0-9.+\-*/()^sqrt\s]+)", cleaned, re.I)
+        m = re.search(r"([0-9.+*/()^sqrt\s\-]+)", cleaned, re.I)
         candidate = (m.group(1).strip() if m else cleaned).strip()
         if any(ch.isdigit() for ch in candidate) and any(op in candidate for op in "+-*/()"):
             expr = candidate
