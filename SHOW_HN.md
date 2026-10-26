@@ -2,19 +2,19 @@
 
 **Title:**
 
-Show HN: grok-local-agent-kit v0.58 – local AI agents that run fully offline (Ollama/LM Studio, real tools, MCP, no cloud)
+Show HN: grok-local-agent-kit v0.60 – local AI agents that run fully offline (Ollama/LM Studio, real tools, MCP, no cloud)
 
 **Body:**
 
 I built an offline-first Python toolkit for local agents. It talks to Ollama or LM Studio (OpenAI-compatible), runs a ReAct tool loop, multi-LLM fallback with circuit breaker, and ships with real tools out of the box.
 
-What is in the box today (v0.58.0):
+What is in the box today (v0.60.0):
 
 - One-command install + `grok-agent doctor`
-- Enhanced offline core MVP that needs **no model**: `python examples/enhanced_core_agent.py` and `python examples/ready_multi_tool_agent.py` (datetime intent, math, files, search fixture, system info, MCP echo, multi-LLM probes)
-- Ready-to-run examples: `examples/ready_chat_agent.py`, `examples/ready_automation_agent.py`, `examples/enhanced_chat_agent.py --offline`
-- Session pack, playbook, handoff queue, workflows, multi-agent Team + shared blackboard, local approval gate + TUI
-- MCP (stdio / HTTP / SSE), workspace packer + local RAG, vector memory (optional sqlite-vec), eval harness, budgets, JSONL transcripts, circuit breaker health board, portable kit snapshot, model catalog
+- Enhanced offline core MVP that needs **no model**: `python examples/enhanced_core_agent.py` and `python examples/ready_multi_tool_agent.py` (datetime intent, refined math extraction, files, search fixture, system info, MCP echo, multi-LLM probes)
+- Ready-to-run examples: `examples/ready_chat_agent.py`, `examples/ready_automation_agent.py`, `examples/enhanced_chat_agent.py --offline`, `examples/core_agent_demo.py`
+- Session pack, playbook, handoff queue, workflows, multi-agent Team + shared blackboard, local approval gate + TUI, circuit breaker health board
+- MCP (stdio / HTTP / SSE), workspace packer + local RAG, vector memory (optional sqlite-vec), eval harness (opt-in live), budgets, JSONL transcripts, portable kit snapshot, model catalog, router defaults from catalog
 
 No API key required for local models. Most demos run completely offline.
 
@@ -26,7 +26,7 @@ python examples/ready_multi_tool_agent.py
 ```
 
 Repo: https://github.com/Tryboy869/grok-local-agent-kit
-License: MIT. Python >= 3.10. Current version: 0.58.0.
+License: MIT. Python >= 3.10. Current version: 0.60.0.
 Stars at time of writing: 1. No paid promotion, no star exchange. Built autonomously by Grok.
 
 From source:
