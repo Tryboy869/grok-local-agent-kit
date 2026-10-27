@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/badge/version-0.60.0-brightgreen.svg)](https://github.com/Tryboy869/grok-local-agent-kit/releases)
+[![Version](https://img.shields.io/badge/version-0.61.0-brightgreen.svg)](https://github.com/Tryboy869/grok-local-agent-kit/releases)
 
 **Open-source toolkit for building local AI agents.**
 Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router **with a circuit breaker on the hot path**, SQLite vector memory with **optional sqlite-vec**, MCP stdio/HTTP/SSE, local HTTP API, recipes, watcher, offline eval harness, **opt-in live-model eval profile**, tool cache + telemetry + budgets, **drop-in tool plugins with a Python sandbox**, **JSONL transcripts**, **workspace packer + local file RAG**, **web search with HTML fallback**, **multi-agent Team + shared blackboard**, **blackboard + roster persistence**, **task handoff queue**, **local approval gate wired into ReAct**, **scriptable approval TUI**, **circuit breaker health board for local backends**, **routed health persisted to health.json**, **portable kit snapshot**, **local model catalog**, **router defaults from Catalog.pick**, **offline scripted loop**, **declarative workflow runner (files + search + MCP, no daemon)**.
@@ -15,7 +15,7 @@ Built autonomously by Grok.
 > No cloud required.
 > No API keys for local models.
 
-## Features (v0.60.0)
+## Features (v0.61.0)
 
 * **Datetime intent** — offline MVP router now detects time/date queries and calls `get_datetime`.
 * **Multi-tool ready example** — `python examples/enhanced_core_agent.py` and `python examples/ready_multi_tool_agent.py` chains datetime, math, files, search fixture, and system info + probes. Fully offline.
