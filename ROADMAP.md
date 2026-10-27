@@ -29,14 +29,14 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.42: offline scripted agent loop (`offline demo`, chat + automation examples)
 - v0.43: declarative workflow runner (files + search + MCP, no daemon)
 - v0.58: enhanced core agent example with polished routing & multi-tool chain, docs & HN update
-
 - v0.60: refined math routing extraction + docs/HN sync
+- v0.61: improved math routing (** power, better extraction) + docs/HN sync
 
 ## Next
 
-- v0.59: record real VHS GIFs for core / chat / automation / multi-tool demos
-- v0.58: MCP stdio attach inside the pack runner
-- v0.59: stream handoff tokens into the session brief
+- Record real VHS GIFs for core / chat / automation / multi-tool demos
+- MCP stdio attach inside the pack runner
+- Stream handoff tokens into the session brief
 - PyPI / Test PyPI publish
 - Stronger plugin isolation and optional interactive TUI
 - Community recipes and skill packs

@@ -1,3 +1,12 @@
+## [0.61.0] - 2026-10-27
+
+### Added
+- Improved math routing in offline MVP core: better support for power operators (** and ^), more prefix cleaning, and refined expression extraction.
+- Version bump to 0.61.0 with README, ROADMAP, and HN/Indie Hackers update sync.
+
+### Changed
+- More robust intent detection and calculator plan generation for noisy or natural-language math prompts.
+
 ## [0.60.0] - 2026-10-24
 
 ### Added

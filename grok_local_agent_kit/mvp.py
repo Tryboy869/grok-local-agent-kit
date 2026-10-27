@@ -43,7 +43,7 @@ def route_intent(prompt: str) -> str:
         return "mcp"
     # Math: keywords or expression-like
     math_kw = ("calcul", "sqrt", "compute", "somme", "sum of", "plus", "minus", "times", "multiply", "evaluate", "math")
-    if any(k in text for k in math_kw) or re.search(r"\b\d+\s*[+\-*/]\s*\d+", text) or re.search(r"sqrt\s*\(", text):
+    if any(k in text for k in math_kw) or re.search(r"\b\d+\s*[+\-*/^]\s*\d+", text) or re.search(r"sqrt\s*\(", text) or "**" in text:
         return "math"
     if any(k in text for k in ("date", "time", "datetime", "heure", "aujourd'hui", "today", "clock", "what time")):
         return "datetime"
@@ -64,16 +64,19 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
         lower = prompt.lower()
         # Prefer a cleaned expression that looks like math
         cleaned = re.sub(
-            r"^(compute|calculate|calc|somme|sum of|what is|what's|evaluate|math|please)\s+",
+            r"^(compute|calculate|calc|somme|sum of|what is|what's|evaluate|math|please|calculate the)\s+",
             "",
             prompt,
             flags=re.I,
         ).strip()
         cleaned = re.sub(r"\s*\?+\s*$", "", cleaned)
-        # Extract the first math-like substring if the whole prompt is noisy
-        m = re.search(r"([0-9.+*/()^sqrt\s\-]+)", cleaned, re.I)
+        # Extract the first math-like substring if the whole prompt is noisy (supports ** and ^)
+        m = re.search(r"([0-9.+*/()^sqrt\s\-]+|\*\*)", cleaned, re.I)
         candidate = (m.group(1).strip() if m else cleaned).strip()
-        if any(ch.isdigit() for ch in candidate) and any(op in candidate for op in "+-*/()"):
+        # Normalize ** to a form the calculator understands if needed
+        if "**" in candidate:
+            candidate = candidate.replace("**", "^")
+        if any(ch.isdigit() for ch in candidate) and any(op in candidate for op in "+-*/()^"):
             expr = candidate
         elif "sqrt" in lower and any(ch.isdigit() for ch in lower):
             expr = re.sub(r".*?(sqrt\s*\([^)]+\)[^a-zA-Z0-9]*)", r"\1", lower)
