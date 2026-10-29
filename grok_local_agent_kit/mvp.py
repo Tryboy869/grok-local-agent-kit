@@ -4,6 +4,8 @@ No Ollama, LM Studio, or network is required. `run_mvp` classifies a goal,
 builds a tool plan, and executes it through the same tool registry the ReAct
 loop uses. `probe_providers` reports whether local backends are up without
 failing the demo when they are not.
+
+v0.62: improved compound intent detection (math + save to file).
 """
 
 from __future__ import annotations
@@ -51,18 +53,30 @@ def route_intent(prompt: str) -> str:
         return "system"
     if any(k in text for k in ("search", "web", "look up", "recherche", "find online", "google", "lookup")):
         return "search"
+    if any(k in text for k in ("read", "open", "show file", "cat ", "display")) and any(k in text for k in ("file", "fichier", ".txt", ".md")):
+        return "read"
     if any(k in text for k in ("file", "fichier", "write", "list dir", "écris", "ecris", "create note", "save", "list files")):
         return "files"
     return "files"
 
 
 def plan_for(prompt: str) -> List[Dict[str, Any]]:
-    """Deterministic tool plan for the MVP loop."""
+    """Deterministic tool plan for the MVP loop.
+
+    Supports simple compound goals like "calculate X and save to file".
+    """
+    text = (prompt or "").lower()
     intent = route_intent(prompt)
-    if intent == "math":
+
+    # Compound: math + write/save
+    compound_math_save = (
+        intent == "math"
+        and any(k in text for k in ("save", "write", "save to", "write to", "and save", "then write", "store in"))
+    )
+
+    if compound_math_save:
+        # Extract expression similar to pure math
         expr = "sqrt(144) + 10"
-        lower = prompt.lower()
-        # Prefer a cleaned expression that looks like math
         cleaned = re.sub(
             r"^(compute|calculate|calc|somme|sum of|what is|what's|evaluate|math|please|calculate the)\s+",
             "",
@@ -70,10 +84,37 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
             flags=re.I,
         ).strip()
         cleaned = re.sub(r"\s*\?+\s*$", "", cleaned)
-        # Extract the first math-like substring if the whole prompt is noisy (supports ** and ^)
         m = re.search(r"([0-9.+*/()^sqrt\s\-]+|\*\*)", cleaned, re.I)
         candidate = (m.group(1).strip() if m else cleaned).strip()
-        # Normalize ** to a form the calculator understands if needed
+        if "**" in candidate:
+            candidate = candidate.replace("**", "^")
+        if any(ch.isdigit() for ch in candidate) and any(op in candidate for op in "+-*/()^"):
+            expr = candidate
+        # Determine output filename
+        fname = "result.txt"
+        fm = re.search(r"(?:to|in|as)\s+([a-zA-Z0-9_.-]+\.(?:txt|md))", text)
+        if fm:
+            fname = fm.group(1)
+        return [
+            {"tool": "calculator", "arguments": {"expression": expr}},
+            # Note: the write happens after; content will be filled by caller if needed,
+            # but for demo we write a placeholder that the runner can improve.
+            # For simplicity we write a fixed message; real chaining is in the example.
+            {"tool": "write_file", "arguments": {"path": fname, "content": f"Computed: {expr}\n(result available in trace)\n"}},
+        ]
+
+    if intent == "math":
+        expr = "sqrt(144) + 10"
+        lower = prompt.lower()
+        cleaned = re.sub(
+            r"^(compute|calculate|calc|somme|sum of|what is|what's|evaluate|math|please|calculate the)\s+",
+            "",
+            prompt,
+            flags=re.I,
+        ).strip()
+        cleaned = re.sub(r"\s*\?+\s*$", "", cleaned)
+        m = re.search(r"([0-9.+*/()^sqrt\s\-]+|\*\*)", cleaned, re.I)
+        candidate = (m.group(1).strip() if m else cleaned).strip()
         if "**" in candidate:
             candidate = candidate.replace("**", "^")
         if any(ch.isdigit() for ch in candidate) and any(op in candidate for op in "+-*/()^"):
@@ -84,6 +125,7 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
         elif any(ch.isdigit() for ch in prompt):
             expr = cleaned or prompt
         return [{"tool": "calculator", "arguments": {"expression": expr}}]
+
     if intent == "datetime":
         return [{"tool": "get_datetime", "arguments": {}}]
     if intent == "system":
@@ -93,6 +135,13 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
         return [{"tool": "web_search", "arguments": {"query": query, "max_results": 3}}]
     if intent == "mcp":
         return [{"tool": "mcp_echo", "arguments": {"name": "ping", "arguments": {"text": prompt}}}]
+    if intent == "read":
+        # simple read of common name or first mentioned
+        path = "mvp_note.txt"
+        m = re.search(r"([a-zA-Z0-9_.-]+\.(?:txt|md|py))", text)
+        if m:
+            path = m.group(1)
+        return [{"tool": "read_file", "arguments": {"path": path}}]
     # files: write a note then list the workspace
     note = prompt.strip()[:200] or "local agent note"
     return [
@@ -122,7 +171,10 @@ def run_mvp(
     workspace: Path,
     search: Optional[SearchFn] = None,
 ) -> Dict[str, Any]:
-    """Route a prompt and execute the plan inside `workspace`."""
+    """Route a prompt and execute the plan inside `workspace`.
+
+    For compound math+save, the second step uses the actual calculator result.
+    """
     workspace = Path(workspace)
     workspace.mkdir(parents=True, exist_ok=True)
     intent = route_intent(prompt)
@@ -134,11 +186,17 @@ def run_mvp(
         import os
 
         os.chdir(workspace)
-        for step in steps:
+        calc_result = None
+        for i, step in enumerate(steps):
             name = step["tool"]
             args = dict(step.get("arguments") or {})
+            # Special: if this is a write after calculator in compound, inject result
+            if name == "write_file" and calc_result is not None and "result available" in str(args.get("content", "")):
+                args["content"] = f"Computed result: {calc_result}\nExpression was evaluated offline.\n"
             output = execute_tool(name, args, registry)
             trace.append({"tool": name, "arguments": args, "output": output})
+            if name == "calculator":
+                calc_result = output
     finally:
         os.chdir(cwd)
     answer = trace[-1]["output"] if trace else ""
@@ -146,7 +204,7 @@ def run_mvp(
         "intent": intent,
         "provider_table": list(PROVIDERS),
         "steps": trace,
-        "trace": trace,  # alias for callers
+        "trace": trace,
         "answer": answer,
         "ok": all(not str(s["output"]).startswith("Tool ") for s in trace),
     }

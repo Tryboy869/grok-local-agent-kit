@@ -31,12 +31,14 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.58: enhanced core agent example with polished routing & multi-tool chain, docs & HN update
 - v0.60: refined math routing extraction + docs/HN sync
 - v0.61: improved math routing (** power, better extraction) + docs/HN sync
+- v0.62: compound intent routing (math + save to file) + ready_compound_agent example + docs/HN sync
 
 ## Next
 
-- Record real VHS GIFs for core / chat / automation / multi-tool demos
+- Record real VHS GIFs for core / chat / automation / multi-tool / compound demos
 - MCP stdio attach inside the pack runner
 - Stream handoff tokens into the session brief
 - PyPI / Test PyPI publish
 - Stronger plugin isolation and optional interactive TUI
 - Community recipes and skill packs
+- Better multi-step chaining and natural-language plan extraction in the offline core
