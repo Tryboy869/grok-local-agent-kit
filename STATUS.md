@@ -1,8 +1,8 @@
 # Status
 
-Current release line: **v0.55.0** (enhanced core agent demo: offline routing + real tools + multi-LLM probes).
+Current release line: **v0.62.0** (compound intent routing + ready_compound_agent offline demo).
 
-## Audit 2026-10-19
+## Audit 2026-10-30
 
 | Signal | Value |
 |--------|-------|
@@ -14,16 +14,16 @@ Current release line: **v0.55.0** (enhanced core agent demo: offline routing + r
 | Stars | 1 |
 | Forks | 0 |
 | Open issues | 2 |
-| Package version | 0.55.0 |
-| CLI | `grok-agent` / `python examples/core_agent_demo.py` |
-| Feature | Enhanced core offline MVP with improved intent routing, shared tool registry, and provider probes |
+| Package version | 0.62.0 |
+| CLI | `grok-agent` |
+| Feature | Compound offline MVP (math→file chaining), ready_compound_agent, enhanced core, multi-LLM probes |
 
 Bootstrap not required. The kit already has a full CLI, examples, tests, CONTRIBUTING, ROADMAP, CI, and docs. This is the main repo.
 
 Honest growth path (no fake stars, no bought engagement, no star farming):
 
 1. Publish to Test PyPI then PyPI (`grok-local-agent-kit`).
-2. Record one short GIF from the storyboard in README / docs/gifs (core-agent-demo).
+2. Record one short GIF from the storyboard in README / docs/gifs (ready_compound_agent).
 3. Post the refreshed `SHOW_HN.md` on a weekday morning US time.
 4. Cross-post r/LocalLLaMA, r/MachineLearning, Indie Hackers, and relevant Discords with the same facts.
 5. Answer every issue and PR within 24h.
