@@ -1,3 +1,14 @@
+## [0.63.0] - 2026-11-01
+
+### Added
+- New ready-to-run offline MVP example: `examples/mvp_chat_automation.py` (chat + automation via intent routing + real tools, no LLM required).
+- Clearer demo storyboards in README (GIFs described; record with VHS from docs/gifs).
+- HN/Indie Hackers update draft for v0.63.0.
+
+### Changed
+- README quick-start and examples section refreshed for the MVP surface.
+- Version bump to 0.63.0.
+
 ## [0.62.0] - 2026-10-29
 
 ### Added

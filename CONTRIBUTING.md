@@ -16,21 +16,10 @@ pytest -q
 
 - Python 3.10+, no required cloud APIs.
 - New behavior needs tests that run **without a live LLM**.
-- Prefer offline-first demos (`examples/enhanced_core_agent.py, examples/core_agent_demo.py`, `examples/ready_chat_agent.py`, `examples/ready_automation_agent.py`, `examples/enhanced_*.py`) so newcomers can try the kit immediately.
+- Prefer offline-first demos (`examples/mvp_chat_automation.py`, `examples/ready_compound_agent.py`, `examples/enhanced_core_agent.py`, `examples/ready_*.py`) so newcomers can try the kit immediately.
 - Keep the public surface in `grok_local_agent_kit/__init__.py` intentional.
-- Prefer small modules (`cli_v0XX.py`, `test_v0XX.py`) over growing god-files.
+- Prefer small modules over growing god-files.
 - File tools stay workspace-scoped. Do not weaken `_safe_path`.
-- Blackboard, roster, handoff, approval, health, snapshot, and catalog persistence stay cwd-safe.
-- Kit snapshots stay cwd-safe and must not embed secrets or model weights.
-- Playbook tests must inject `probes=`; do not require Ollama or LM Studio. A handoff descriptor must not open a chat socket.
-- ApprovalGate checks on the ReAct path must fail closed (block on deny **and** pending).
-- Approval TUI scripts must stay offline-testable (`--script` / `--policy`); do not require a TTY in tests.
-- Live-model eval stays **opt-in**. Default and CI paths use the stub. Real models require both `--live` and `GROK_LIVE_EVAL=1`.
-- Health board tests must not contact Ollama / LM Studio; use injected clocks (`now=`).
-- Router tests that cover HealthBoard must inject fake clients; never ping a live daemon.
-- Routed health persistence must reuse `health.save_board` / `load_board` (same `health.json`).
-- Do not load untrusted Python plugins by default. JSON plugins are data-only.
-- Workspace packer / file RAG must stay cwd-safe and skip VCS / venv trees.
 - Do not commit secrets, model weights, or large binaries.
 
 ## Pull requests
@@ -44,20 +33,7 @@ pytest -q
 
 See `CODE_OF_CONDUCT.md`. Security reports: `SECURITY.md`.
 
-## v0.43 workflow runner
-
-- New workflow tools stay cwd-safe (`_safe` must reject `..`).
-- `web_search` and `mcp_call` in workflows must accept injected callables. Tests must not hit the network or spawn an MCP server.
-- Add a CLI command only via `cli_v0XX.py` and register it from `__init__.py`.
-- Demo output must be deterministic enough to assert `ok=True` and `wrote=True`.
-
-## Shipping a small feature
-
-v0.47 is the pattern: keep the offline path green, put the live call behind an explicit flag, and add a test that injects the runner so CI never needs Ollama. Update CHANGELOG, ROADMAP, and the HN draft in the same commit.
-
-- Session pack tests must inject `search=` and must not probe the network unless the test passes `probe=False`.
-
 ## MVP core
 
-New contributors: start with `python examples/enhanced_core_agent.py, examples/core_agent_demo.py` or the ready chat/automation examples.
+New contributors: start with `python examples/mvp_chat_automation.py` or the ready chat/automation examples.  
 These exercise routing + tools without any local model. Add tests that also run offline.
