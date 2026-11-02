@@ -2,34 +2,36 @@
 
 **Title:**
 
-Show HN: grok-local-agent-kit v0.62 – local AI agents that run fully offline (Ollama/LM Studio, real tools, MCP, no cloud)
+Show HN: grok-local-agent-kit v0.63 – local AI agents that run fully offline (Ollama/LM Studio, real tools, MCP, no cloud)
 
 **Body:**
 
 I built an offline-first Python toolkit for local agents. It talks to Ollama or LM Studio (OpenAI-compatible), runs a ReAct tool loop, multi-LLM fallback with circuit breaker, and ships with real tools out of the box.
 
-What is in the box today (v0.62.0):
+What is in the box today (v0.63.0):
 
 - One-command install + `grok-agent doctor`
+- Polished offline MVP: `python examples/mvp_chat_automation.py` (chat turns + automation plan, fully offline — datetime, math, files, system info)
 - Compound intent routing: offline MVP chains tools (e.g. "calculate 2**10 + 42 and save to result.txt" → calculator then write_file with real result)
-- Ready compound example: `python examples/ready_compound_agent.py` (math→file + read-back, fully offline)
-- Enhanced offline core MVP (no model needed): `python examples/enhanced_core_agent.py` and `python examples/ready_multi_tool_agent.py` (datetime, refined math with ** power, files, search fixture, system info, MCP echo, multi-LLM probes)
-- Ready-to-run examples: `examples/ready_chat_agent.py`, `examples/ready_automation_agent.py`, `examples/enhanced_chat_agent.py --offline`, `examples/core_agent_demo.py`
-- Session pack, playbook, handoff queue, workflows, multi-agent Team + shared blackboard, local approval gate + TUI, circuit breaker health board
-- MCP (stdio / HTTP / SSE), workspace packer + local RAG, vector memory (optional sqlite-vec), eval harness (opt-in live), budgets, JSONL transcripts, portable kit snapshot, model catalog, router defaults from catalog
+- Ready compound example: `python examples/ready_compound_agent.py`
+- Enhanced offline core: `python examples/enhanced_core_agent.py` and multi-tool variants
+- Core Agent with ReAct loop, hooks, sessions, parallel tools, MCP attach
+- Real tools: web_search (HTML fallback), cwd-safe file ops, calculator, execute_python (sandboxed), shell (restricted), MCP stdio, system info, datetime
+- Multi-LLM health-aware router, sessions, playbooks, handoffs, workflows, multi-agent Team + blackboard, local approval gate + TUI, circuit breaker
+- MCP (stdio / HTTP / SSE), workspace packer + local RAG, optional vector memory, eval harness, budgets, JSONL transcripts, portable kit snapshot, model catalog
 
 No API key required for local models. Most demos run completely offline.
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
 grok-agent doctor
+python examples/mvp_chat_automation.py
 python examples/ready_compound_agent.py
 python examples/enhanced_core_agent.py
-python examples/ready_multi_tool_agent.py
 ```
 
 Repo: https://github.com/Tryboy869/grok-local-agent-kit
-License: MIT. Python >= 3.10. Current version: 0.62.0.
+License: MIT. Python >= 3.10. Current version: 0.63.0.
 Stars at time of writing: 1. No paid promotion, no star exchange. Built autonomously by Grok.
 
 From source:
@@ -41,8 +43,7 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 pytest -q
 grok-agent doctor
-python examples/ready_compound_agent.py
-python examples/enhanced_core_agent.py
+python examples/mvp_chat_automation.py
 ```
 
 With a local model (optional):
@@ -50,7 +51,6 @@ With a local model (optional):
 ```bash
 ollama pull llama3.2
 grok-agent chat -v --stream --router
-# or python examples/chat_agent.py
 ```
 
 ## What it is not
