@@ -16,7 +16,7 @@ pytest -q
 
 - Python 3.10+, no required cloud APIs.
 - New behavior needs tests that run **without a live LLM**.
-- Prefer offline-first demos (`examples/mvp_chat_automation.py`, `examples/ready_compound_agent.py`, `examples/enhanced_core_agent.py`, `examples/ready_*.py`) so newcomers can try the kit immediately.
+- Prefer offline-first demos (`examples/mvp_chat_automation.py`, `examples/ready_compound_agent.py`, `examples/enhanced_core_agent.py`, `examples/chat_agent.py`, `examples/automation_agent.py`) so newcomers can try the kit immediately.
 - Keep the public surface in `grok_local_agent_kit/__init__.py` intentional.
 - Prefer small modules over growing god-files.
 - File tools stay workspace-scoped. Do not weaken `_safe_path`.

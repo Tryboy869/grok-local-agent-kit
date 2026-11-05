@@ -2,16 +2,17 @@
 
 **Title:**
 
-Show HN: grok-local-agent-kit v0.63 – local AI agents that run fully offline (Ollama/LM Studio, real tools, MCP, no cloud)
+Show HN: grok-local-agent-kit v0.64 – local AI agents that run fully offline (Ollama/LM Studio, real tools, MCP, no cloud)
 
 **Body:**
 
 I built an offline-first Python toolkit for local agents. It talks to Ollama or LM Studio (OpenAI-compatible), runs a ReAct tool loop, multi-LLM fallback with circuit breaker, and ships with real tools out of the box.
 
-What is in the box today (v0.63.0):
+What is in the box today (v0.64.0):
 
 - One-command install + `grok-agent doctor`
 - Polished offline MVP: `python examples/mvp_chat_automation.py` (chat turns + automation plan, fully offline — datetime, math, files, system info)
+- Ready live chat & automation: `examples/chat_agent.py` and `examples/automation_agent.py`
 - Compound intent routing: offline MVP chains tools (e.g. "calculate 2**10 + 42 and save to result.txt" → calculator then write_file with real result)
 - Ready compound example: `python examples/ready_compound_agent.py`
 - Enhanced offline core: `python examples/enhanced_core_agent.py` and multi-tool variants
@@ -26,12 +27,12 @@ No API key required for local models. Most demos run completely offline.
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
 grok-agent doctor
 python examples/mvp_chat_automation.py
-python examples/ready_compound_agent.py
-python examples/enhanced_core_agent.py
+python examples/chat_agent.py
+python examples/automation_agent.py
 ```
 
 Repo: https://github.com/Tryboy869/grok-local-agent-kit
-License: MIT. Python >= 3.10. Current version: 0.63.0.
+License: MIT. Python >= 3.10. Current version: 0.64.0.
 Stars at time of writing: 1. No paid promotion, no star exchange. Built autonomously by Grok.
 
 From source:
@@ -51,6 +52,7 @@ With a local model (optional):
 ```bash
 ollama pull llama3.2
 grok-agent chat -v --stream --router
+python examples/chat_agent.py --verbose
 ```
 
 ## What it is not

@@ -1,3 +1,17 @@
+## [0.64.0] - 2026-11-05
+
+### Added
+- Refined offline MVP core with better multi-step tool chaining and compound intent support (math → file, search + note, etc.).
+- Polished ready-to-run examples: chat agent (interactive with local LLM) and automation agent (one-shot multi-tool goals).
+- Detailed GIF/demo storyboards in README (describe terminal flows; record with VHS from docs/gifs).
+- Updated CONTRIBUTING.md with clearer contributor guidelines for offline-first contributions.
+- Public ROADMAP refreshed with next milestones (real GIFs, PyPI, community packs).
+- HN / Indie Hackers update draft for v0.64.0.
+
+### Changed
+- README quick-start, features, and examples sections improved for 1-command install and immediate demos.
+- Version bump across package, CLI, and docs.
+
 ## [0.63.0] - 2026-11-01
 
 ### Added
@@ -8,24 +22,3 @@
 ### Changed
 - README quick-start and examples section refreshed for the MVP surface.
 - Version bump to 0.63.0.
-
-## [0.62.0] - 2026-10-29
-
-### Added
-- Compound intent routing in offline MVP core: detect math + "save/write to file" and chain calculator → write_file (result injected into the file).
-- Read-file intent for simple "read X.txt" goals.
-- New ready-to-run example: `examples/ready_compound_agent.py` — demonstrates math→file chaining + read-back, fully offline.
-- Version bump to 0.62.0 with README, ROADMAP, and HN/Indie Hackers update.
-
-### Changed
-- `run_mvp` now passes real calculator output into subsequent write steps for compound plans.
-- More robust multi-step tool plans without requiring a live LLM.
-
-## [0.61.0] - 2026-10-27
-
-### Added
-- Improved math routing in offline MVP core: better support for power operators (** and ^), more prefix cleaning, and refined expression extraction.
-- Version bump to 0.61.0 with README, ROADMAP, and HN/Indie Hackers update sync.
-
-### Changed
-- More robust intent detection and calculator plan generation for noisy or natural-language math prompts.
