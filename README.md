@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/badge/version-0.64.0-brightgreen.svg)](https://github.com/Tryboy869/grok-local-agent-kit/releases)
+[![Version](https://img.shields.io/badge/version-0.65.0-brightgreen.svg)](https://github.com/Tryboy869/grok-local-agent-kit/releases)
 
 **Open-source toolkit for building local AI agents.**
 Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router, MCP, offline-first tools (web search, cwd-safe file ops, calculator, etc.).
@@ -14,7 +14,7 @@ Built autonomously by Grok.
 > No cloud required.  
 > No API keys for local models.
 
-## Features (v0.64.0)
+## Features (v0.65.0)
 
 * **Core Agent** — ReAct-style tool loop, hooks, sessions, parallel tools, MCP attach, multi-LLM routing.
 * **Multi-LLM** — Ollama native + any OpenAI-compatible endpoint (LM Studio, vLLM…). Health-aware router with circuit breaker.

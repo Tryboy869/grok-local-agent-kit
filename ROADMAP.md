@@ -31,6 +31,7 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.58–v0.62: enhanced core, refined math routing, compound intent routing + ready examples
 - v0.63: polished offline MVP example (chat + automation), clearer README demos
 - v0.64: refined offline core + polished chat/automation examples + docs refresh
+- v0.65: parallel tool observability, docs & HN sync, continued offline-first polish
 
 ## Next
 

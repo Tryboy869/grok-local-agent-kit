@@ -1,3 +1,15 @@
+## [0.65.0] - 2026-11-06
+
+### Added
+- Improved parallel tool execution visibility: verbose mode now logs tool names and worker count when tools run concurrently.
+- Polished offline-first demos and 1-command install path remains the primary onboarding.
+- Refreshed CONTRIBUTING.md and public ROADMAP for v0.65.
+- HN / Indie Hackers update draft for v0.65.0.
+
+### Changed
+- Version bump to 0.65.0 across package, pyproject, README, and docs.
+- Minor robustness in Agent._run_tools for better observability.
+
 ## [0.64.0] - 2026-11-05
 
 ### Added

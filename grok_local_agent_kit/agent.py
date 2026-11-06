@@ -198,6 +198,9 @@ class Agent:
         if not self.parallel_tools or len(tool_calls) == 1:
             return [self._run_one_tool(tc) for tc in tool_calls]
         workers = min(self.max_parallel_tools, len(tool_calls))
+        if self.verbose:
+            names = [tc.get("name", "?") for tc in tool_calls]
+            print(f"  · parallel tools ({len(tool_calls)}, workers={workers}): {names}")
         indexed = list(enumerate(tool_calls))
         out: List[Optional[Tuple[Dict[str, Any], str, Dict[str, Any]]]] = [None] * len(tool_calls)
         with ThreadPoolExecutor(max_workers=workers) as pool:
