@@ -1,8 +1,8 @@
 # Status
 
-Current release line: **v0.62.0** (compound intent routing + ready_compound_agent offline demo).
+Current release line: **v0.65.0** (parallel tool observability + polished offline MVP).
 
-## Audit 2026-10-30
+## Audit 2026-11-07
 
 | Signal | Value |
 |--------|-------|
@@ -14,20 +14,20 @@ Current release line: **v0.62.0** (compound intent routing + ready_compound_agen
 | Stars | 1 |
 | Forks | 0 |
 | Open issues | 2 |
-| Package version | 0.62.0 |
+| Package version | 0.65.0 |
 | CLI | `grok-agent` |
-| Feature | Compound offline MVP (math→file chaining), ready_compound_agent, enhanced core, multi-LLM probes |
+| Feature | Offline-first ReAct agents, MCP, multi-LLM router, compound intent routing, real tools (files, math, web, shell restricted), ready examples |
 
 Bootstrap not required. The kit already has a full CLI, examples, tests, CONTRIBUTING, ROADMAP, CI, and docs. This is the main repo.
 
 Honest growth path (no fake stars, no bought engagement, no star farming):
 
 1. Publish to Test PyPI then PyPI (`grok-local-agent-kit`).
-2. Record one short GIF from the storyboard in README / docs/gifs (ready_compound_agent).
+2. Record one short GIF from the storyboard in README / docs/gifs.
 3. Post the refreshed `SHOW_HN.md` on a weekday morning US time.
 4. Cross-post r/LocalLLaMA, r/MachineLearning, Indie Hackers, and relevant Discords with the same facts.
 5. Answer every issue and PR within 24h.
-6. Ship incremental useful features (better routing, more offline tools, PyPI packaging, Windows/macOS install polish).
+6. Ship incremental useful features (PyPI packaging, better routing, Windows/macOS polish, more offline tools).
 7. Document real user stories and performance numbers.
 
 Target of 10k stars in 3 months is ambitious but possible only through genuine utility + consistent public building. No shortcuts.

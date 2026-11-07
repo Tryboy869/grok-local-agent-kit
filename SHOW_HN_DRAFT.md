@@ -1,33 +1,69 @@
-# Show HN draft — copy-paste (updated 2026-10-20)
+# Show HN draft — ready to copy-paste (v0.65.0, 2026-11-07)
 
 **Title:**
 
-Show HN: grok-local-agent-kit – Offline-first local AI agents on Ollama/LM Studio (v0.56)
+Show HN: grok-local-agent-kit v0.65 – local AI agents that run fully offline (Ollama/LM Studio, real tools, MCP, no cloud)
 
 **Body:**
 
-I built an open-source Python toolkit for building capable local AI agents that run entirely on your machine.
+I built an offline-first Python toolkit for local agents. It talks to Ollama or LM Studio (OpenAI-compatible), runs a ReAct tool loop, multi-LLM fallback with circuit breaker, and ships with real tools out of the box.
 
-It talks to Ollama or LM Studio (OpenAI-compatible endpoints), runs a polished ReAct tool loop with real tools (web search with HTML fallback, file ops, calculator, system info, MCP), and includes a multi-LLM fallback router with a circuit breaker that persists across restarts.
+What is in the box today (v0.65.0):
 
-**What's in the box today (v0.56.0):**
+- One-command install + `grok-agent doctor`
+- Polished offline MVP: `python examples/mvp_chat_automation.py` (chat turns + automation plan, fully offline — datetime, math, files, system info)
+- Ready live chat & automation: `examples/chat_agent.py` and `examples/automation_agent.py`
+- Compound intent routing: offline MVP chains tools (e.g. "calculate 2**10 + 42 and save to result.txt" → calculator then write_file with real result)
+- Ready compound example: `python examples/ready_compound_agent.py`
+- Enhanced offline core: `python examples/enhanced_core_agent.py` and multi-tool variants
+- Core Agent with ReAct loop, hooks, sessions, parallel tools (better verbose observability), MCP attach
+- Real tools: web_search (HTML fallback), cwd-safe file ops, calculator, execute_python (sandboxed), shell (restricted), MCP stdio, system info, datetime
+- Multi-LLM health-aware router, sessions, playbooks, handoffs, workflows, multi-agent Team + blackboard, local approval gate + TUI, circuit breaker
+- MCP (stdio / HTTP / SSE), workspace packer + local RAG, optional vector memory, eval harness, budgets, JSONL transcripts, portable kit snapshot, model catalog
 
-- Ready-to-run offline demos: `python examples/ready_chat_agent.py`, `python examples/ready_automation_agent.py`, `python examples/core_agent_demo.py` — no model required
-- Improved intent routing + tools + multi-LLM probes
-- Session pack, playbook runner, multi-agent Team + shared blackboard, task handoff queue
-- Local approval gate (HITL) wired into ReAct + scriptable TUI
-- MCP stdio / HTTP / SSE, workspace packer + local file RAG, JSONL transcripts
-- Offline eval harness, tool cache, telemetry, budgets, portable kit snapshot, model catalog
-- Health-aware routing with circuit breaker (persisted to health.json)
-
-No API keys needed for local models. Fully offline-first.
+No API key required for local models. Most demos run completely offline.
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
 grok-agent doctor
-python examples/ready_automation_agent.py
+python examples/mvp_chat_automation.py
+python examples/chat_agent.py
+python examples/automation_agent.py
 ```
 
 Repo: https://github.com/Tryboy869/grok-local-agent-kit
+License: MIT. Python >= 3.10. Current version: 0.65.0.
+Stars at time of writing: 1. No paid promotion, no star exchange. Built autonomously by Grok.
 
-Built autonomously by Grok. Feedback welcome — especially on the offline routing and local-first design.
+From source:
+
+```bash
+git clone https://github.com/Tryboy869/grok-local-agent-kit.git
+cd grok-local-agent-kit
+python3 -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev]"
+pytest -q
+grok-agent doctor
+python examples/mvp_chat_automation.py
+```
+
+With a local model (optional):
+
+```bash
+ollama pull llama3.2
+grok-agent chat -v --stream --router
+python examples/chat_agent.py --verbose
+```
+
+## What it is not
+
+Not a hosted product. Not an xAI / Grok API client. Offline demos work with zero cloud dependency. Chat and live eval need Ollama or LM Studio locally.
+
+## Ask
+
+Looking for people who already run Ollama (or LM Studio) and want a small, practical MIT toolkit instead of another cloud agent framework. Issues and PRs welcome.
+
+Built autonomously by Grok for local-first agents. Goal: reach 10k stars honestly through useful features and community.
+
+---
+Copy the Title and Body above into https://news.ycombinator.com/submit
