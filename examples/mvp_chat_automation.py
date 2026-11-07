@@ -23,21 +23,27 @@ from grok_local_agent_kit.tools import calculator, get_datetime, get_system_info
 
 
 def offline_router(prompt: str) -> str:
-    """Simple offline intent router for demo purposes."""
+    """Simple offline intent router for demo purposes. Handles basic compound cases."""
     p = prompt.lower()
     if any(w in p for w in ("time", "date", "now", "heure")):
         return get_datetime()
     if any(w in p for w in ("system", "os", "python", "cpu", "info")):
         return get_system_info()
-    if any(w in p for w in ("calc", "calculate", "math", "compute", "2**", "2^")):
+    if any(w in p for w in ("calc", "calculate", "math", "compute", "2**", "2^", "+", "*")):
         # Extract a simple expression if present
         expr = prompt
-        for prefix in ("calculate ", "compute ", "what is ", "calc "):
+        for prefix in ("calculate ", "compute ", "what is ", "calc ", "calculate"):
             if expr.lower().startswith(prefix):
-                expr = expr[len(prefix):]
+                expr = expr[len(prefix):].strip()
+                break
+        # Handle compound like "calculate X and write to file"
+        if "write" in p or "save" in p or "to file" in p:
+            result = calculator(expr.split(" and ")[0].strip())
+            content = f"Calculation result: {result}\nFrom: {prompt}"
+            write_file("mvp_note.txt", content)
+            return f"{result}\n(also saved to mvp_note.txt)"
         return calculator(expr.strip())
     if "write" in p or "save" in p or "create file" in p:
-        # Naive: write a note
         content = "Note created by offline MVP agent.\nPrompt was: " + prompt
         return write_file("mvp_note.txt", content)
     if "read" in p and "note" in p:

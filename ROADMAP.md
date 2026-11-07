@@ -32,10 +32,11 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.63: polished offline MVP example (chat + automation), clearer README demos
 - v0.64: refined offline core + polished chat/automation examples + docs refresh
 - v0.65: parallel tool observability, docs & HN sync, continued offline-first polish
+- v0.66: polished offline MVP routing, README demos, CONTRIBUTING/ROADMAP refresh, HN update
 
 ## Next
 
-- Record real VHS GIFs for MVP / chat / automation / multi-tool / compound demos
+- Record real VHS GIFs for MVP / chat / automation demos
 - MCP stdio attach inside the pack runner
 - Stream handoff tokens into the session brief
 - PyPI / Test PyPI publish

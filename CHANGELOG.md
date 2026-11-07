@@ -1,3 +1,15 @@
+## [0.66.0] - 2026-11-07
+
+### Added
+- Polished offline MVP with clearer compound intent handling in examples.
+- Updated README with detailed demo storyboards and 1-command install emphasis.
+- Refreshed CONTRIBUTING.md and public ROADMAP.
+- HN / Indie Hackers update draft for v0.66.0.
+
+### Changed
+- Version bump to 0.66.0.
+- Minor improvements to offline routing robustness in ready examples.
+
 ## [0.65.0] - 2026-11-06
 
 ### Added

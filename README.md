@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/badge/version-0.65.0-brightgreen.svg)](https://github.com/Tryboy869/grok-local-agent-kit/releases)
+[![Version](https://img.shields.io/badge/version-0.66.0-brightgreen.svg)](https://github.com/Tryboy869/grok-local-agent-kit/releases)
 
 **Open-source toolkit for building local AI agents.**
 Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router, MCP, offline-first tools (web search, cwd-safe file ops, calculator, etc.).
@@ -14,24 +14,24 @@ Built autonomously by Grok.
 > No cloud required.  
 > No API keys for local models.
 
-## Features (v0.65.0)
+## Features (v0.66.0)
 
-* **Core Agent** — ReAct-style tool loop, hooks, sessions, parallel tools, MCP attach, multi-LLM routing.
-* **Multi-LLM** — Ollama native + any OpenAI-compatible endpoint (LM Studio, vLLM…). Health-aware router with circuit breaker.
-* **Real tools** — web_search (with HTML fallback), http_get, cwd-safe file ops (list/read/write/search/delete…), calculator, execute_python (sandboxed), shell (restricted), MCP stdio, system info, datetime.
-* **Offline MVP** — intent routing + real tools so demos run without a model. Compound plans (math → file, etc.).
-* **Ready examples** — `python examples/mvp_chat_automation.py`, `examples/chat_agent.py`, `examples/automation_agent.py`, `ready_compound_agent.py`, `enhanced_core_agent.py`.
+* **Core Agent** — ReAct-style tool loop, hooks, sessions, parallel tools, MCP attach, multi-LLM routing with health-aware fallback.
+* **Multi-LLM** — Ollama native + any OpenAI-compatible endpoint (LM Studio, vLLM…). Circuit breaker + router.
+* **Real tools** — web_search (HTML fallback), http_get, cwd-safe file ops, calculator, sandboxed execute_python, restricted shell, MCP, system info, datetime.
+* **Offline MVP** — robust intent routing + real tools so demos run fully offline. Compound plans (math → write file, search + note).
+* **Ready examples** — `python examples/mvp_chat_automation.py` (offline chat + automation), `examples/chat_agent.py` (live interactive), `examples/automation_agent.py` (one-shot multi-tool).
 
-**GIF / Demo storyboard (describe & record with VHS):**  
+**GIF / Demo storyboard (record with VHS; see docs/gifs/):**  
 Terminal: `python examples/mvp_chat_automation.py`  
-1. Prints “=== grok-local-agent-kit MVP (offline) ===”.  
-2. Chat turns: time → datetime, math → calculator result (2**10 + 42), system info, write note, read note.  
-3. Shows registered tools list.  
-4. Automation plan steps execute and print short results.  
-5. Ends with “Done. For live LLM…”.  
-Fully offline. Source storyboards live in `docs/gifs/`.
+1. Banner “=== grok-local-agent-kit MVP (offline) ===”.  
+2. Chat turns: datetime, calculator (2**10 + 42 → 1066), system info, write note, read note.  
+3. Lists registered tools.  
+4. Runs automation plan steps with short results.  
+5. “Done. For live LLM start Ollama/LM Studio…”.  
+Fully offline, zero cloud.  
 
-For live: `python examples/chat_agent.py` (interactive) and `python examples/automation_agent.py` (one-shot multi-tool).
+Live demos: `python examples/chat_agent.py --verbose --stream` and `python examples/automation_agent.py`.
 
 ## Quick start (1 command)
 
