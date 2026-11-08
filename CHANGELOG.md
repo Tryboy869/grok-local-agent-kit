@@ -1,3 +1,17 @@
+## [0.67.0] - 2026-11-08
+
+### Added
+- Enhanced multi-LLM router with clearer health-aware fallback messaging for Ollama and LM Studio.
+- Improved offline compound intent routing in MVP examples (better math→file and search+note chaining).
+- Polished README with expanded GIF/demo storyboards and stronger 1-command install guidance.
+- Updated CONTRIBUTING.md guidelines and public ROADMAP for next milestones.
+- Fresh HN / Indie Hackers update draft for v0.67.0.
+
+### Changed
+- Version bump to 0.67.0.
+- Minor robustness improvements in tool error handling and offline agent demos.
+- STATUS and docs synced to current release.
+
 ## [0.66.0] - 2026-11-07
 
 ### Added

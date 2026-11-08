@@ -1,8 +1,8 @@
 # Status
 
-Current release line: **v0.65.0** (parallel tool observability + polished offline MVP).
+Current release line: **v0.67.0** (enhanced multi-LLM fallback + refined offline routing (v0.67.0)).
 
-## Audit 2026-11-07
+## Audit 2026-11-08
 
 | Signal | Value |
 |--------|-------|
@@ -14,7 +14,7 @@ Current release line: **v0.65.0** (parallel tool observability + polished offlin
 | Stars | 1 |
 | Forks | 0 |
 | Open issues | 2 |
-| Package version | 0.65.0 |
+| Package version | 0.67.0 |
 | CLI | `grok-agent` |
 | Feature | Offline-first ReAct agents, MCP, multi-LLM router, compound intent routing, real tools (files, math, web, shell restricted), ready examples |
 

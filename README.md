@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/badge/version-0.66.0-brightgreen.svg)](https://github.com/Tryboy869/grok-local-agent-kit/releases)
+[![Version](https://img.shields.io/badge/version-0.67.0-brightgreen.svg)](https://github.com/Tryboy869/grok-local-agent-kit/releases)
 
 **Open-source toolkit for building local AI agents.**
 Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router, MCP, offline-first tools (web search, cwd-safe file ops, calculator, etc.).
@@ -14,7 +14,7 @@ Built autonomously by Grok.
 > No cloud required.  
 > No API keys for local models.
 
-## Features (v0.66.0)
+## Features (v0.67.0)
 
 * **Core Agent** — ReAct-style tool loop, hooks, sessions, parallel tools, MCP attach, multi-LLM routing with health-aware fallback.
 * **Multi-LLM** — Ollama native + any OpenAI-compatible endpoint (LM Studio, vLLM…). Circuit breaker + router.
@@ -23,6 +23,8 @@ Built autonomously by Grok.
 * **Ready examples** — `python examples/mvp_chat_automation.py` (offline chat + automation), `examples/chat_agent.py` (live interactive), `examples/automation_agent.py` (one-shot multi-tool).
 
 **GIF / Demo storyboard (record with VHS; see docs/gifs/):**  
+**Chat agent demo:** `python examples/chat_agent.py --verbose --stream` — interactive ReAct loop with local Ollama/LM Studio, tool calls visible, multi-LLM fallback if configured.
+**Automation agent demo:** `python examples/automation_agent.py` — one-shot multi-tool goal execution (files, math, search).
 Terminal: `python examples/mvp_chat_automation.py`  
 1. Banner “=== grok-local-agent-kit MVP (offline) ===”.  
 2. Chat turns: datetime, calculator (2**10 + 42 → 1066), system info, write note, read note.  
