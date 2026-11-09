@@ -1,8 +1,8 @@
 # Status
 
-Current release line: **v0.67.0** (enhanced multi-LLM fallback + refined offline routing (v0.67.0)).
+Current release line: **v0.67.0** (enhanced multi-LLM fallback + refined offline routing).
 
-## Audit 2026-11-08
+## Audit 2026-11-09
 
 | Signal | Value |
 |--------|-------|
@@ -16,6 +16,7 @@ Current release line: **v0.67.0** (enhanced multi-LLM fallback + refined offline
 | Open issues | 2 |
 | Package version | 0.67.0 |
 | CLI | `grok-agent` |
+| Latest commit | feat: v0.67.0 — enhanced multi-LLM fallback messaging... (2026-11-08) |
 | Feature | Offline-first ReAct agents, MCP, multi-LLM router, compound intent routing, real tools (files, math, web, shell restricted), ready examples |
 
 Bootstrap not required. The kit already has a full CLI, examples, tests, CONTRIBUTING, ROADMAP, CI, and docs. This is the main repo.
@@ -33,3 +34,5 @@ Honest growth path (no fake stars, no bought engagement, no star farming):
 Target of 10k stars in 3 months is ambitious but possible only through genuine utility + consistent public building. No shortcuts.
 
 Live mode needs a local daemon you already run. Storyboard GIFs are described in `docs/gifs/`, not binary assets yet.
+
+**Next recommended action**: Record a 30-60s GIF of `python examples/mvp_chat_automation.py` + live chat, then post Show HN.
