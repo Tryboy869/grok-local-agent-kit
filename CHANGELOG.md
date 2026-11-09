@@ -1,3 +1,17 @@
+## [0.68.0] - 2026-11-09
+
+### Added
+- Stronger offline compound intent routing in MVP example (multi-step plans, math→file, list files).
+- Expanded ready-to-run offline demos that work without any local LLM.
+- Clearer demo storyboards in README (describe terminal flows for VHS recording).
+- Updated CONTRIBUTING.md and public ROADMAP for v0.68.
+- Fresh HN / Indie Hackers update draft.
+
+### Changed
+- Version bump to 0.68.0.
+- Minor robustness improvements in offline agent examples.
+- Docs synced to current release.
+
 ## [0.67.0] - 2026-11-08
 
 ### Added
