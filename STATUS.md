@@ -1,8 +1,8 @@
 # Status
 
-Current release line: **v0.68.0** (stronger offline compound routing + ready demos).
+Current release line: **v0.69.0** (stronger offline compound routing + ready demos).
 
-## Audit 2026-11-09
+## Audit 2026-11-10
 
 | Signal | Value |
 |--------|-------|
@@ -16,7 +16,7 @@ Current release line: **v0.68.0** (stronger offline compound routing + ready dem
 | Open issues | 2 |
 | Package version | 0.68.0 |
 | CLI | `grok-agent` |
-| Latest commit | feat: v0.68.0 — stronger offline compound routing... (2026-11-09) |
+| Latest commit | feat: v0.69.0 — stronger offline compound routing... (2026-11-10) |
 | Feature | Offline-first ReAct agents, MCP, multi-LLM router, compound intent routing, real tools (files, math, web, shell restricted), ready examples |
 
 Bootstrap not required. The kit already has a full CLI, examples, tests, CONTRIBUTING, ROADMAP, CI, and docs. This is the main repo.

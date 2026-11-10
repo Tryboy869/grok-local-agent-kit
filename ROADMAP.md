@@ -35,8 +35,12 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.66: polished offline MVP routing, README demos, CONTRIBUTING/ROADMAP refresh, HN update
 - v0.67: enhanced multi-LLM health messaging, refined offline compound routing, polished docs & HN update
 - v0.68: stronger offline compound routing (multi-step plans), expanded ready demos, docs & HN update
+- v0.69: enhanced offline multi-step compound routing + new ready_compound_agent example + docs & HN update
 
 ## Next
+
+- Record real VHS GIFs for MVP / chat / automation / compound demos
+- MCP stdio attach inside the pack runner
 
 - Record real VHS GIFs for MVP / chat / automation demos
 - MCP stdio attach inside the pack runner

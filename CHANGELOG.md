@@ -1,3 +1,16 @@
+## [0.69.0] - 2026-11-10
+
+### Added
+- Enhanced offline ScriptedLLM with multi-step compound routing (math→write, datetime, system info, calculator).
+- New ready-to-run example: `examples/ready_compound_agent.py` (fully offline multi-step plans).
+- Clearer demo storyboards in README for chat, automation, and compound offline flows.
+- Updated CONTRIBUTING.md and public ROADMAP for v0.69.
+
+### Changed
+- Version bump to 0.69.0.
+- Offline demo now exercises compound plans end-to-end.
+- Docs and STATUS synced.
+
 ## [0.68.0] - 2026-11-09
 
 ### Added

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Ready compound agent demo (v0.62).
+"""
+Ready-to-run offline compound agent.
 
-Demonstrates improved offline routing that chains tools:
-calculate a value then save the result to a file — fully offline.
-Also shows read-back and multi-LLM probes.
+Demonstrates multi-step plans (math → write file, datetime + system info)
+using the real Agent tool loop and ScriptedLLM. No local model required.
 
 Usage:
   python examples/ready_compound_agent.py
@@ -13,50 +13,34 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from grok_local_agent_kit import __version__
-from grok_local_agent_kit.mvp import probe_providers, run_mvp
+from grok_local_agent_kit.offline import run_offline
 
 
 def main() -> None:
-    print(f"⚡ grok-local-agent-kit Ready Compound Agent (v{__version__})")
-    print("Math → file write chaining + read-back. Fully offline.\n")
+    print("=== grok-local-agent-kit ready compound agent (offline) ===\n")
+    root = Path("./_offline_workspace")
+    root.mkdir(exist_ok=True)
+    (root / "seed.txt").write_text("seed content\n", encoding="utf-8")
 
-    workspace = Path(".grok/compound-demo")
-    workspace.mkdir(parents=True, exist_ok=True)
-
-    print("=== Multi-LLM provider probes ===")
-    probes = probe_providers()
-    for name, info in probes.items():
-        print(f"  {name}: {info.get('status', 'unknown')}")
-    print()
-
-    goals = [
-        "what time is it?",
-        "calculate 2**10 + 42 and save to result.txt",
-        "read result.txt",
+    prompts = [
+        "list files",
+        "what is the current datetime?",
         "get system info",
-        "write a summary note that the compound agent succeeded",
+        "calculate 2**10 + 42 and write the result to result.txt",
+        "write a short note about local agents",
     ]
 
-    for goal in goals:
-        print(f"Goal: {goal}")
-        result = run_mvp(
-            goal,
-            workspace,
-            search=lambda q: f"[fixture] results for '{q}'",
-        )
-        intent = result.get("intent", "?")
-        ok = result.get("ok", False)
-        steps = len(result.get("steps") or [])
-        answer = str(result.get("answer", "")).splitlines()[0][:120]
-        print(f"  → intent={intent} steps={steps} ok={ok}")
-        print(f"  → {answer}")
+    for i, prompt in enumerate(prompts, 1):
+        print(f"--- Step {i}: {prompt} ---")
+        result = run_offline(prompt, root, note_name=f"note-{i}.txt")
+        print(result.strip()[:600])
         print()
 
-    print("✅ Compound agent demo complete.")
-    print("Check artifacts in:", workspace.resolve())
-    print("  - result.txt should contain the computed value")
-    print("Next: attach Ollama/LM Studio for full ReAct, or try enhanced_core_agent.py")
+    print("Done. Workspace files:")
+    for p in sorted(root.glob("*")):
+        if p.is_file():
+            print(f"  {p.name} ({p.stat().st_size} B)")
+    print("\nFully offline. Start Ollama or LM Studio for live ReAct chat.")
 
 
 if __name__ == "__main__":

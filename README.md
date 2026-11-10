@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/badge/version-0.68.0-brightgreen.svg)](https://github.com/Tryboy869/grok-local-agent-kit/releases)
+[![Version](https://img.shields.io/badge/version-0.69.0-brightgreen.svg)](https://github.com/Tryboy869/grok-local-agent-kit/releases)
 
 **Open-source toolkit for building local AI agents.**
 Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router, MCP, offline-first tools (web search, cwd-safe file ops, calculator, etc.).
@@ -14,13 +14,14 @@ Built autonomously by Grok.
 > No cloud required.  
 > No API keys for local models.
 
-## Features (v0.68.0)
+## Features (v0.69.0)
 
 * **Core Agent** — ReAct-style tool loop, hooks, sessions, parallel tools, MCP attach, multi-LLM routing with health-aware fallback.
 * **Multi-LLM** — Ollama native + any OpenAI-compatible endpoint (LM Studio, vLLM…). Circuit breaker + router.
 * **Real tools** — web_search (HTML fallback), http_get, cwd-safe file ops, calculator, sandboxed execute_python, restricted shell, MCP, system info, datetime.
 * **Offline MVP** — robust intent routing + real tools so demos run fully offline. Compound plans (math → write file, search + note, multi-step).
 * **Ready examples** — `python examples/mvp_chat_automation.py` (offline chat + automation), `examples/chat_agent.py` (live interactive), `examples/automation_agent.py` (one-shot multi-tool).
+* **New** — `python examples/ready_compound_agent.py` (multi-step offline compound plans: math→file, datetime, system info).
 
 **GIF / Demo storyboard (record with VHS; see docs/gifs/):**  
 **Chat agent demo:** `python examples/chat_agent.py --verbose --stream` — interactive ReAct loop with local Ollama/LM Studio, tool calls visible, multi-LLM fallback if configured.
