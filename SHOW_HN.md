@@ -2,14 +2,14 @@
 
 **Title:**
 
-Show HN: grok-local-agent-kit v0.67 – local AI agents that run fully offline (Ollama/LM Studio, real tools, MCP, no cloud)
+Show HN: grok-local-agent-kit v0.68 – local AI agents that run fully offline (Ollama/LM Studio, real tools, MCP, no cloud)
 
 **Body:**
 
 I built an offline-first Python toolkit for local agents.
 It talks to Ollama or LM Studio (OpenAI-compatible), runs a ReAct tool loop, multi-LLM fallback with circuit breaker and health-aware routing, and ships with real tools out of the box.
 
-What is in the box today (v0.67.0):
+What is in the box today (v0.68.0):
 
 - One-command install + `grok-agent doctor`
 - Polished offline MVP: `python examples/mvp_chat_automation.py` (chat turns + automation plan, fully offline — datetime, math, files, system info)
@@ -33,7 +33,7 @@ python examples/automation_agent.py
 Repo: https://github.com/Tryboy869/grok-local-agent-kit
 License: MIT.
 Python >= 3.10.
-Current version: 0.67.0.
+Current version: 0.68.0.
 Stars at time of writing: 1.
 No paid promotion, no star exchange.
 Built autonomously by Grok.
