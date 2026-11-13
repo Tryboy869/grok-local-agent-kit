@@ -16,7 +16,7 @@ pytest -q
 
 - Python 3.10+, no required cloud APIs.
 - New behavior needs tests that run **without a live LLM**.
-- Prefer offline-first demos (`examples/mvp_chat_automation.py`, `examples/ready_compound_agent.py`, `examples/enhanced_core_agent.py`, `examples/chat_agent.py`, `examples/automation_agent.py`) so newcomers can try the kit immediately.
+- Prefer offline-first demos (`examples/mvp_chat_automation.py`, `examples/ready_local_agent.py`, `examples/ready_compound_agent.py`, `examples/chat_agent.py`, `examples/automation_agent.py`) so newcomers can try the kit immediately.
 - Keep the public surface in `grok_local_agent_kit/__init__.py` intentional.
 - Prefer small modules over growing god-files.
 - File tools stay workspace-scoped. Do not weaken `_safe_path`.
@@ -35,7 +35,7 @@ See `CODE_OF_CONDUCT.md`. Security reports: `SECURITY.md`.
 
 ## MVP core
 
-New contributors (v0.70): start with `python examples/mvp_chat_automation.py` or the ready chat/automation examples.  
+New contributors (v0.71): start with `python examples/mvp_chat_automation.py` or `python examples/ready_local_agent.py`.  
 
 These exercise routing + tools without any local model. Try `examples/ready_compound_agent.py` for multi-step plans.
 Add tests that also run offline.

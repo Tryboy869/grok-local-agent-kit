@@ -37,10 +37,11 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.68: stronger offline compound routing (multi-step plans), expanded ready demos, docs & HN update
 - v0.69: enhanced offline multi-step compound routing + new ready_compound_agent example + docs & HN update
 - v0.70: refined multi-LLM routing visibility, polished ready examples, clearer demo storyboards, docs & HN update
+- v0.71: new ready_local_agent example (offline + optional live), improved demo storyboards, docs & HN update
 
 ## Next
 
-- Record real VHS GIFs for MVP / chat / automation / compound demos
+- Record real VHS GIFs for MVP / chat / automation / compound / ready_local demos
 - MCP stdio attach inside the pack runner
 - Stream handoff tokens into the session brief
 - PyPI / Test PyPI publish
