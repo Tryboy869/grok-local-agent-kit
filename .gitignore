@@ -34,3 +34,4 @@ hello_from_agent.py
 
 .grok/
 agent_history.json
+.ready_demo/

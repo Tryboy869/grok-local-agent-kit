@@ -100,7 +100,7 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
             # Note: the write happens after; content will be filled by caller if needed,
             # but for demo we write a placeholder that the runner can improve.
             # For simplicity we write a fixed message; real chaining is in the example.
-            {"tool": "write_file", "arguments": {"path": fname, "content": f"Computed: {expr}\n(result available in trace)\n"}},
+            {"tool": "write_file", "arguments": {"path": fname, "content": f"Computed expression: {expr}\n(see calculator result in previous step)\n"}},
         ]
 
     if intent == "math":

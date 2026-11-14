@@ -1,3 +1,16 @@
+## [0.72.0] - 2026-11-14
+
+### Added
+- Ready local agent demo now uses real offline MVP routing + tools (`run_mvp`) for authentic multi-step plans.
+- Improved compound math→file messaging in offline MVP.
+- Clearer demo storyboards and provider probe in ready example.
+- Updated CONTRIBUTING.md, public ROADMAP, STATUS, and fresh HN / Indie Hackers update draft.
+
+### Changed
+- Version bump to 0.72.0.
+- Offline demos now exercise the same tool path as the ReAct loop.
+- Docs synced.
+
 ## [0.71.0] - 2026-11-13
 
 ### Added

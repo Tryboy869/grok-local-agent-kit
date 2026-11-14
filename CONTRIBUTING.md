@@ -35,7 +35,7 @@ See `CODE_OF_CONDUCT.md`. Security reports: `SECURITY.md`.
 
 ## MVP core
 
-New contributors (v0.71): start with `python examples/mvp_chat_automation.py` or `python examples/ready_local_agent.py`.  
+New contributors (v0.72): start with `python examples/mvp_chat_automation.py` or `python examples/ready_local_agent.py`.  
 
 These exercise routing + tools without any local model. Try `examples/ready_compound_agent.py` for multi-step plans.
 Add tests that also run offline.

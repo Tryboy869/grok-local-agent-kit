@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Ready-to-run local agent demo (v0.71).
+Ready-to-run local agent demo (v0.72).
 
-Fully offline by default (uses scripted/intent routing for common tasks).
+Fully offline by default (uses scripted/intent routing + real tools).
 Optionally uses live Ollama / LM Studio if available via --live.
 
 Demonstrates:
@@ -14,31 +14,38 @@ Demonstrates:
 from __future__ import annotations
 
 import argparse
-import datetime
-import platform
-import sys
+import json
 from pathlib import Path
 
 from grok_local_agent_kit import create_agent, __version__
+from grok_local_agent_kit.mvp import run_mvp, probe_providers
 
 
 def offline_demo() -> None:
     print(f"=== grok-local-agent-kit Ready Local Agent (v{__version__}) ===\n")
     print("Mode: offline / scripted (no LLM required)\n")
 
-    # Simulate a few tool calls that the real agent would make
-    print("1. Datetime tool →", datetime.datetime.now().isoformat(timespec="seconds"))
-    print("2. Calculator → 2**10 + 42 =", 2**10 + 42)
-    print("3. System info →", platform.system(), platform.python_version(), Path.cwd())
-    print("4. List files →", [p.name for p in Path.cwd().iterdir() if not p.name.startswith(".")][:8])
-    note = Path("agent_note.txt")
-    note.write_text("Hello from ready local agent (offline MVP)\n", encoding="utf-8")
-    print("5. Wrote note →", note.read_text().strip())
-    print("\nCompound plan example (math → file):")
-    result = 144 ** 0.5 + 10
-    Path("math_result.txt").write_text(f"sqrt(144)+10 = {result}\n", encoding="utf-8")
-    print(f"   wrote math_result.txt with value {result}")
+    workspace = Path.cwd() / ".ready_demo"
+    workspace.mkdir(exist_ok=True)
+
+    goals = [
+        "What is the current time?",
+        "Calculate 2**10 + 42",
+        "Show system info",
+        "Write a note saying Hello from ready local agent (offline MVP) to agent_note.txt",
+        "Calculate sqrt(144) + 10 and save the result to math_result.txt",
+    ]
+
+    for i, goal in enumerate(goals, 1):
+        print(f"{i}. Goal: {goal}")
+        result = run_mvp(goal, workspace)
+        answer = result.get("answer", "")
+        print(f"   → {str(answer).strip()[:200]}\n")
+
+    print("Providers probe (non-blocking):")
+    print(json.dumps(probe_providers(), indent=2, default=str))
     print("\nDone. For live ReAct loop start Ollama or LM Studio and re-run with --live.\n")
+    print(f"Demo workspace: {workspace}")
 
 
 def main() -> None:

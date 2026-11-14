@@ -1,6 +1,6 @@
 # Status
 
-Current release line: **v0.70.0** (refined multi-LLM routing visibility + polished ready demos).
+Current release line: **v0.72.0** (refined multi-LLM routing visibility + polished ready demos).
 
 ## Audit 2026-11-11
 
@@ -14,9 +14,9 @@ Current release line: **v0.70.0** (refined multi-LLM routing visibility + polish
 | Stars | 1 |
 | Forks | 0 |
 | Open issues | 2 |
-| Package version | 0.70.0 |
+| Package version | 0.72.0 |
 | CLI | `grok-agent` |
-| Latest commit | feat: v0.70.0 — refined multi-LLM routing visibility... (2026-11-11) |
+| Latest commit | feat: v0.72.0 — refined multi-LLM routing visibility... (2026-11-11) |
 | Feature | Offline-first ReAct agents, MCP, multi-LLM router, compound intent routing, real tools (files, math, web, shell restricted), ready examples |
 
 Bootstrap not required. The kit already has a full CLI, examples, tests, CONTRIBUTING, ROADMAP, CI, and docs. This is the main repo.
