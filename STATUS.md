@@ -1,8 +1,8 @@
 # Status
 
-Current release line: **v0.72.0** (refined multi-LLM routing visibility + polished ready demos).
+Current release line: **v0.73.0** (offline code intent + sandboxed execute_python in MVP, new ready demo).
 
-## Audit 2026-11-11
+## Audit 2026-11-15
 
 | Signal | Value |
 |--------|-------|
@@ -14,25 +14,7 @@ Current release line: **v0.72.0** (refined multi-LLM routing visibility + polish
 | Stars | 1 |
 | Forks | 0 |
 | Open issues | 2 |
-| Package version | 0.72.0 |
+| Package version | 0.73.0 |
 | CLI | `grok-agent` |
-| Latest commit | feat: v0.72.0 — refined multi-LLM routing visibility... (2026-11-11) |
-| Feature | Offline-first ReAct agents, MCP, multi-LLM router, compound intent routing, real tools (files, math, web, shell restricted), ready examples |
-
-Bootstrap not required. The kit already has a full CLI, examples, tests, CONTRIBUTING, ROADMAP, CI, and docs. This is the main repo.
-
-Honest growth path (no fake stars, no bought engagement, no star farming):
-
-1. Publish to Test PyPI then PyPI (`grok-local-agent-kit`).
-2. Record one short GIF from the storyboard in README / docs/gifs.
-3. Post the refreshed `SHOW_HN.md` on a weekday morning US time.
-4. Cross-post r/LocalLLaMA, r/MachineLearning, Indie Hackers, and relevant Discords with the same facts.
-5. Answer every issue and PR within 24h.
-6. Ship incremental useful features (PyPI packaging, better routing, Windows/macOS polish, more offline tools).
-7. Document real user stories and performance numbers.
-
-Target of 10k stars in 3 months is ambitious but possible only through genuine utility + consistent public building. No shortcuts.
-
-Live mode needs a local daemon you already run. Storyboard GIFs are described in `docs/gifs/`, not binary assets yet.
-
-**Next recommended action**: Record a 30-60s GIF of `python examples/mvp_chat_automation.py` + live chat, then post Show HN.
+| Latest commit | feat: v0.73.0 — offline code intent + sandboxed execute_python (2026-11-15) |
+| Feature | Offline-first ReAct agents, MCP, multi-LLM router, compound intent routing, real tools (files, math, web, shell restricted, sandboxed Python), ready examples |
