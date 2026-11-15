@@ -23,12 +23,7 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.36: circuit breaker health board
 - v0.37: HealthBoard wired into MultiLLMRouter
 - v0.38: persist routed health
-- v0.39: portable kit snapshot
-- v0.40: local model catalog
-- v0.41: catalog.pick into router defaults
-- v0.42: offline scripted agent loop
-- v0.43: declarative workflow runner
-- v0.58–v0.62: enhanced core, refined math routing, compound intent routing + ready examples
+- v0.39: polished offline MVP routing + ready examples
 - v0.63: polished offline MVP example (chat + automation), clearer README demos
 - v0.64: refined offline core + polished chat/automation examples + docs refresh
 - v0.65: parallel tool observability, docs & HN sync, continued offline-first polish
@@ -39,6 +34,7 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.70: refined multi-LLM routing visibility, polished ready examples, clearer demo storyboards, docs & HN update
 - v0.71: new ready_local_agent example (offline + optional live), improved demo storyboards, docs & HN update
 - v0.72: ready_local_agent uses real offline MVP routing + tools, improved compound messaging, docs & HN update
+- v0.73: offline “code” intent + sandboxed execute_python in MVP, new ready_local_agent_v073 demo, docs & HN update
 
 ## Next
 
@@ -49,3 +45,4 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - Stronger plugin isolation and optional interactive TUI
 - Community recipes and skill packs
 - Better multi-step chaining and natural-language plan extraction in the offline core
+- Optional interactive code REPL in offline mode

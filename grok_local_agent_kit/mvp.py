@@ -5,6 +5,7 @@ builds a tool plan, and executes it through the same tool registry the ReAct
 loop uses. `probe_providers` reports whether local backends are up without
 failing the demo when they are not.
 
+v0.73: added offline "code" intent that routes to sandboxed execute_python.
 v0.62: improved compound intent detection (math + save to file).
 """
 
@@ -47,6 +48,9 @@ def route_intent(prompt: str) -> str:
     math_kw = ("calcul", "sqrt", "compute", "somme", "sum of", "plus", "minus", "times", "multiply", "evaluate", "math")
     if any(k in text for k in math_kw) or re.search(r"\b\d+\s*[+\-*/^]\s*\d+", text) or re.search(r"sqrt\s*\(", text) or "**" in text:
         return "math"
+    # Code / Python execution (offline sandboxed)
+    if any(k in text for k in ("python", "code", "execute code", "run code", "script", "print(", "def ", "import ")):
+        return "code"
     if any(k in text for k in ("date", "time", "datetime", "heure", "aujourd'hui", "today", "clock", "what time")):
         return "datetime"
     if any(k in text for k in ("system", "os ", "python version", "cpu", "memory", "hostname", "sysinfo")):
@@ -126,6 +130,18 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
             expr = cleaned or prompt
         return [{"tool": "calculator", "arguments": {"expression": expr}}]
 
+    if intent == "code":
+        # Extract or generate a simple safe Python snippet
+        code = "print(2**10 + 42)"
+        if "print(" in text or "def " in text or "import " in text:
+            # Try to pull a snippet if present
+            m = re.search(r"(print\([^)]+\)|def\s+\w+|import\s+\w+)", prompt)
+            if m:
+                code = m.group(1)
+            else:
+                code = prompt.strip()[:200]
+        return [{"tool": "execute_python", "arguments": {"code": code, "timeout": 5}}]
+
     if intent == "datetime":
         return [{"tool": "get_datetime", "arguments": {}}]
     if intent == "system":
@@ -153,41 +169,27 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
     ]
 
 
-def _mcp_echo(name: str, arguments: Optional[Dict[str, Any]] = None) -> str:
-    payload = {"server": "echo", "tool": name, "arguments": arguments or {}}
-    return json.dumps(payload, ensure_ascii=False)
-
-
-def _registry(search: Optional[SearchFn]) -> Dict[str, Callable[..., str]]:
-    _specs, funcs = get_default_tools()
-    if search is not None:
-        funcs["web_search"] = lambda query, max_results=5: search(query)
-    funcs["mcp_echo"] = _mcp_echo
-    return funcs
-
-
 def run_mvp(
     prompt: str,
     workspace: Path,
+    *,
     search: Optional[SearchFn] = None,
+    registry: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
-    """Route a prompt and execute the plan inside `workspace`.
-
-    For compound math+save, the second step uses the actual calculator result.
-    """
+    """Execute a deterministic offline plan and return a structured result."""
     workspace = Path(workspace)
     workspace.mkdir(parents=True, exist_ok=True)
-    intent = route_intent(prompt)
-    steps = plan_for(prompt)
-    registry = _registry(search)
-    trace: List[Dict[str, Any]] = []
     cwd = Path.cwd()
     try:
         import os
 
         os.chdir(workspace)
+        registry = registry or get_default_tools()
+        intent = route_intent(prompt)
+        steps = plan_for(prompt)
+        trace = []
         calc_result = None
-        for i, step in enumerate(steps):
+        for step in steps:
             name = step["tool"]
             args = dict(step.get("arguments") or {})
             # Special: if this is a write after calculator in compound, inject result
