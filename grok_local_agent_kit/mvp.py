@@ -5,6 +5,7 @@ builds a tool plan, and executes it through the same tool registry the ReAct
 loop uses. `probe_providers` reports whether local backends are up without
 failing the demo when they are not.
 
+v0.74: compound code→file (execute_python result injected into write_file).
 v0.73: added offline "code" intent that routes to sandboxed execute_python.
 v0.62: improved compound intent detection (math + save to file).
 """
@@ -67,7 +68,7 @@ def route_intent(prompt: str) -> str:
 def plan_for(prompt: str) -> List[Dict[str, Any]]:
     """Deterministic tool plan for the MVP loop.
 
-    Supports simple compound goals like "calculate X and save to file".
+    Supports simple compound goals like "calculate X and save to file" or "run code and save result".
     """
     text = (prompt or "").lower()
     intent = route_intent(prompt)
@@ -76,6 +77,12 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
     compound_math_save = (
         intent == "math"
         and any(k in text for k in ("save", "write", "save to", "write to", "and save", "then write", "store in"))
+    )
+
+    # Compound: code + write/save
+    compound_code_save = (
+        intent == "code"
+        and any(k in text for k in ("save", "write", "save to", "write to", "and save", "then write", "store in", "save result", "write result"))
     )
 
     if compound_math_save:
@@ -101,10 +108,24 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
             fname = fm.group(1)
         return [
             {"tool": "calculator", "arguments": {"expression": expr}},
-            # Note: the write happens after; content will be filled by caller if needed,
-            # but for demo we write a placeholder that the runner can improve.
-            # For simplicity we write a fixed message; real chaining is in the example.
             {"tool": "write_file", "arguments": {"path": fname, "content": f"Computed expression: {expr}\n(see calculator result in previous step)\n"}},
+        ]
+
+    if compound_code_save:
+        code = "print(sum(range(1, 11)))"
+        if "print(" in text or "def " in text or "import " in text:
+            m = re.search(r"(print\([^)]+\)|def\s+\w+|import\s+\w+)", prompt)
+            if m:
+                code = m.group(1)
+            else:
+                code = prompt.strip()[:200]
+        fname = "code_result.txt"
+        fm = re.search(r"(?:to|in|as)\s+([a-zA-Z0-9_.-]+\.(?:txt|md|py))", text)
+        if fm:
+            fname = fm.group(1)
+        return [
+            {"tool": "execute_python", "arguments": {"code": code, "timeout": 5}},
+            {"tool": "write_file", "arguments": {"path": fname, "content": "(code result will be injected)\n"}},
         ]
 
     if intent == "math":
@@ -188,17 +209,18 @@ def run_mvp(
         intent = route_intent(prompt)
         steps = plan_for(prompt)
         trace = []
-        calc_result = None
+        last_result = None
         for step in steps:
             name = step["tool"]
             args = dict(step.get("arguments") or {})
-            # Special: if this is a write after calculator in compound, inject result
-            if name == "write_file" and calc_result is not None and "result available" in str(args.get("content", "")):
-                args["content"] = f"Computed result: {calc_result}\nExpression was evaluated offline.\n"
+            # Inject previous tool result into write_file when placeholder present
+            if name == "write_file" and last_result is not None:
+                content = str(args.get("content", ""))
+                if "(code result will be injected)" in content or "see calculator result" in content or "result available" in content:
+                    args["content"] = f"Result from previous step:\n{last_result}\n\n---\nGenerated offline by grok-local-agent-kit MVP.\n"
             output = execute_tool(name, args, registry)
             trace.append({"tool": name, "arguments": args, "output": output})
-            if name == "calculator":
-                calc_result = output
+            last_result = output
     finally:
         os.chdir(cwd)
     answer = trace[-1]["output"] if trace else ""

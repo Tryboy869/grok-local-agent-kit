@@ -1,3 +1,16 @@
+## [0.74.0] - 2026-11-16
+
+### Added
+- Offline MVP now supports compound “code → file” goals: sandboxed `execute_python` result is automatically injected into a subsequent `write_file`.
+- New ready-to-run example `examples/ready_local_agent_v074.py` demonstrating datetime, math, code, **code→file**, system info, and compound plans — fully offline.
+- Clearer demo storyboards mentioning code-to-file chaining.
+- Updated CONTRIBUTING.md, public ROADMAP, STATUS, and fresh HN / Indie Hackers update draft.
+
+### Changed
+- Version bump to 0.74.0.
+- Offline demos now exercise real result injection for multi-step plans.
+- Docs synced.
+
 ## [0.73.0] - 2026-11-15
 
 ### Added
@@ -9,17 +22,4 @@
 ### Changed
 - Version bump to 0.73.0.
 - Offline demos now exercise code execution path used by the ReAct loop.
-- Docs synced.
-
-## [0.72.0] - 2026-11-14
-
-### Added
-- Ready local agent demo now uses real offline MVP routing + tools (`run_mvp`) for authentic multi-step plans.
-- Improved compound math→file messaging in offline MVP.
-- Clearer demo storyboards and provider probe in ready example.
-- Updated CONTRIBUTING.md, public ROADMAP, STATUS, and fresh HN / Indie Hackers update draft.
-
-### Changed
-- Version bump to 0.72.0.
-- Offline demos now exercise the same tool path as the ReAct loop.
 - Docs synced.

@@ -35,6 +35,7 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.71: new ready_local_agent example (offline + optional live), improved demo storyboards, docs & HN update
 - v0.72: ready_local_agent uses real offline MVP routing + tools, improved compound messaging, docs & HN update
 - v0.73: offline “code” intent + sandboxed execute_python in MVP, new ready_local_agent_v073 demo, docs & HN update
+- v0.74: offline compound code→file (result injection), new ready_local_agent_v074 demo, docs & HN update
 
 ## Next
 
