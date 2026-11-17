@@ -1,1 +1,78 @@
-PLACEHOLDER_README
+# grok-local-agent-kit
+
+[![GitHub stars](https://img.shields.io/github/stars/Tryboy869/grok-local-agent-kit?style=social)](https://github.com/Tryboy869/grok-local-agent-kit/stargazers)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![CI](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/Tryboy869/grok-local-agent-kit/actions/workflows/ci.yml)
+[![Version](https://img.shields.io/badge/version-0.75.0-brightgreen.svg)](https://github.com/Tryboy869/grok-local-agent-kit/releases)
+
+**Open-source toolkit for building local AI agents.**
+Ollama + LM Studio, ReAct tool loop, multi-LLM fallback router, MCP, offline-first tools (web search, cwd-safe file ops, calculator, sandboxed Python, etc.).
+Built autonomously by Grok.
+
+> Capable agents on your machine.  
+> No cloud required.  
+> No API keys for local models.
+
+## Features (v0.75.0)
+
+* **Core Agent** — ReAct-style tool loop, hooks, sessions, parallel tools, MCP attach, multi-LLM routing with health-aware fallback.
+* **Multi-LLM** — Ollama native + any OpenAI-compatible endpoint (LM Studio, vLLM…). Circuit breaker + router.
+* **Real tools** — web_search (HTML fallback), http_get, cwd-safe file ops, calculator, sandboxed execute_python, restricted shell, MCP, system info, datetime.
+* **Offline MVP** — robust intent routing + real tools so demos run fully offline. Compound plans (math → write file, **code → write file with result injection**, **search → write file with result injection**, multi-step).
+* **Ready examples** — `python examples/mvp_chat_automation.py` (offline chat + automation), `examples/chat_agent.py` (live interactive), `examples/automation_agent.py` (one-shot multi-tool), `examples/ready_compound_agent.py`, `examples/ready_local_agent.py`, `examples/ready_local_agent_v074.py`, **new** `examples/ready_local_agent_v075.py`.
+ * **v0.75 polish** — offline MVP now chains search to file write with the real output injected. Ready demo includes a search→file step. Improved NL plan extraction.
+
+**GIF / Demo storyboard (record with VHS; see docs/gifs/):**  
+**Chat agent demo:** `python examples/chat_agent.py --verbose --stream` — interactive ReAct loop with local Ollama/LM Studio, tool calls visible, multi-LLM fallback if configured. Shows thoughts, parallel tools, final answer.  
+**Automation agent demo:** `python examples/automation_agent.py` — one-shot multi-tool goal execution (files, math, search, system info).  
+**Offline MVP / Ready local demo:** `python examples/mvp_chat_automation.py` or `python examples/ready_local_agent.py` or `python examples/ready_local_agent_v075.py`  
+1. Banner “=== grok-local-agent-kit Ready Local Agent (v0.75) ===”.  
+2. Chat turns: datetime, calculator (2**10 + 42 → 1066), **code execution** (print(sum(range(1,11))) → 55), **code→file** (result written to sum_result.txt), **search→file** (results written to search_note.txt), system info, list files, write note, read note, compound math→file.  
+3. Lists registered tools.  
+4. Runs automation plan steps with short results.  
+5. “Done. For live LLM start Ollama/LM Studio…”.  
+Fully offline, zero cloud. Includes sandboxed Python + result injection for multi-step plans.  
+
+Live demos: `python examples/chat_agent.py --verbose --stream` and `python examples/automation_agent.py`.
+
+## Quick start (1 command)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
+grok-agent doctor
+python examples/mvp_chat_automation.py
+python examples/ready_local_agent.py
+python examples/ready_local_agent_v075.py
+python examples/chat_agent.py
+python examples/automation_agent.py
+```
+
+From source:
+
+```bash
+git clone https://github.com/Tryboy869/grok-local-agent-kit.git
+cd grok-local-agent-kit
+python3 -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev]"
+pytest -q
+python examples/mvp_chat_automation.py
+python examples/ready_local_agent.py
+python examples/ready_local_agent_v075.py
+```
+
+Local model (optional — for full ReAct / chat):
+
+```bash
+ollama serve && ollama pull llama3.2
+# or start LM Studio on http://127.0.0.1:1234/v1
+grok-agent chat -v --stream --router
+python examples/chat_agent.py --verbose --stream
+python examples/ready_local_agent.py --live
+```
+
+## Examples
+
+See `examples/` for chat, automation, compound chaining, MCP, approvals, and more.  
+Start offline with `mvp_chat_automation.py`, `ready_local_agent.py`, `ready_local_agent_v075.py` and the `ready_*` / `enhanced_*` scripts — no model required.  
+Live chat: `chat_agent.py`. Multi-tool automation: `automation_agent.py`.
