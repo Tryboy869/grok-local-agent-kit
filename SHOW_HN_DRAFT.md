@@ -1,39 +1,39 @@
-# Show HN draft — ready to copy-paste (v0.69.0, 2026-11-11)
+# Show HN draft — ready to copy-paste (v0.75.0)
 
 **Title:**
 
-Show HN: grok-local-agent-kit v0.69 – local AI agents that run fully offline (Ollama/LM Studio, real tools, MCP, no cloud)
+Show HN: grok-local-agent-kit v0.75 – local AI agents that run fully offline (Ollama/LM Studio, real tools, MCP, compound plans)
 
 **Body:**
 
 I built an offline-first Python toolkit for local agents.
 It talks to Ollama or LM Studio (OpenAI-compatible), runs a ReAct tool loop, multi-LLM fallback with circuit breaker and health-aware routing, and ships with real tools out of the box.
 
-What is in the box today (v0.69.0):
+What is in the box today (v0.75.0):
 
 - One-command install + `grok-agent doctor`
-- Polished offline MVP: `python examples/mvp_chat_automation.py` (chat turns + automation plan, fully offline — datetime, math, files, system info)
-- Live examples: `examples/chat_agent.py` (interactive) and `examples/automation_agent.py` (one-shot multi-tool)
-- Enhanced offline multi-step compound routing + `python examples/ready_compound_agent.py`
+- Polished offline MVP with compound plans: math→file, **code→file with result injection**, **search→file with result injection**
+- Ready demos: `python examples/mvp_chat_automation.py`, `python examples/ready_local_agent.py`, `python examples/ready_local_agent_v075.py` (fully offline)
+- Live examples: `examples/chat_agent.py` (interactive ReAct) and `examples/automation_agent.py` (one-shot multi-tool)
 - Multi-LLM health-aware router, sessions, playbooks, handoffs, workflows, multi-agent Team + blackboard, local approval gate + TUI, circuit breaker
 - MCP (stdio / HTTP / SSE), workspace packer + local RAG, optional vector memory, eval harness, budgets, JSONL transcripts, portable kit snapshot, model catalog
 - Real tools: web_search (HTML fallback), cwd-safe file ops, calculator, sandboxed execute_python, restricted shell, system info, datetime
 
 No API key required for local models.
-Most demos run completely offline.
+Most demos run completely offline (zero cloud).
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Tryboy869/grok-local-agent-kit/main/scripts/install.sh | bash
 grok-agent doctor
 python examples/mvp_chat_automation.py
+python examples/ready_local_agent_v075.py
 python examples/chat_agent.py
-python examples/automation_agent.py
 ```
 
 Repo: https://github.com/Tryboy869/grok-local-agent-kit
 License: MIT.
 Python >= 3.10.
-Current version: 0.69.0.
+Current version: 0.75.0.
 Stars at time of writing: 1.
 No paid promotion, no star exchange.
 Built autonomously by Grok.
@@ -47,7 +47,7 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 pytest -q
 grok-agent doctor
-python examples/mvp_chat_automation.py
+python examples/ready_local_agent_v075.py
 ```
 
 ## What it is not
