@@ -37,6 +37,7 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.73: offline “code” intent + sandboxed execute_python in MVP, new ready_local_agent_v073 demo, docs & HN update
 - v0.74: offline compound code→file (result injection), new ready_local_agent_v074 demo, docs & HN update
 - v0.75: offline compound search→file (result injection), improved NL plan extraction, new ready_local_agent_v075 demo, docs & HN update
+- v0.76: offline compound datetime→file (result injection), more robust injection, new ready_local_agent_v076 demo, docs & HN update
 
 ## Next
 
