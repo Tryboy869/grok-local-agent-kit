@@ -1,3 +1,16 @@
+## [0.76.0] - 2026-11-18
+
+### Added
+- Offline MVP now supports compound “datetime / current time and save” goals: get_datetime result is automatically injected into a subsequent write_file.
+- More robust previous-result injection into write_file (additional placeholders + empty content handling).
+- New ready-to-run example `examples/ready_local_agent_v076.py` demonstrating datetime→file, code→file, search→file, math, system info, and workspace listing — fully offline.
+- Clearer demo storyboards mentioning datetime-to-file chaining.
+
+### Changed
+- Version bump to 0.76.0.
+- Offline demos now exercise real result injection for datetime→file multi-step plans.
+- Docs synced.
+
 ## [0.75.0] - 2026-11-17
 
 ### Added
@@ -10,17 +23,4 @@
 ### Changed
 - Version bump to 0.75.0.
 - Offline demos now exercise real result injection for search→file multi-step plans.
-- Docs synced.
-
-## [0.74.0] - 2026-11-16
-
-### Added
-- Offline MVP now supports compound “code → file” goals: sandboxed `execute_python` result is automatically injected into a subsequent `write_file`.
-- New ready-to-run example `examples/ready_local_agent_v074.py` demonstrating datetime, math, code, **code→file**, system info, and compound plans — fully offline.
-- Clearer demo storyboards mentioning code-to-file chaining.
-- Updated CONTRIBUTING.md, public ROADMAP, STATUS, and fresh HN / Indie Hackers update draft.
-
-### Changed
-- Version bump to 0.74.0.
-- Offline demos now exercise real result injection for multi-step plans.
 - Docs synced.
