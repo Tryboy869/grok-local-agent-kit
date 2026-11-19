@@ -1,3 +1,15 @@
+## [0.77.0] - 2026-11-19
+
+### Added
+- Offline MVP now supports compound “system info and save” goals: get_system_info result is automatically injected into a subsequent write_file.
+- New ready-to-run example `examples/ready_local_agent_v077.py` demonstrating system→file, datetime→file, code→file, search→file, math, and workspace listing — fully offline.
+- Clearer demo storyboards mentioning system-to-file chaining.
+
+### Changed
+- Version bump to 0.77.0.
+- Offline demos now exercise real result injection for system_info→file multi-step plans.
+- Docs synced (README, CONTRIBUTING, ROADMAP, HN update).
+
 ## [0.76.0] - 2026-11-18
 
 ### Added
@@ -9,18 +21,4 @@
 ### Changed
 - Version bump to 0.76.0.
 - Offline demos now exercise real result injection for datetime→file multi-step plans.
-- Docs synced.
-
-## [0.75.0] - 2026-11-17
-
-### Added
-- Offline MVP now supports compound “search / lookup and save the results” goals: web_search result is automatically injected into a subsequent write_file.
-- Improved natural-language plan extraction for multi-step compound goals.
-- New ready-to-run example `examples/ready_local_agent_v075.py` demonstrating datetime, math, code, **code→file**, **search→file**, system info, and compound plans — fully offline.
-- Clearer demo storyboards mentioning search-to-file chaining.
-- Updated CONTRIBUTING.md, public ROADMAP, STATUS, and fresh HN / Indie Hackers update draft.
-
-### Changed
-- Version bump to 0.75.0.
-- Offline demos now exercise real result injection for search→file multi-step plans.
 - Docs synced.
