@@ -1,3 +1,15 @@
+## [0.78.0] - 2026-11-20
+
+### Added
+- Offline MVP now supports improved compound “calculate and save” goals: calculator result is automatically injected into write_file, with optional read-back verification step when the goal mentions “verify” / “read back”.
+- New ready-to-run example `examples/ready_local_agent_v078.py` demonstrating math→file + verification, system→file, datetime→file, code→file, search→file, and workspace listing — fully offline.
+- Clearer demo storyboards mentioning math-to-file chaining with verification.
+
+### Changed
+- Version bump to 0.78.0.
+- Offline demos now exercise real result injection for math→file multi-step plans + verification.
+- Docs synced (README, CONTRIBUTING, ROADMAP, HN update, STATUS).
+
 ## [0.77.0] - 2026-11-19
 
 ### Added
@@ -9,16 +21,3 @@
 - Version bump to 0.77.0.
 - Offline demos now exercise real result injection for system_info→file multi-step plans.
 - Docs synced (README, CONTRIBUTING, ROADMAP, HN update).
-
-## [0.76.0] - 2026-11-18
-
-### Added
-- Offline MVP now supports compound “datetime / current time and save” goals: get_datetime result is automatically injected into a subsequent write_file.
-- More robust previous-result injection into write_file (additional placeholders + empty content handling).
-- New ready-to-run example `examples/ready_local_agent_v076.py` demonstrating datetime→file, code→file, search→file, math, system info, and workspace listing — fully offline.
-- Clearer demo storyboards mentioning datetime-to-file chaining.
-
-### Changed
-- Version bump to 0.76.0.
-- Offline demos now exercise real result injection for datetime→file multi-step plans.
-- Docs synced.
