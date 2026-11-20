@@ -1,8 +1,8 @@
 # Status
 
-Current release line: **v0.75.0** (offline compound search→file routing with result injection, improved NL plan extraction, new ready demo).
+Current release line: **v0.77.0** (offline compound system_info→file routing with result injection, improved multi-step plans, new ready demo).
 
-## Audit 2026-11-18
+## Audit 2026-11-20
 
 | Signal | Value |
 |--------|-------|
@@ -14,7 +14,9 @@ Current release line: **v0.75.0** (offline compound search→file routing with r
 | Stars | 1 |
 | Forks | 0 |
 | Open issues | 2 |
-| Package version | 0.75.0 |
+| Commits | ~423 |
+| Package version | 0.77.0 |
 | CLI | `grok-agent` |
-| Latest commit | docs: update Show HN draft to v0.75.0 with latest offline compound routing features |
-| Feature | Offline-first ReAct agents, MCP, multi-LLM router, compound intent routing (incl. code→file, search→file), real tools (files, math, web, shell restricted, sandboxed Python), ready examples |
+| Latest commit | fix: restore and enhance mvp.py with system_info→file compound routing for v0.77 |
+| Feature | Offline-first ReAct agents, MCP, multi-LLM router (Ollama + OpenAI-compatible), compound intent routing (math→file, code→file, search→file, datetime→file, system_info→file with result injection), real tools (files, math, web, sandboxed Python, restricted shell, system info, datetime), ready examples, CI, docs, growth plan |
+| Goal | 10k stars in 3 months via organic Show HN / Reddit / communities (no cheating, no star exchange) |
