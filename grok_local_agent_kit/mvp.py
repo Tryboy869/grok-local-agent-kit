@@ -5,6 +5,7 @@ builds a tool plan, and executes it through the same tool registry the ReAct
 loop uses. `probe_providers` reports whether local backends are up without
 failing the demo when they are not.
 
+v0.79: offline compound http_get→file (result injection).
 v0.78: improved math→file compound (result injection + optional read-back verification).
 v0.77: system_info→file compound + improved multi-step verification.
 v0.76: datetime→file compound + more robust previous-result injection into write_file. Write-then-read verification plans.
@@ -60,6 +61,8 @@ def route_intent(prompt: str) -> str:
         return "datetime"
     if any(k in text for k in ("system", "os ", "python version", "cpu", "memory", "hostname", "sysinfo")):
         return "system"
+    if any(k in text for k in ("http://", "https://", "fetch url", "get page", "http_get", "download page", "fetch the page")):
+        return "http"
     if any(k in text for k in ("search", "web", "look up", "recherche", "find online", "google", "lookup")):
         return "search"
     if any(k in text for k in ("read", "open", "show file", "cat ", "display", "verify")) and any(k in text for k in ("file", "fichier", ".txt", ".md")):
@@ -74,6 +77,7 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
 
     Supports simple compound goals like "calculate X and save to file", "run code and save result",
     "search X and save to note", "current time and save", or "system info and save".
+    v0.79: http_get→file with result injection.
     v0.78: math→file now supports "then verify" / "read back" by appending a read_file step.
     """
     text = (prompt or "").lower()
@@ -108,6 +112,26 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
         intent == "system"
         and any(k in text for k in ("save", "write", "save to", "write to", "and save", "then write", "store in", "note", "to file"))
     )
+
+    # Compound: http_get + write/save (v0.79)
+    compound_http_save = (
+        intent == "http"
+        and any(k in text for k in ("save", "write", "save to", "write to", "and save", "then write", "store in", "note", "to file"))
+    )
+
+    if compound_http_save:
+        url = "https://example.com"
+        m = re.search(r"(https?://[^\s]+)", prompt, re.I)
+        if m:
+            url = m.group(1).rstrip(".,)")
+        fname = "http_note.txt"
+        fm = re.search(r"(?:to|in|as)\s+([a-zA-Z0-9_.-]+\.(?:txt|md))", text)
+        if fm:
+            fname = fm.group(1)
+        return [
+            {"tool": "http_get", "arguments": {"url": url, "max_chars": 4000}},
+            {"tool": "write_file", "arguments": {"path": fname, "content": "(http content will be injected)\n"}},
+        ]
 
     if compound_system_save:
         fname = "system_note.txt"
@@ -223,6 +247,13 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
         query = prompt.strip() or "local AI agents"
         return [{"tool": "web_search", "arguments": {"query": query, "max_results": 3}}]
 
+    if intent == "http":
+        url = "https://example.com"
+        m = re.search(r"(https?://[^\s]+)", prompt, re.I)
+        if m:
+            url = m.group(1).rstrip(".,)")
+        return [{"tool": "http_get", "arguments": {"url": url, "max_chars": 4000}}]
+
     if intent == "mcp":
         return [{"tool": "mcp_echo", "arguments": {"name": "ping", "arguments": {"text": prompt}}}]
 
@@ -277,10 +308,11 @@ def run_mvp(
                     "(search results will be injected)",
                     "(datetime will be injected)",
                     "(system info will be injected)",
+                    "(http content will be injected)",
                     "(will be injected)",
                 )
                 if any(ph in content for ph in placeholders) or content.strip() in ("", "\n", "(injected)"):
-                    args["content"] = f"Result from previous step:\n{last_result}\n\n---\nGenerated offline by grok-local-agent-kit MVP (v0.78).\n"
+                    args["content"] = f"Result from previous step:\n{last_result}\n\n---\nGenerated offline by grok-local-agent-kit MVP (v0.79).\n"
             output = execute_tool(name, args, registry)
             trace.append({"tool": name, "arguments": args, "output": output})
             last_result = output
