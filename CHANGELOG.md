@@ -1,3 +1,15 @@
+## [0.79.0] - 2026-11-21
+
+### Added
+- Offline MVP now supports compound “fetch URL and save” goals: http_get result is automatically injected into a subsequent write_file.
+- New ready-to-run example `examples/ready_local_agent_v079.py` demonstrating http→file, math→file + verification, system→file, datetime→file, code→file, search→file, and workspace listing — fully offline.
+- Clearer demo storyboards mentioning http-to-file chaining.
+
+### Changed
+- Version bump to 0.79.0.
+- Offline demos now exercise real result injection for http_get→file multi-step plans.
+- Docs synced (README, CONTRIBUTING, ROADMAP, HN update).
+
 ## [0.78.0] - 2026-11-20
 
 ### Added
