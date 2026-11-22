@@ -5,6 +5,7 @@ builds a tool plan, and executes it through the same tool registry the ReAct
 loop uses. `probe_providers` reports whether local backends are up without
 failing the demo when they are not.
 
+v0.80: offline compound list_files→file and search_files→file (result injection).
 v0.79: offline compound http_get→file (result injection).
 v0.78: improved math→file compound (result injection + optional read-back verification).
 v0.77: system_info→file compound + improved multi-step verification.
@@ -63,8 +64,12 @@ def route_intent(prompt: str) -> str:
         return "system"
     if any(k in text for k in ("http://", "https://", "fetch url", "get page", "http_get", "download page", "fetch the page")):
         return "http"
+    if any(k in text for k in ("search files", "find in files", "search_files", "grep", "find text")):
+        return "searchfiles"
     if any(k in text for k in ("search", "web", "look up", "recherche", "find online", "google", "lookup")):
         return "search"
+    if any(k in text for k in ("list files", "list dir", "ls ", "directory listing")):
+        return "list"
     if any(k in text for k in ("read", "open", "show file", "cat ", "display", "verify")) and any(k in text for k in ("file", "fichier", ".txt", ".md")):
         return "read"
     if any(k in text for k in ("file", "fichier", "write", "list dir", "écris", "ecris", "create note", "save", "list files")):
@@ -76,7 +81,9 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
     """Deterministic tool plan for the MVP loop.
 
     Supports simple compound goals like "calculate X and save to file", "run code and save result",
-    "search X and save to note", "current time and save", or "system info and save".
+    "search X and save to note", "current time and save", "system info and save", "fetch URL and save",
+    "list files and save listing", or "search files for X and save results".
+    v0.80: list_files→file and search_files→file with result injection.
     v0.79: http_get→file with result injection.
     v0.78: math→file now supports "then verify" / "read back" by appending a read_file step.
     """
@@ -118,6 +125,43 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
         intent == "http"
         and any(k in text for k in ("save", "write", "save to", "write to", "and save", "then write", "store in", "note", "to file"))
     )
+
+    # Compound: list_files + write/save (v0.80)
+    compound_list_save = (
+        intent in ("list", "files")
+        and any(k in text for k in ("list files", "list dir", "ls", "directory"))
+        and any(k in text for k in ("save", "write", "save to", "write to", "and save", "then write", "store in", "note", "to file"))
+    )
+
+    # Compound: search_files + write/save (v0.80)
+    compound_searchfiles_save = (
+        intent == "searchfiles"
+        and any(k in text for k in ("save", "write", "save to", "write to", "and save", "then write", "store in", "note", "to file"))
+    )
+
+    if compound_searchfiles_save:
+        query = "def"
+        m = re.search(r"(?:for|containing|matching)\s+[\"']?([^\"']+)[\"']?", prompt, re.I)
+        if m:
+            query = m.group(1).strip()
+        fname = "searchfiles_note.txt"
+        fm = re.search(r"(?:to|in|as)\s+([a-zA-Z0-9_.-]+\.(?:txt|md))", text)
+        if fm:
+            fname = fm.group(1)
+        return [
+            {"tool": "search_files", "arguments": {"query": query, "path": ".", "pattern": "*.py", "max_matches": 10}},
+            {"tool": "write_file", "arguments": {"path": fname, "content": "(search_files results will be injected)\n"}},
+        ]
+
+    if compound_list_save:
+        fname = "listing.txt"
+        fm = re.search(r"(?:to|in|as)\s+([a-zA-Z0-9_.-]+\.(?:txt|md))", text)
+        if fm:
+            fname = fm.group(1)
+        return [
+            {"tool": "list_files", "arguments": {"path": "."}},
+            {"tool": "write_file", "arguments": {"path": fname, "content": "(file listing will be injected)\n"}},
+        ]
 
     if compound_http_save:
         url = "https://example.com"
@@ -254,6 +298,16 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
             url = m.group(1).rstrip(".,)")
         return [{"tool": "http_get", "arguments": {"url": url, "max_chars": 4000}}]
 
+    if intent == "searchfiles":
+        query = "def"
+        m = re.search(r"(?:for|containing|matching)\s+[\"']?([^\"']+)[\"']?", prompt, re.I)
+        if m:
+            query = m.group(1).strip()
+        return [{"tool": "search_files", "arguments": {"query": query, "path": ".", "pattern": "*.py", "max_matches": 10}}]
+
+    if intent == "list":
+        return [{"tool": "list_files", "arguments": {"path": "."}}]
+
     if intent == "mcp":
         return [{"tool": "mcp_echo", "arguments": {"name": "ping", "arguments": {"text": prompt}}}]
 
@@ -309,10 +363,12 @@ def run_mvp(
                     "(datetime will be injected)",
                     "(system info will be injected)",
                     "(http content will be injected)",
+                    "(file listing will be injected)",
+                    "(search_files results will be injected)",
                     "(will be injected)",
                 )
                 if any(ph in content for ph in placeholders) or content.strip() in ("", "\n", "(injected)"):
-                    args["content"] = f"Result from previous step:\n{last_result}\n\n---\nGenerated offline by grok-local-agent-kit MVP (v0.79).\n"
+                    args["content"] = f"Result from previous step:\n{last_result}\n\n---\nGenerated offline by grok-local-agent-kit MVP (v0.80).\n"
             output = execute_tool(name, args, registry)
             trace.append({"tool": name, "arguments": args, "output": output})
             last_result = output

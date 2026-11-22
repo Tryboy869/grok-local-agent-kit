@@ -1,3 +1,16 @@
+## [0.80.0] - 2026-11-22
+
+### Added
+- Offline MVP now supports compound “list files and save” and “search files for X and save” goals: list_files and search_files results are automatically injected into a subsequent write_file.
+- New ready-to-run example `examples/ready_local_agent_v080.py` demonstrating list→file, search_files→file, http→file, math→file + verification, system→file, datetime→file, code→file, search→file, and workspace listing — fully offline.
+- Clearer demo storyboards mentioning list-to-file and local file search chaining.
+- Improved route_intent to distinguish local file search from web search.
+
+### Changed
+- Version bump to 0.80.0.
+- Offline demos now exercise real result injection for list_files→file and search_files→file multi-step plans.
+- Docs synced (README, CONTRIBUTING, ROADMAP, HN update, STATUS).
+
 ## [0.79.0] - 2026-11-21
 
 ### Added
@@ -21,15 +34,3 @@
 - Version bump to 0.78.0.
 - Offline demos now exercise real result injection for math→file multi-step plans + verification.
 - Docs synced (README, CONTRIBUTING, ROADMAP, HN update, STATUS).
-
-## [0.77.0] - 2026-11-19
-
-### Added
-- Offline MVP now supports compound “system info and save” goals: get_system_info result is automatically injected into a subsequent write_file.
-- New ready-to-run example `examples/ready_local_agent_v077.py` demonstrating system→file, datetime→file, code→file, search→file, math, and workspace listing — fully offline.
-- Clearer demo storyboards mentioning system-to-file chaining.
-
-### Changed
-- Version bump to 0.77.0.
-- Offline demos now exercise real result injection for system_info→file multi-step plans.
-- Docs synced (README, CONTRIBUTING, ROADMAP, HN update).
