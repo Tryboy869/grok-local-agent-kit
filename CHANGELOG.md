@@ -1,3 +1,16 @@
+## [0.81.0] - 2026-11-23
+
+### Added
+- Offline MVP now supports compound “run shell command and save” goals: restricted shell output is automatically injected into a subsequent write_file.
+- New ready-to-run example `examples/ready_local_agent_v081.py` demonstrating shell→file, list→file, search_files→file, http→file, math→file + verification, system→file, datetime→file, code→file, search→file, and workspace listing — fully offline.
+- Clearer demo storyboards mentioning shell-to-file chaining.
+- Improved route_intent to detect shell / run command intents.
+
+### Changed
+- Version bump to 0.81.0.
+- Offline demos now exercise real result injection for run_shell→file multi-step plans.
+- Docs synced (README, CONTRIBUTING, ROADMAP, HN update, STATUS).
+
 ## [0.80.0] - 2026-11-22
 
 ### Added

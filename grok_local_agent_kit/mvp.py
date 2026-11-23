@@ -5,6 +5,7 @@ builds a tool plan, and executes it through the same tool registry the ReAct
 loop uses. `probe_providers` reports whether local backends are up without
 failing the demo when they are not.
 
+v0.81: offline compound run_shell→file (result injection for safe shell commands).
 v0.80: offline compound list_files→file and search_files→file (result injection).
 v0.79: offline compound http_get→file (result injection).
 v0.78: improved math→file compound (result injection + optional read-back verification).
@@ -58,6 +59,8 @@ def route_intent(prompt: str) -> str:
     # Code / Python execution (offline sandboxed)
     if any(k in text for k in ("python", "code", "execute code", "run code", "script", "print(", "def ", "import ")):
         return "code"
+    if any(k in text for k in ("shell", "run command", "execute command", "bash", "cmd", "run shell", "ls -", "pwd", "whoami", "echo ")):
+        return "shell"
     if any(k in text for k in ("date", "time", "datetime", "heure", "aujourd'hui", "today", "clock", "what time")):
         return "datetime"
     if any(k in text for k in ("system", "os ", "python version", "cpu", "memory", "hostname", "sysinfo")):
@@ -126,6 +129,12 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
         and any(k in text for k in ("save", "write", "save to", "write to", "and save", "then write", "store in", "note", "to file"))
     )
 
+    # Compound: shell + write/save (v0.81)
+    compound_shell_save = (
+        intent == "shell"
+        and any(k in text for k in ("save", "write", "save to", "write to", "and save", "then write", "store in", "note", "to file"))
+    )
+
     # Compound: list_files + write/save (v0.80)
     compound_list_save = (
         intent in ("list", "files")
@@ -151,6 +160,22 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
         return [
             {"tool": "search_files", "arguments": {"query": query, "path": ".", "pattern": "*.py", "max_matches": 10}},
             {"tool": "write_file", "arguments": {"path": fname, "content": "(search_files results will be injected)\n"}},
+        ]
+
+    if compound_shell_save:
+        cmd = "echo hello from local agent"
+        m = re.search(r"command[:\s]+(.+?)(?:\s+and\s+|\s+then\s+|$)", prompt, re.I)
+        if not m:
+            m = re.search(r"(?:run|execute)\s+(.+?)(?:\s+and\s+|\s+then\s+|$)", prompt, re.I)
+        if m:
+            cmd = m.group(1).strip().strip("\"'")
+        fname = "shell_note.txt"
+        fm = re.search(r"(?:to|in|as)\s+([a-zA-Z0-9_.-]+\.(?:txt|md))", text)
+        if fm:
+            fname = fm.group(1)
+        return [
+            {"tool": "run_shell", "arguments": {"command": cmd, "timeout": 10}},
+            {"tool": "write_file", "arguments": {"path": fname, "content": "(shell output will be injected)\n"}},
         ]
 
     if compound_list_save:
@@ -281,6 +306,15 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
                 code = prompt.strip()[:200]
         return [{"tool": "execute_python", "arguments": {"code": code, "timeout": 5}}]
 
+    if intent == "shell":
+        cmd = "echo hello from local agent"
+        m = re.search(r"command[:\s]+(.+?)(?:\s+and\s+|\s+then\s+|$)", prompt, re.I)
+        if not m:
+            m = re.search(r"(?:run|execute)\s+(.+?)(?:\s+and\s+|\s+then\s+|$)", prompt, re.I)
+        if m:
+            cmd = m.group(1).strip().strip("\"'")
+        return [{"tool": "run_shell", "arguments": {"command": cmd, "timeout": 10}}]
+
     if intent == "datetime":
         return [{"tool": "get_datetime", "arguments": {}}]
 
@@ -345,6 +379,8 @@ def run_mvp(
 
         os.chdir(workspace)
         registry = registry or get_default_tools()
+        if isinstance(registry, tuple):
+            registry = registry[1]  # use the funcs dict
         intent = route_intent(prompt)
         steps = plan_for(prompt)
         trace = []
@@ -365,10 +401,11 @@ def run_mvp(
                     "(http content will be injected)",
                     "(file listing will be injected)",
                     "(search_files results will be injected)",
+                    "(shell output will be injected)",
                     "(will be injected)",
                 )
                 if any(ph in content for ph in placeholders) or content.strip() in ("", "\n", "(injected)"):
-                    args["content"] = f"Result from previous step:\n{last_result}\n\n---\nGenerated offline by grok-local-agent-kit MVP (v0.80).\n"
+                    args["content"] = f"Result from previous step:\n{last_result}\n\n---\nGenerated offline by grok-local-agent-kit MVP (v0.81).\n"
             output = execute_tool(name, args, registry)
             trace.append({"tool": name, "arguments": args, "output": output})
             last_result = output
