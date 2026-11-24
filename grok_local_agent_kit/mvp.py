@@ -5,6 +5,7 @@ builds a tool plan, and executes it through the same tool registry the ReAct
 loop uses. `probe_providers` reports whether local backends are up without
 failing the demo when they are not.
 
+v0.82: offline compound mkdir + write note inside new directory.
 v0.81: offline compound run_shell→file (result injection for safe shell commands).
 v0.80: offline compound list_files→file and search_files→file (result injection).
 v0.79: offline compound http_get→file (result injection).
@@ -61,6 +62,8 @@ def route_intent(prompt: str) -> str:
         return "code"
     if any(k in text for k in ("shell", "run command", "execute command", "bash", "cmd", "run shell", "ls -", "pwd", "whoami", "echo ")):
         return "shell"
+    if any(k in text for k in ("mkdir", "create directory", "make dir", "make folder", "create folder", "new directory", "create a directory")):
+        return "mkdir"
     if any(k in text for k in ("date", "time", "datetime", "heure", "aujourd'hui", "today", "clock", "what time")):
         return "datetime"
     if any(k in text for k in ("system", "os ", "python version", "cpu", "memory", "hostname", "sysinfo")):
@@ -135,6 +138,12 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
         and any(k in text for k in ("save", "write", "save to", "write to", "and save", "then write", "store in", "note", "to file"))
     )
 
+    # Compound: mkdir + write/save (v0.82)
+    compound_mkdir_save = (
+        intent == "mkdir"
+        and any(k in text for k in ("save", "write", "save to", "write to", "and save", "then write", "store in", "note", "to file", "inside"))
+    )
+
     # Compound: list_files + write/save (v0.80)
     compound_list_save = (
         intent in ("list", "files")
@@ -160,6 +169,21 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
         return [
             {"tool": "search_files", "arguments": {"query": query, "path": ".", "pattern": "*.py", "max_matches": 10}},
             {"tool": "write_file", "arguments": {"path": fname, "content": "(search_files results will be injected)\n"}},
+        ]
+
+    if compound_mkdir_save:
+        dirname = "demo_dir"
+        m = re.search(r"(?:directory|folder|dir)\s+([a-zA-Z0-9_.-]+)", prompt, re.I)
+        if m:
+            dirname = m.group(1).strip().strip("'\"")
+        fname = "note.txt"
+        fm = re.search(r"(?:to|in|as)\s+([a-zA-Z0-9_.-]+\.(?:txt|md))", text)
+        if fm:
+            fname = fm.group(1)
+        note_content = prompt.strip()[:180] or "Note created in new directory by offline agent"
+        return [
+            {"tool": "mkdir", "arguments": {"path": dirname}},
+            {"tool": "write_file", "arguments": {"path": f"{dirname}/{fname}", "content": note_content + "\n"}},
         ]
 
     if compound_shell_save:
@@ -306,6 +330,13 @@ def plan_for(prompt: str) -> List[Dict[str, Any]]:
                 code = prompt.strip()[:200]
         return [{"tool": "execute_python", "arguments": {"code": code, "timeout": 5}}]
 
+    if intent == "mkdir":
+        dirname = "demo_dir"
+        m = re.search(r"(?:directory|folder|dir)\s+([a-zA-Z0-9_.-]+)", prompt, re.I)
+        if m:
+            dirname = m.group(1).strip().strip("'\"")
+        return [{"tool": "mkdir", "arguments": {"path": dirname}}]
+
     if intent == "shell":
         cmd = "echo hello from local agent"
         m = re.search(r"command[:\s]+(.+?)(?:\s+and\s+|\s+then\s+|$)", prompt, re.I)
@@ -405,7 +436,7 @@ def run_mvp(
                     "(will be injected)",
                 )
                 if any(ph in content for ph in placeholders) or content.strip() in ("", "\n", "(injected)"):
-                    args["content"] = f"Result from previous step:\n{last_result}\n\n---\nGenerated offline by grok-local-agent-kit MVP (v0.81).\n"
+                    args["content"] = f"Result from previous step:\n{last_result}\n\n---\nGenerated offline by grok-local-agent-kit MVP (v0.82).\n"
             output = execute_tool(name, args, registry)
             trace.append({"tool": name, "arguments": args, "output": output})
             last_result = output

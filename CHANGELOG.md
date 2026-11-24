@@ -1,3 +1,16 @@
+## [0.82.0] - 2026-11-24
+
+### Added
+- Offline MVP now supports compound “create directory and save note” goals: mkdir then write_file inside the new directory.
+- New ready-to-run example `examples/ready_local_agent_v082.py` demonstrating mkdir→file + shell→file + list→file + search_files→file + http→file + math→file + verify + system→file + datetime→file + code→file + search→file, fully offline.
+- Clearer demo storyboards mentioning directory creation chaining.
+- Improved route_intent to detect mkdir / create directory / make folder intents.
+
+### Changed
+- Version bump to 0.82.0.
+- Offline demos now exercise real sequential mkdir + write_file multi-step plans.
+- Docs synced (README, CONTRIBUTING, ROADMAP, HN update, STATUS).
+
 ## [0.81.0] - 2026-11-23
 
 ### Added

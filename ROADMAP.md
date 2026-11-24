@@ -42,6 +42,7 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.78: offline compound math→file with result injection + optional read-back verification, new ready_local_agent_v078 demo, docs & HN update
 - v0.79: offline compound http_get→file with result injection, new ready_local_agent_v079 demo, docs & HN update
 - v0.81: offline compound shell→file with result injection, new ready_local_agent_v081 demo, docs & HN update
+- v0.82: offline compound mkdir + write note inside new directory, new ready_local_agent_v082 demo, docs & HN update
 
 ## Next
 
