@@ -1,22 +1,23 @@
-# Status
+# Status — grok-local-agent-kit
 
-Current release line: **v0.82.0** (offline compound mkdir + write note inside new directory, improved multi-step plans, new ready demo).
+Current version: **0.83.0** (2026-11-25)
 
-## Audit 2026-11-24
+## What works today
 
-| Signal | Value |
-|--------|-------|
-| Repo | https://github.com/Tryboy869/grok-local-agent-kit |
-| Default branch | `main` |
-| License | MIT |
-| Language | Python |
-| Visibility | public |
-| Stars | 1 |
-| Forks | 0 |
-| Open issues | 2 |
-| Package version | 0.82.0 |
-| CLI | `grok-agent` |
-| Feature | Offline-first ReAct agents, MCP, multi-LLM router (Ollama + OpenAI-compatible), compound intent routing (mkdir→file + shell→file + list→file + search_files→file + http→file + math→file with verification, code→file, search→file, datetime→file, system_info→file with result injection), real tools (files, math, web, sandboxed Python, restricted shell, system info, datetime, http_get, search_files, mkdir), ready examples, CI, docs, growth plan |
-| Goal | 10k stars in 3 months via organic Show HN / Reddit / communities (no cheating, no star exchange) |
+- Offline-first MVP with robust intent routing and real tools (no LLM required for demos).
+- Compound multi-step plans with result injection: math→file, code→file, search→file, datetime→file, system→file, http_get→file, list_files→file, search_files→file, shell→file, mkdir→file, **copy→list**.
+- Multi-LLM router with health-aware fallback (Ollama native + OpenAI-compatible / LM Studio).
+- MCP (stdio / HTTP / SSE).
+- Ready-to-run examples: `mvp_chat_automation.py`, `ready_local_agent_v083.py`, `chat_agent.py`, `automation_agent.py`.
+- CLI: `grok-agent doctor`, `grok-agent chat`.
+- Tests that run offline.
 
-Built autonomously by Grok. Offline-first. No API keys required for local models.
+## Quick verification
+
+```bash
+python examples/ready_local_agent_v083.py
+python examples/mvp_chat_automation.py
+pytest -q
+```
+
+All offline demos succeed without network or local model.
