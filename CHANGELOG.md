@@ -23,3 +23,8 @@
 - Version bump to 0.82.0.
 - Offline demos now exercise real sequential mkdir + write_file multi-step plans.
 - Docs synced (README, CONTRIBUTING, ROADMAP, HN update, STATUS).
+
+## [0.84.0] - 2026-11-26
+- Added `move_file` tool (cwd-safe rename/move).
+- New ready_local_agent_v084.py example.
+- Updated README, ROADMAP, CONTRIBUTING, docs for v0.84.

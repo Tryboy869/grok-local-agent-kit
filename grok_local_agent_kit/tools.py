@@ -180,6 +180,20 @@ def file_stat(path: str) -> str:
         return f"file_stat error: {e}"
 
 
+
+def move_file(src: str, dest: str) -> str:
+    """Move/rename a file within the workspace (cwd-safe)."""
+    try:
+        s = _safe_path(src)
+        d = _safe_path(dest)
+        if not s.exists() or not s.is_file():
+            return f"Source is not a file: {s}"
+        d.parent.mkdir(parents=True, exist_ok=True)
+        shutil.move(str(s), str(d))
+        return f"Successfully moved {s} -> {d}"
+    except Exception as e:
+        return f"move_file error: {e}"
+
 def copy_file(src: str, dest: str) -> str:
     try:
         s = _safe_path(src)
@@ -328,6 +342,7 @@ TOOL_SPECS: List[Dict[str, Any]] = [
     {"type": "function", "function": {"name": "delete_file", "description": "Delete a single file (cwd-safe). Refuses directories.", "parameters": {"type": "object", "properties": {"path": {"type": "string"}}, "required": ["path"]}}},
     {"type": "function", "function": {"name": "mkdir", "description": "Create a directory (cwd-safe, parents allowed).", "parameters": {"type": "object", "properties": {"path": {"type": "string"}}, "required": ["path"]}}},
     {"type": "function", "function": {"name": "file_stat", "description": "Get size, mtime and type of a path (cwd-safe).", "parameters": {"type": "object", "properties": {"path": {"type": "string"}}, "required": ["path"]}}},
+    {"type": "function", "function": {"name": "move_file", "description": "Move or rename a file within the workspace (cwd-safe).", "parameters": {"type": "object", "properties": {"src": {"type": "string"}, "dest": {"type": "string"}}, "required": ["src", "dest"]}}},
     {"type": "function", "function": {"name": "copy_file", "description": "Copy a file within the workspace (cwd-safe).", "parameters": {"type": "object", "properties": {"src": {"type": "string"}, "dest": {"type": "string"}}, "required": ["src", "dest"]}}},
     {"type": "function", "function": {"name": "run_shell", "description": "Run a shell command with safety restrictions.", "parameters": {"type": "object", "properties": {"command": {"type": "string"}, "timeout": {"type": "integer"}}, "required": ["command"]}}},
     {"type": "function", "function": {"name": "execute_python", "description": "Execute a short Python snippet safely.", "parameters": {"type": "object", "properties": {"code": {"type": "string"}}, "required": ["code"]}}},
@@ -343,7 +358,7 @@ TOOL_SPECS: List[Dict[str, Any]] = [
 TOOL_FUNCS: Dict[str, Callable[..., str]] = {
     "web_search": web_search, "http_get": http_get, "list_files": list_files, "search_files": search_files,
     "read_file": read_file, "write_file": write_file, "append_file": append_file, "delete_file": delete_file,
-    "mkdir": mkdir, "file_stat": file_stat, "copy_file": copy_file,
+    "mkdir": mkdir, "file_stat": file_stat, "copy_file": copy_file, "move_file": move_file,
     "run_shell": run_shell, "execute_python": execute_python, "calculator": calculator, "get_datetime": get_datetime,
     "get_system_info": get_system_info, "list_tools": list_tools, "mcp_list_resources": mcp_list_resources,
     "mcp_list_tools": mcp_list_tools, "mcp_call_tool": mcp_call_tool,
