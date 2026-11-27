@@ -1,3 +1,21 @@
+## [0.85.0] - 2026-11-27
+
+### Added
+- Real offline MVP core (`grok_local_agent_kit/mvp.py`) with `route_intent` + `run_mvp`.
+  Supports compound plans with previous-result injection: shell→file, list→file, search_files→file, http→file, math→file (+verify), code→file, web search→file, system→file, datetime→file, copy→list, mkdir→file, move_file.
+- New ready-to-run example `examples/ready_local_agent_v085.py` that exercises the real router and tools fully offline.
+- `probe_providers()` for non-blocking Ollama / LM Studio health checks.
+
+### Changed
+- Version bump to 0.85.0.
+- README, CONTRIBUTING, ROADMAP, STATUS, SHOW_HN and HN update refreshed.
+- Offline demos now run real sequential tool execution without any LLM.
+
+## [0.84.0] - 2026-11-26
+- Added `move_file` tool (cwd-safe rename/move).
+- New ready_local_agent_v084.py example.
+- Updated README, ROADMAP, CONTRIBUTING, docs for v0.84.
+
 ## [0.83.0] - 2026-11-25
 
 ### Added
@@ -10,21 +28,3 @@
 - Version bump to 0.83.0.
 - Offline demos now exercise real sequential write + copy_file multi-step plans.
 - Docs synced (README, CONTRIBUTING, ROADMAP, HN update, STATUS).
-
-## [0.82.0] - 2026-11-24
-
-### Added
-- Offline MVP now supports compound “create directory and save note” goals: mkdir then write_file inside the new directory.
-- New ready-to-run example `examples/ready_local_agent_v082.py` demonstrating mkdir→file + shell→file + list→file + search_files→file + http→file + math→file + verify + system→file + datetime→file + code→file + search→file, fully offline.
-- Clearer demo storyboards mentioning directory creation chaining.
-- Improved route_intent to detect mkdir / create directory / make folder intents.
-
-### Changed
-- Version bump to 0.82.0.
-- Offline demos now exercise real sequential mkdir + write_file multi-step plans.
-- Docs synced (README, CONTRIBUTING, ROADMAP, HN update, STATUS).
-
-## [0.84.0] - 2026-11-26
-- Added `move_file` tool (cwd-safe rename/move).
-- New ready_local_agent_v084.py example.
-- Updated README, ROADMAP, CONTRIBUTING, docs for v0.84.

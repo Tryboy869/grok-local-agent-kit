@@ -1,6 +1,6 @@
 """Grok Local Agent Kit — local-first AI agents with tools & multi-LLM support."""
 
-__version__ = "0.84.0"
+__version__ = "0.85.0"
 
 from .agent import Agent
 from .config import KitConfig, load_config, write_example_config
@@ -18,3 +18,4 @@ from .session import list_sessions, load_session, save_session
 from .skills import load_skills
 from .tools import execute_tool, get_default_tools
 from .usage import UsageStats, estimate_tokens
+from .mvp import run_mvp, probe_providers  # noqa: F401
