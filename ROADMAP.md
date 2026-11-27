@@ -45,6 +45,7 @@ Public plan for grok-local-agent-kit. Dates slide; the order is the contract.
 - v0.82: offline compound mkdir + write note inside new directory, new ready_local_agent_v082 demo, docs & HN update
 - v0.83: offline compound write then copy_file, new ready_local_agent_v083 demo, docs & HN update
 - v0.84: added move_file tool (cwd-safe), new ready_local_agent_v084 demo, docs & HN update
+- v0.85: real offline MVP (`route_intent` + `run_mvp` with result injection for all compounds), new ready_local_agent_v085 demo, docs & HN update
 
 ## Next
 
